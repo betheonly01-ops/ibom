@@ -1196,7 +1196,13 @@ let mapInited=false;
 let mapReady=false; // 맵 resize 완료 후 마커 렌더 가능 시점
 let _markersDirty=false; // 맵 준비 전 데이터가 갱신된 경우 준비 완료 시 재렌더
 function initMap(){
-  if(mapInited)return;mapInited=true;
+  if(mapInited)return;
+  if(!window.naver||!naver.maps){
+    // Naver Maps API 로드 실패 (401 등) — 지도 없이 목록만 사용
+    document.getElementById('map-loading')?.classList.add('gone');
+    return;
+  }
+  mapInited=true;
   const c=new naver.maps.LatLng(curLat||37.5600,curLng||126.9240);
   map=new naver.maps.Map('map',{center:c,zoom:15,mapTypeId:naver.maps.MapTypeId.NORMAL,
     zoomControl:true,zoomControlOptions:{style:naver.maps.ZoomControlStyle.SMALL,position:naver.maps.Position.TOP_RIGHT}});
