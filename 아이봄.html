@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>아이봄</title>
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=3ny7sdsg44&submodules=geocoder"></script>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+<style>
+:root{
+  --blue:#0066FF;--blue-weak:#EAF2FE;--blue-line:#C9DEFE;
+  --text:rgba(46,47,51,0.88);--text-alt:rgba(55,56,60,0.61);--text-assist:rgba(55,56,60,0.28);
+  --line:rgba(112,115,124,0.22);--line-soft:rgba(112,115,124,0.12);
+  --bg:#fff;--bg-alt:#F7F7F8;
+  --green:#00BF40;--green-bg:#E5FBEC;--green-text:#006E25;
+  --orange:#FF9200;--orange-bg:#FEF4E6;--orange-text:#9C5800;
+  --red:#FF4242;--red-bg:#FEECEC;--star:#FFB200;
+  --font:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  --nav-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
+html,body{
+  font-family:var(--font);background:#eceae5;color:var(--text);
+  height:100dvh;overflow:hidden;
+}
+
+/* PC에서 폰 프레임처럼 가운데 정렬 */
+.app-wrap{
+  position:relative;width:100%;max-width:430px;height:100dvh;
+  margin:0 auto;background:var(--bg);overflow:hidden;
+  box-shadow:0 0 40px rgba(0,0,0,0.15);
+}
+
+/* ── 스크린 전환 */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg);will-change:transform;transition:transform .28s cubic-bezier(.4,0,.2,1);}
+.screen.hidden{transform:translateX(100%);pointer-events:none;}
+.screen.back{transform:translateX(-25%);opacity:.7;pointer-events:none;}
+
+/* ── 상태바 영역 */
+.status-bar{height:env(safe-area-inset-top,44px);min-height:44px;flex-shrink:0;background:inherit;}
+
+/* ── 탐색 화면 (지도) */
+#scr-explore{background:#F4F5F1;}
+
+/* 지도 */
+#map{position:relative;flex:1;min-height:0;align-self:stretch;}
+
+/* 상단 검색바 (지도 위) */
+.map-top{
+  position:absolute;top:0;left:0;right:0;z-index:20;
+  padding:env(safe-area-inset-top,44px) 14px 0;
+}
+.search-bar{
+  display:flex;align-items:center;gap:8px;background:#fff;
+  border-radius:12px;padding:11px 14px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.14);margin-bottom:10px;
+}
+.search-bar-txt{flex:1;font-size:14px;color:var(--text-alt);font-family:var(--font);background:none;border:none;outline:none;}
+.search-bar-txt::placeholder{color:var(--text-assist);}
+.seg{display:flex;background:rgba(118,118,128,0.12);border-radius:9px;padding:2px;flex-shrink:0;}
+.seg-btn{
+  padding:5px 13px;border-radius:7px;font-size:13px;font-weight:700;
+  font-family:var(--font);border:none;cursor:pointer;transition:all .15s;
+  background:transparent;color:var(--text-alt);
+}
+.seg-btn.on{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.12);}
+.filter-chips{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;}
+.filter-chips::-webkit-scrollbar{display:none;}
+.fchip{
+  display:inline-flex;align-items:center;gap:3px;padding:7px 13px;
+  border-radius:1000px;font-size:13px;font-weight:600;font-family:var(--font);
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  background:#fff;color:var(--text-alt);border:1.5px solid var(--line);
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:all .15s;
+}
+.fchip.on{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+/* 하단 선택 카드 (지도 위) */
+.map-card{
+  position:absolute;left:14px;right:14px;bottom:calc(var(--nav-h) + 14px);z-index:20;
+  background:#fff;border-radius:16px;padding:16px;
+  box-shadow:0 8px 28px rgba(0,0,0,0.16);
+  transform:translateY(120%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.map-card.show{transform:translateY(0);}
+.map-card-row{display:flex;gap:12px;cursor:pointer;margin-bottom:14px;}
+.mc-thumb{width:56px;height:56px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.mc-info{flex:1;min-width:0;}
+.mc-title{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.mc-name{font-size:16px;font-weight:700;color:var(--text);}
+.mc-sub{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
+.mc-foot{font-size:12.5px;color:var(--text-alt);}
+.map-card-btns{display:flex;gap:9px;}
+.mc-btn{
+  flex:1;padding:13px;border-radius:10px;font-size:14px;font-weight:700;
+  font-family:var(--font);border:none;cursor:pointer;transition:all .15s;
+}
+.mc-btn-outline{background:var(--bg-alt);color:var(--text);}
+.mc-btn-solid{background:var(--blue);color:#fff;}
+.mc-btn-solid:hover{background:#0054D1;}
+
+/* 비교 바 */
+.compare-bar{
+  position:absolute;left:14px;right:14px;bottom:calc(var(--nav-h) + 14px);z-index:21;
+  background:var(--blue);border-radius:12px;padding:15px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  font-size:15px;font-weight:700;color:#fff;cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,102,255,0.4);
+  transform:translateY(120%);transition:transform .3s .1s cubic-bezier(.4,0,.2,1);
+}
+.compare-bar.show{transform:translateY(0);}
+
+/* 지역 선택 시트 */
+.region-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;font-size:15px;color:var(--text);transition:background .1s;}
+.region-item:active{background:var(--bg-alt);}
+.region-item.selected{color:var(--blue);background:var(--blue-weak);font-weight:600;}
+.region-item+.region-item{border-top:1px solid var(--line-soft);}
+
+/* ── 하단 탭바 */
+.bottom-nav{
+  position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);z-index:30;
+  display:flex;background:rgba(255,255,255,0.97);
+  border-top:1px solid var(--line-soft);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);
+  padding-top:8px;
+}
+.nav-ico{font-size:22px;line-height:1;}
+.nav-lbl{font-size:10px;font-weight:600;color:var(--text-assist);}
+.nav-item.on .nav-lbl{color:var(--blue);}
+.nav-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);margin-top:-2px;}
+
+/* ── 목록 화면 */
+#scr-list{background:var(--bg);}
+.list-header{
+  padding:env(safe-area-inset-top,44px) 16px 0;
+  background:var(--bg);border-bottom:1px solid var(--line-soft);flex-shrink:0;
+}
+.list-title-row{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px;}
+.list-title{font-size:17px;font-weight:800;color:var(--text);}
+.list-sub{font-size:12px;color:var(--text-alt);margin-top:1px;}
+.list-chips{display:flex;gap:7px;overflow-x:auto;padding:8px 0;margin:0 -16px;padding-left:16px;}
+.list-chips::-webkit-scrollbar{display:none;}
+.sort-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0 8px;}
+.sort-btn{font-size:13px;font-weight:600;color:var(--text-alt);background:none;border:none;cursor:pointer;font-family:var(--font);}
+.compare-cnt{font-size:13px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;font-family:var(--font);}
+.inst-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.inst-list::-webkit-scrollbar{display:none;}
+.inst-row{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;
+}
+.inst-row:active{background:var(--bg-alt);}
+.inst-thumb{width:56px;height:56px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.inst-info{flex:1;min-width:0;}
+.inst-title{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap;}
+.inst-name{font-size:15px;font-weight:700;color:var(--text);}
+.inst-sub{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
+.inst-foot{font-size:12px;color:var(--text-alt);display:flex;align-items:center;gap:3px;}
+.compare-chk{
+  width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);
+  background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .15s;cursor:pointer;
+}
+.compare-chk.on{background:var(--blue);border-color:var(--blue);}
+.compare-bottom{
+  padding:12px 16px;border-top:1px solid var(--line-soft);flex-shrink:0;
+  background:var(--bg);
+}
+.btn-compare{
+  width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;
+  font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,102,255,0.3);
+}
+
+/* ── 상세 화면 */
+#scr-detail{background:var(--bg);}
+.detail-header{
+  position:relative;padding:env(safe-area-inset-top,44px) 12px 10px;
+  display:flex;align-items:center;gap:4px;background:var(--bg);
+  border-bottom:1px solid var(--line-soft);flex-shrink:0;
+}
+.back-btn{
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;font-size:22px;color:var(--text);flex-shrink:0;
+}
+.detail-htitle{font-size:17px;font-weight:700;color:var(--text);flex:1;}
+.hdr-icon-btn{
+  width:34px;height:34px;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.detail-hero{height:150px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.detail-body-top{padding:0 16px 14px;border-bottom:1px solid var(--line-soft);flex-shrink:0;}
+.detail-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.detail-dname{font-size:21px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.2;}
+.detail-meta{font-size:13.5px;color:var(--text-alt);display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.detail-tabs{display:flex;border-bottom:1px solid var(--line);flex-shrink:0;}
+.dtab{
+  flex:1;padding:12px 0;font-size:14.5px;font-weight:700;font-family:var(--font);
+  border:none;background:none;cursor:pointer;color:var(--text-assist);
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.dtab.on{color:var(--text);border-bottom-color:var(--text);}
+.detail-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.detail-scroll::-webkit-scrollbar{display:none;}
+.detail-pad{padding:16px;}
+.detail-footer{
+  padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));
+  border-top:1px solid var(--line-soft);display:flex;gap:9px;flex-shrink:0;background:var(--bg);
+}
+.dftr-btn{flex:1;padding:14px;border-radius:12px;font-size:14px;font-weight:700;font-family:var(--font);border:none;cursor:pointer;}
+.dftr-ghost{background:var(--bg-alt);color:var(--text);}
+.dftr-solid{background:var(--blue);color:#fff;}
+
+/* 정보 섹션 */
+.sec-label{font-size:12px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;margin-bottom:10px;}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.stat-box{background:var(--bg-alt);border-radius:10px;padding:12px 8px;text-align:center;}
+.stat-ico{font-size:18px;margin-bottom:3px;}
+.stat-val{font-size:18px;font-weight:800;color:var(--blue);display:block;}
+.stat-lbl{font-size:11px;color:var(--text-alt);margin-top:2px;}
+.info-card{background:var(--bg-alt);border-radius:12px;overflow:hidden;border:1px solid var(--line-soft);}
+.irow{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line-soft);font-size:13.5px;}
+.irow:last-child{border-bottom:none;}
+.ik{color:var(--text-alt);}
+.iv{font-weight:700;color:var(--text);}
+
+/* 뱃지 공통 */
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.02em;}
+.b-국공립{color:#0066FF;background:#EAF2FE;}
+.b-민간{color:#00A36B;background:#E3F9EF;}
+.b-가정{color:#FF9200;background:#FEF4E6;}
+.b-직장{color:#7A3DF5;background:#F1ECFE;}
+.b-유치원{color:#E5484D;background:#FEECEC;}
+.grade{display:inline-flex;align-items:center;font-size:11px;font-weight:800;padding:2px 7px;border-radius:5px;}
+.gA{color:var(--green-text);background:var(--green-bg);}
+.gB{color:var(--blue);background:var(--blue-weak);}
+.gC{color:var(--orange-text);background:var(--orange-bg);}
+
+/* 별점 */
+.stars{display:inline-flex;align-items:center;gap:4px;}
+.star-num{font-size:13px;font-weight:700;color:var(--text);}
+.star-cnt{font-size:12px;color:var(--text-alt);}
+
+/* 리뷰 */
+.review-notice{background:var(--blue-weak);border-radius:9px;padding:10px 13px;margin-bottom:13px;font-size:13px;color:var(--text);display:flex;align-items:center;gap:7px;}
+.rv-item{padding:14px 0;border-bottom:1px solid var(--line-soft);}
+.rv-item:last-child{border-bottom:none;}
+.rv-top{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+.avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;}
+.rv-name{font-size:13.5px;font-weight:700;color:var(--text);}
+.vbadge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:1000px;}
+.v2{color:var(--blue);background:var(--blue-weak);}
+.v1{color:#5A5C63;background:#EEEFF1;}
+.rv-date{margin-left:auto;font-size:11.5px;color:var(--text-assist);}
+.rv-stars{color:var(--star);font-size:13px;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.rv-txt{font-size:13.5px;color:var(--text);line-height:1.65;}
+
+/* 커뮤니티 */
+.qna-item{padding:13px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;}
+.qna-item:last-child{border-bottom:none;}
+.qna-cat{font-size:11px;font-weight:700;color:var(--text-alt);margin-bottom:4px;}
+.qna-title{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.qna-meta{font-size:12px;color:var(--text-alt);}
+.qna-cta{margin-top:14px;padding:13px;background:var(--blue-weak);border-radius:10px;text-align:center;font-size:13.5px;font-weight:700;color:var(--blue);cursor:pointer;}
+
+/* 커뮤니티 카테고리 뱃지 */
+.cat-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;letter-spacing:.02em;}
+.badge-qa{color:var(--blue);background:var(--blue-weak);}
+.badge-info{color:var(--green-text);background:var(--green-bg);}
+.badge-share{color:var(--orange);background:var(--orange-bg);}
+
+/* 커뮤니티 목록 화면 */
+#scr-community{background:var(--bg);}
+.community-header{padding:env(safe-area-inset-top,44px) 16px 0;background:var(--bg);border-bottom:1px solid var(--line-soft);flex-shrink:0;}
+.community-loc{display:flex;align-items:center;gap:4px;padding-top:6px;font-size:12px;color:var(--text-alt);}
+.community-title{font-size:17px;font-weight:800;color:var(--text);padding:2px 0 4px;}
+.community-chips{display:flex;gap:7px;overflow-x:auto;padding:8px 0;margin:0 -16px;padding-left:16px;padding-right:16px;}
+.community-chips::-webkit-scrollbar{display:none;}
+.community-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 16px 0;}
+.community-list::-webkit-scrollbar{display:none;}
+.post-card{padding:14px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;}
+.post-card:active{background:var(--bg-alt);}
+.post-card-top{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap;}
+.post-card-title{font-size:14.5px;font-weight:700;color:var(--text);margin-bottom:5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.post-card-body{font-size:13px;color:var(--text-alt);line-height:1.55;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.post-card-meta{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-alt);}
+.post-card-meta .pm-ico{display:inline-flex;align-items:center;gap:3px;color:var(--text-assist);}
+.inst-tag-chip{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:1000px;background:var(--bg-alt);color:var(--text-alt);}
+.fab-write{
+  position:absolute;right:18px;bottom:calc(var(--nav-h) + 18px);z-index:25;
+  width:54px;height:54px;border-radius:50%;background:var(--blue);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  box-shadow:0 6px 20px rgba(0,102,255,0.4);transition:transform .15s;
+}
+.fab-write:active{transform:scale(0.92);}
+
+/* 글 상세 화면 */
+#scr-post{background:var(--bg);}
+.post-header{
+  padding:env(safe-area-inset-top,44px) 12px 10px;
+  display:flex;align-items:center;gap:4px;background:var(--bg);
+  border-bottom:1px solid var(--line-soft);flex-shrink:0;
+}
+.post-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 0;}
+.post-scroll::-webkit-scrollbar{display:none;}
+.post-title{font-size:18px;font-weight:800;color:var(--text);line-height:1.35;margin:10px 0 12px;}
+.post-author{display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+.post-author-name{font-size:13.5px;font-weight:700;color:var(--text);}
+.post-author-time{font-size:11.5px;color:var(--text-assist);}
+.post-body{font-size:14.5px;color:var(--text);line-height:1.7;margin-bottom:16px;white-space:pre-wrap;}
+.post-stats{display:flex;align-items:center;gap:14px;font-size:12.5px;color:var(--text-alt);padding:12px 0;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);}
+.post-stats .ps-item{display:inline-flex;align-items:center;gap:4px;}
+.post-actions{display:flex;gap:9px;padding:14px 0;}
+.post-act-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:12px;border-radius:12px;font-size:14px;font-weight:700;font-family:var(--font);
+  border:1px solid var(--line);background:var(--bg);color:var(--text);cursor:pointer;transition:all .15s;
+}
+.post-act-btn.liked{background:var(--red-bg);border-color:var(--red-bg);color:var(--red);}
+.post-inst-chip{
+  display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;
+  padding:5px 11px;border-radius:1000px;background:var(--blue-weak);color:var(--blue);cursor:pointer;
+}
+.comment-head{font-size:13.5px;font-weight:700;color:var(--text);padding:14px 0 4px;border-top:1px solid var(--line-soft);}
+.comment-list{padding-bottom:14px;}
+.comment-item{padding:12px 0;border-bottom:1px solid var(--line-soft);}
+.comment-item:last-child{border-bottom:none;}
+.comment-top{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+.comment-name{font-size:13px;font-weight:700;color:var(--text);}
+.comment-time{margin-left:auto;font-size:11.5px;color:var(--text-assist);}
+.comment-text{font-size:13.5px;color:var(--text);line-height:1.6;}
+.comment-bar{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;
+  padding-bottom:max(10px,env(safe-area-inset-bottom));
+  border-top:1px solid var(--line-soft);flex-shrink:0;
+  background:rgba(255,255,255,0.97);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.comment-bar.shake{animation:shake .35s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+.comment-input{flex:1;background:var(--bg-alt);border:none;border-radius:12px;padding:12px 14px;font-size:14px;font-family:var(--font);color:var(--text);outline:none;}
+.comment-input::placeholder{color:var(--text-assist);}
+.comment-send{background:var(--blue);color:#fff;border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;flex-shrink:0;}
+
+/* 글 작성 화면 */
+#scr-write{background:var(--bg);}
+.write-header{
+  padding:env(safe-area-inset-top,44px) 12px 10px;
+  display:flex;align-items:center;gap:8px;background:var(--bg);
+  border-bottom:1px solid var(--line-soft);flex-shrink:0;
+}
+.write-cancel{background:none;border:none;font-size:15px;font-weight:600;color:var(--text-alt);font-family:var(--font);cursor:pointer;padding:6px 0;}
+.write-htitle{flex:1;text-align:center;font-size:17px;font-weight:700;color:var(--text);}
+.write-submit{background:none;border:none;font-size:15px;font-weight:700;color:var(--blue);font-family:var(--font);cursor:pointer;padding:6px 0;transition:color .15s;}
+.write-submit.off{color:var(--text-assist);}
+.write-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;}
+.write-body::-webkit-scrollbar{display:none;}
+.write-label{font-size:12px;font-weight:700;color:var(--text-alt);margin-bottom:8px;}
+.cat-select{display:flex;gap:7px;margin-bottom:18px;}
+.write-section{margin-bottom:18px;}
+.title-input{width:100%;background:var(--bg-alt);border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:600;font-family:var(--font);color:var(--text);outline:none;}
+.title-input::placeholder{color:var(--text-assist);}
+.body-textarea{width:100%;min-height:160px;background:var(--bg-alt);border:none;border-radius:12px;padding:14px;font-size:14.5px;font-family:var(--font);color:var(--text);line-height:1.7;outline:none;resize:none;}
+.body-textarea::placeholder{color:var(--text-assist);}
+.inst-tag-row{display:flex;align-items:center;gap:8px;}
+.inst-tag-active{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:8px 13px;border-radius:1000px;background:var(--blue-weak);color:var(--blue);}
+.inst-tag-x{cursor:pointer;font-size:15px;line-height:1;color:var(--blue);}
+.inst-tag-none{font-size:13px;color:var(--text-assist);}
+
+/* ── 홈 화면 */
+#scr-home{background:var(--bg);}
+.home-top{padding:env(safe-area-inset-top,44px) 16px 12px;background:var(--bg);flex-shrink:0;}
+.home-loc{display:flex;align-items:center;gap:4px;margin-bottom:14px;}
+.home-loc-txt{font-size:18px;font-weight:800;color:var(--text);}
+.home-search{
+  display:flex;align-items:center;gap:8px;background:var(--bg-alt);border-radius:12px;
+  padding:12px 14px;border:none;width:100%;cursor:pointer;font-family:var(--font);
+}
+.home-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg-alt);padding:16px;}
+.home-scroll::-webkit-scrollbar{display:none;}
+.home-map-preview{
+  position:relative;height:180px;border-radius:16px;overflow:hidden;
+  border:1px solid var(--line);cursor:pointer;margin-bottom:20px;
+}
+.home-map-label{
+  position:absolute;left:0;right:0;bottom:0;padding:22px 14px 12px;
+  background:linear-gradient(to top,rgba(0,0,0,0.52),transparent);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.home-map-txt{color:#fff;font-size:14px;font-weight:700;}
+.home-map-btn{background:#fff;color:var(--blue);font-size:13px;font-weight:700;padding:7px 12px;border-radius:1000px;}
+.home-sec{font-size:16px;font-weight:800;color:var(--text);margin-bottom:12px;}
+.home-card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);margin-bottom:18px;}
+.home-card-inner{padding:4px 16px;}
+
+/* 로딩 */
+.map-loading{position:absolute;inset:0;background:rgba(247,247,248,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:50;transition:opacity .4s;}
+.map-loading.gone{opacity:0;pointer-events:none;}
+.spin{width:36px;height:36px;border:3px solid var(--blue-weak);border-top-color:var(--blue);border-radius:50%;animation:rot .7s linear infinite;}
+@keyframes rot{to{transform:rotate(360deg);}}
+
+/* 토스트 */
+.toast{
+  position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;
+  transform:translateX(-50%) translateY(8px);
+  background:rgba(28,28,30,.94);color:#fff;padding:11px 18px;border-radius:12px;
+  font-size:13px;font-weight:600;opacity:0;transition:all .22s;z-index:9999;
+  white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* 빈 상태 */
+.empty{padding:48px 20px;text-align:center;color:var(--text-alt);}
+.empty-ico{font-size:32px;margin-bottom:8px;}
+.empty-txt{font-size:13.5px;line-height:1.65;}
+
+/* ── 홈 지도 미리보기용 작은 맵 */
+#mini-map{width:100%;height:100%;}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+  <!-- ══ 홈 화면 ══ -->
+  <div class="screen" id="scr-home">
+    <div class="home-top">
+      <div class="home-loc" onclick="openRegionSheet()" style="cursor:pointer">
+        <span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="20" height="20"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span>
+        <span class="home-loc-txt">연남동</span>
+        <span style="color:var(--text-alt);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="M4.464 8.464a.9.9 0 0 1 1.272 0L12 14.728l6.264-6.264a.9.9 0 1 1 1.272 1.272l-6.9 6.9a.9.9 0 0 1-1.272 0l-6.9-6.9a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg></span>
+        <span style="margin-left:auto;color:var(--text);cursor:pointer;display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.325 19.8" width="22" height="22"><path d="M9.163 0C6.938 0 5.108.788 3.851 2.274 2.611 3.74 2.013 5.783 2.013 8.15v.75c0 2.465-.683 3.925-1.656 4.868-.382.37-.422.882-.285 1.258.138.383.519.774 1.09.774H17.163c.572 0 .953-.391 1.091-.774.136-.376.097-.888-.285-1.258-.973-.943-1.656-2.403-1.656-4.868v-.75c0-2.367-.598-4.41-1.838-5.876C13.217.788 11.388 0 9.163 0zM3.813 8.15c0-2.085.527-3.667 1.412-4.713C6.092 2.411 7.388 1.8 9.163 1.8s3.071.611 3.938 1.637c.885 1.046 1.412 2.628 1.412 4.713v.75c0 2.163.468 3.827 1.319 5.1H2.494c.851-1.273 1.319-2.937 1.319-5.1v-.75z" fill="currentColor" fill-rule="evenodd"/><path d="M7.163 18a.9.9 0 0 0 0 1.8h4a.9.9 0 0 0 0-1.8h-4z" fill="currentColor"/></svg></span>
+      </div>
+      <button class="home-search" onclick="goExploreKeepRegion()">
+        <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
+        <span style="font-size:14.5px;color:var(--text-assist)">어린이집·유치원 이름 검색</span>
+      </button>
+    </div>
+
+    <div class="home-scroll">
+      <!-- 지도 미리보기 -->
+      <div class="home-map-preview" onclick="goExploreKeepRegion()">
+        <div id="mini-map"></div>
+        <div class="home-map-label">
+          <span class="home-map-txt">내 주변 어린이집 ${DATA_LEN}곳</span>
+          <span class="home-map-btn">지도에서 찾기</span>
+        </div>
+      </div>
+
+      <div class="home-sec">내 주변 인기 기관</div>
+      <div class="home-card">
+        <div class="home-card-inner" id="home-rows"></div>
+      </div>
+
+      <div class="home-sec">최근 올라온 리뷰</div>
+      <div class="home-card" style="padding:14px 16px;cursor:pointer" onclick="goReviewDetail(0)">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+          <div class="avatar" style="background:#0066FF"><span style="display:inline-flex;color:#fff"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="16" height="16"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span></div>
+          <span style="font-size:13.5px;font-weight:700;color:var(--text)">김지수</span>
+          <span class="vbadge v2">카드인증</span>
+          <span style="margin-left:auto;font-size:12px;color:var(--text-assist)">연남숲어린이집</span>
+        </div>
+        <div style="color:var(--star);font-size:13px;margin-bottom:6px">★★★★★ <span style="color:var(--text-alt);font-size:12px">4.6</span></div>
+        <div style="font-size:13.5px;color:var(--text-alt);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">둘째까지 보내고 있어요. 선생님들이 정말 꼼꼼하게 봐주시고 알림장도 매일 사진과 함께 올라와요.</div>
+      </div>
+    </div>
+
+    <div class="bottom-nav"><button class="nav-item" onclick="goHome()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:#0066FF;display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:#0066FF">홈</span></button><button class="nav-item" onclick="goExploreKeepRegion()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">탐색</span></button><button class="nav-item" onclick="goCommunity()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">커뮤니티</span></button><button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">관심</span></button><button class="nav-item" onclick="showToast('MY 기능은 v1.1에서 오픈 예정이에요!')" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">MY</span></button></div>
+  </div>
+
+  <!-- ══ 탐색(지도) 화면 ══ -->
+  <div class="screen hidden" id="scr-explore">
+    <div id="map"></div>
+    <div class="map-loading" id="map-loading">
+      <div class="spin"></div>
+      <div style="font-size:14px;color:var(--text-alt);font-weight:500">지도를 불러오는 중...</div>
+    </div>
+
+    <div class="map-top">
+      <div class="search-bar">
+        <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
+        <input class="search-bar-txt" id="qi" placeholder="연남동" oninput="applyFilter()">
+        <div class="seg">
+          <button class="seg-btn on" id="seg-map" onclick="setSeg('map')">지도</button>
+          <button class="seg-btn" id="seg-list" onclick="setSeg('list')">목록</button>
+        </div>
+      </div>
+      <div class="filter-chips">
+        <div class="fchip on" onclick="setType('전체',this)">전체</div>
+        <div class="fchip" onclick="setType('국공립',this)">국공립</div>
+        <div class="fchip" onclick="setType('민간',this)">민간</div>
+        <div class="fchip" onclick="setType('가정',this)">가정</div>
+        <div class="fchip" onclick="setType('직장',this)">직장</div>
+        <div class="fchip" onclick="setType('유치원',this)">유치원</div>
+      </div>
+    </div>
+
+    <!-- 하단 선택 카드 -->
+    <div class="map-card" id="map-card"></div>
+
+    <!-- 비교바 -->
+    <div class="compare-bar" id="compare-bar" onclick="showToast('비교 기능은 v1.1에서 오픈 예정이에요!')">
+      <span style="display:inline-flex;color:#fff"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17"><path d="M9 2a2 2 0 0 0-2 2H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1a2 2 0 0 0-2-2H9zm0 1.8h6a.2.2 0 0 1 .2.2v1a.2.2 0 0 1-.2.2H9a.2.2 0 0 1-.2-.2V4a.2.2 0 0 1 .2-.2zM6 5.8h.2A2 2 0 0 0 9 7.8h6a2 2 0 0 0 1.8-2H18a.2.2 0 0 1 .2.2v13a.2.2 0 0 1-.2.2H6a.2.2 0 0 1-.2-.2V6a.2.2 0 0 1 .2-.2z" fill="currentColor" fill-rule="evenodd"/></svg></span><span id="compare-txt">0곳 나란히 비교하기</span>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span class="nav-lbl">홈</span></button>
+      <button class="nav-item on" onclick="goExplore()"><span class="nav-ico" style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl" style="color:var(--blue)">탐색</span></button>
+      <button class="nav-item" onclick="goCommunity()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
+      <button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">관심</span></button>
+      <button class="nav-item" onclick="showToast('MY 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span class="nav-lbl">MY</span></button>
+    </div>
+  </div>
+
+  <!-- ══ 목록 화면 ══ -->
+  <div class="screen hidden" id="scr-list">
+    <div class="list-header">
+      <div class="list-title-row">
+        <div>
+          <div class="list-title">연남동 어린이집</div>
+          <div class="list-sub" id="list-sub">검색 결과 0곳</div>
+        </div>
+        <div class="seg">
+          <button class="seg-btn" onclick="setSeg('map')">지도</button>
+          <button class="seg-btn on">목록</button>
+        </div>
+      </div>
+      <div class="list-chips">
+        <div class="fchip on" onclick="setType('전체',this)">전체</div>
+        <div class="fchip" onclick="setType('국공립',this)">국공립</div>
+        <div class="fchip" onclick="setType('민간',this)">민간</div>
+        <div class="fchip" onclick="setType('가정',this)">가정</div>
+        <div class="fchip" onclick="setType('직장',this)">직장</div>
+        <div class="fchip" onclick="setType('유치원',this)">유치원</div>
+      </div>
+      <div class="sort-row">
+        <button class="sort-btn">별점 높은순 ▾</button>
+        <button class="compare-cnt" id="compare-cnt-btn">비교담기 <span id="compare-cnt">0</span>/3</button>
+      </div>
+    </div>
+    <div class="inst-list" id="inst-list"></div>
+    <div class="compare-bottom" id="compare-bottom" style="display:none">
+      <button class="btn-compare" onclick="showToast('비교 기능은 v1.1에서 오픈 예정이에요!')" style="display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span style="display:inline-flex;color:#fff"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17"><path d="M9 2a2 2 0 0 0-2 2H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1a2 2 0 0 0-2-2H9zm0 1.8h6a.2.2 0 0 1 .2.2v1a.2.2 0 0 1-.2.2H9a.2.2 0 0 1-.2-.2V4a.2.2 0 0 1 .2-.2zM6 5.8h.2A2 2 0 0 0 9 7.8h6a2 2 0 0 0 1.8-2H18a.2.2 0 0 1 .2.2v13a.2.2 0 0 1-.2.2H6a.2.2 0 0 1-.2-.2V6a.2.2 0 0 1 .2-.2z" fill="currentColor" fill-rule="evenodd"/></svg></span><span><span id="compare-bottom-txt">0</span>곳 나란히 비교하기</span>
+      </button>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span class="nav-lbl">홈</span></button>
+      <button class="nav-item on"><span class="nav-ico" style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl" style="color:var(--blue)">탐색</span></button>
+      <button class="nav-item" onclick="goCommunity()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
+      <button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">관심</span></button>
+      <button class="nav-item" onclick="showToast('MY 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span class="nav-lbl">MY</span></button>
+    </div>
+  </div>
+
+  <!-- ══ 리뷰 상세 화면 ══ -->
+  <div class="screen hidden" id="scr-review-detail">
+    <div class="detail-header">
+      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
+      <span class="detail-htitle">리뷰 상세</span>
+    </div>
+    <div id="review-detail-content" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(env(safe-area-inset-bottom,16px)+16px);"></div>
+  </div>
+
+  <!-- ══ 상세 화면 ══ -->
+  <div class="screen hidden" id="scr-detail">
+    <div class="detail-header">
+      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
+      <span class="detail-htitle" id="detail-htitle"></span>
+      <button class="hdr-icon-btn" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="22" height="22"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></button>
+      <button class="hdr-icon-btn" onclick="showToast('공유 링크를 복사했어요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="22" height="22"><path d="M14 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM6 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm8 5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm-1.17-4.83a.9.9 0 0 1 1.17-.1l.1.1 2 2a.9.9 0 0 1-1.17 1.37l-.1-.1-2-2a.9.9 0 0 1 0-1.27Zm.1-4.27-.1.1-2 2a.9.9 0 0 1-1.27-1.27l.1-.1 2-2a.9.9 0 0 1 1.27 1.27Z" fill="currentColor" fill-rule="evenodd"/></svg></button>
+    </div>
+    <div id="detail-content" style="flex:1;display:flex;flex-direction:column;overflow:hidden;"></div>
+  </div>
+
+  <!-- ══ 커뮤니티 목록 화면 ══ -->
+  <div class="screen hidden" id="scr-community">
+    <div class="community-header">
+      <div class="community-loc">
+        <span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="13" height="13"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/></svg></span>
+        <span>연남동</span>
+      </div>
+      <div class="community-title">우리동네 커뮤니티</div>
+      <div class="community-chips" id="community-chips">
+        <div class="fchip on" onclick="setCommCat('all',this)">전체</div>
+        <div class="fchip" onclick="setCommCat('입소 Q&amp;A',this)">입소 Q&amp;A</div>
+        <div class="fchip" onclick="setCommCat('생활 정보',this)">생활 정보</div>
+        <div class="fchip" onclick="setCommCat('나눔·공지',this)">나눔·공지</div>
+      </div>
+    </div>
+    <div class="community-list" id="community-list"></div>
+    <button class="fab-write" onclick="goWrite(null)" aria-label="글쓰기">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
+    </button>
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span class="nav-lbl">홈</span></button>
+      <button class="nav-item" onclick="goExplore()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">탐색</span></button>
+      <button class="nav-item on" onclick="goCommunity()"><span class="nav-ico" style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span class="nav-lbl" style="color:var(--blue)">커뮤니티</span></button>
+      <button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">관심</span></button>
+      <button class="nav-item" onclick="showToast('MY 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span class="nav-lbl">MY</span></button>
+    </div>
+  </div>
+
+  <!-- ══ 글 상세 화면 ══ -->
+  <div class="screen hidden" id="scr-post">
+    <div class="post-header">
+      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
+      <span class="detail-htitle" style="font-size:16px">커뮤니티</span>
+    </div>
+    <div class="post-scroll" id="post-scroll"></div>
+    <div class="comment-bar" id="comment-bar">
+      <input class="comment-input" id="comment-input" placeholder="댓글을 입력하세요" onkeydown="if(event.key==='Enter')addComment()">
+      <button class="comment-send" onclick="addComment()">등록</button>
+    </div>
+  </div>
+
+  <!-- ══ 글 작성 화면 ══ -->
+  <div class="screen hidden" id="scr-write">
+    <div class="write-header">
+      <button class="write-cancel" onclick="goBack()">취소</button>
+      <span class="write-htitle">글쓰기</span>
+      <button class="write-submit off" id="write-submit" onclick="submitPost()">등록</button>
+    </div>
+    <div class="write-body">
+      <div class="write-section">
+        <div class="write-label">카테고리</div>
+        <div class="cat-select" id="cat-select">
+          <div class="fchip" onclick="setWriteCat('입소 Q&amp;A',this)">입소 Q&amp;A</div>
+          <div class="fchip" onclick="setWriteCat('생활 정보',this)">생활 정보</div>
+          <div class="fchip" onclick="setWriteCat('나눔·공지',this)">나눔·공지</div>
+        </div>
+      </div>
+      <div class="write-section">
+        <div class="write-label">기관 태그</div>
+        <div class="inst-tag-row" id="inst-tag-row"></div>
+      </div>
+      <div class="write-section">
+        <div class="write-label">제목</div>
+        <input class="title-input" id="title-input" placeholder="제목을 입력하세요" oninput="checkWriteValid()">
+      </div>
+      <div class="write-section">
+        <div class="write-label">내용</div>
+        <textarea class="body-textarea" id="body-textarea" placeholder="이웃과 나누고 싶은 이야기를 적어주세요" oninput="checkWriteValid()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast-el"></div>
+
+  <!-- 지역 선택 시트 -->
+  <div id="region-backdrop" onclick="closeRegionSheet()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:40;"></div>
+  <div id="region-sheet" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:20px 20px 0 0;z-index:41;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:70%;display:flex;flex-direction:column;">
+    <!-- 헤더 -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 20px 0;">
+      <span style="font-size:17px;font-weight:700;color:var(--text)">지역 선택</span>
+      <button onclick="closeRegionSheet()" style="background:none;border:none;padding:4px;cursor:pointer;color:var(--text-alt)">✕</button>
+    </div>
+    <!-- 브레드크럼 -->
+    <div id="region-breadcrumb" style="padding:10px 20px 0;font-size:13px;color:var(--text-alt);min-height:28px;"></div>
+    <!-- 리스트 -->
+    <div id="region-list" style="overflow-y:auto;flex:1;padding:8px 0 env(safe-area-inset-bottom,16px);"></div>
+  </div>
+</div>
+
+<script>
+const REGION_DATA = {
+  '서울특별시': {
+    cd: '11',
+    sgg: {
+      '종로구': { cd: '11110', dong: ['청운효자동','사직동','삼청동','부암동','평창동','무악동','교남동','가회동','종로1·2·3·4가동','이화동','혜화동','창신동'] },
+      '중구': { cd: '11140', dong: ['소공동','회현동','명동','필동','장충동','광희동','을지로동','신당동','다산동','약수동','청구동','황학동'] },
+      '용산구': { cd: '11170', dong: ['후암동','용산2가동','남영동','청파동','원효로동','효창동','용문동','한강로동','이촌동','이태원동','한남동','서빙고동'] },
+      '성동구': { cd: '11200', dong: ['왕십리도선동','마장동','사근동','행당동','응봉동','금호동','옥수동','성수동','용답동','송정동','하왕십리동'] },
+      '광진구': { cd: '11215', dong: ['중곡동','능동','구의동','광장동','자양동','화양동','군자동','중흥동'] },
+      '동대문구': { cd: '11230', dong: ['용신동','제기동','전농동','답십리동','장안동','청량리동','회기동','휘경동','이문동'] },
+      '중랑구': { cd: '11260', dong: ['면목동','상봉동','중화동','묵동','망우동','신내동'] },
+      '성북구': { cd: '11290', dong: ['성북동','삼선동','동선동','돈암동','안암동','보문동','정릉동','길음동','종암동','월곡동','장위동','석관동'] },
+      '강북구': { cd: '11305', dong: ['삼양동','미아동','송중동','송천동','삼각산동','번동','수유동','우이동','인수동'] },
+      '도봉구': { cd: '11320', dong: ['쌍문동','방학동','창동','도봉동'] },
+      '노원구': { cd: '11350', dong: ['월계동','공릉동','하계동','중계동','상계동'] },
+      '은평구': { cd: '11380', dong: ['녹번동','불광동','갈현동','구산동','대조동','응암동','역촌동','신사동','증산동','수색동','진관동'] },
+      '서대문구': { cd: '11410', dong: ['천연동','북아현동','충현동','신촌동','연희동','홍제동','홍은동','남가좌동','북가좌동'] },
+      '마포구': { cd: '11440', dong: ['공덕동','아현동','도화동','용강동','대흥동','염리동','신수동','서강동','합정동','망원동','연남동','성산동','상암동'] },
+      '양천구': { cd: '11470', dong: ['목동','신월동','신정동'] },
+      '강서구': { cd: '11500', dong: ['염창동','등촌동','화곡동','가양동','발산동','공항동','방화동','우장산동'] },
+      '구로구': { cd: '11530', dong: ['신도림동','구로동','가리봉동','고척동','개봉동','오류동','수궁동','항동'] },
+      '금천구': { cd: '11545', dong: ['가산동','독산동','시흥동'] },
+      '영등포구': { cd: '11560', dong: ['영등포동','여의동','당산동','도림동','문래동','양평동','신길동','대림동'] },
+      '동작구': { cd: '11590', dong: ['노량진동','상도동','상도1동','흑석동','사당동','대방동','신대방동'] },
+      '관악구': { cd: '11620', dong: ['보라매동','청림동','성현동','행운동','낙성대동','청룡동','은천동','중앙동','신림동','신사동','삼성동','난곡동'] },
+      '서초구': { cd: '11650', dong: ['서초동','잠원동','반포동','방배동','양재동','내곡동'] },
+      '강남구': { cd: '11680', dong: ['역삼동','삼성동','청담동','논현동','압구정동','신사동','개포동','대치동','도곡동','수서동','일원동','세곡동'] },
+      '송파구': { cd: '11710', dong: ['풍납동','거여동','마천동','방이동','오금동','송파동','석촌동','삼전동','가락동','문정동','장지동','잠실동'] },
+      '강동구': { cd: '11740', dong: ['강일동','상일동','명일동','고덕동','암사동','천호동','성내동','길동','둔촌동'] }
+    }
+  },
+  '부산광역시': {
+    cd: '21',
+    sgg: {
+      '부산진구': { cd: '21170', dong: ['부전동','연지동','초읍동','양정동','전포동','부암동','당감동','가야동','개금동','범천동'] },
+      '동래구': { cd: '21200', dong: ['수민동','복산동','명륜동','온천동','사직동','안락동','명장동','낙민동'] },
+      '남구': { cd: '21230', dong: ['대연동','용호동','용당동','문현동','우암동','감만동'] },
+      '북구': { cd: '21240', dong: ['구포동','금곡동','화명동','덕천동','만덕동'] },
+      '강서구': { cd: '21260', dong: ['대저1동','대저2동','강동동','명지동','가락동','녹산동','가덕도동'] },
+      '사하구': { cd: '21300', dong: ['괴정동','당리동','하단동','신평동','장림동','다대동','구평동','감천동'] },
+      '금정구': { cd: '21310', dong: ['서1동','서2동','금사회동동','부곡동','장전동','선두구동','청룡노포동','남산동','구서동','금성동'] },
+      '해운대구': { cd: '21350', dong: ['우동','중동','좌동','송정동','반여동','반송동','재송동'] },
+      '연제구': { cd: '21370', dong: ['거제동','연산동'] },
+      '수영구': { cd: '21380', dong: ['남천동','수영동','망미동','광안동','민락동'] }
+    }
+  },
+  '대구광역시': {
+    cd: '22',
+    sgg: {
+      '중구': { cd: '22110', dong: ['동인동','삼덕동','성내동','대신동','남산동','대봉동'] },
+      '동구': { cd: '22140', dong: ['신암동','신천동','효목동','도평동','불로봉무동','지저동','동촌동','방촌동','해안동','안심동','혁신동'] },
+      '서구': { cd: '22170', dong: ['내당동','비산동','평리동','상중이동','원대동'] },
+      '남구': { cd: '22200', dong: ['이천동','봉덕동','대명동'] },
+      '북구': { cd: '22230', dong: ['고성동','칠성동','침산동','산격동','대현동','복현동','검단동','무태조야동','관문동','태전동','구암동','관음동'] },
+      '수성구': { cd: '22260', dong: ['범어동','만촌동','수성동','황금동','중동','상동','파동','두산동','지산동','범물동','고산동'] },
+      '달서구': { cd: '22290', dong: ['성당동','두류동','본리동','감삼동','죽전동','장기동','용산동','이곡동','신당동','월성동','진천동','상인동','도원동','송현동'] }
+    }
+  },
+  '인천광역시': {
+    cd: '23',
+    sgg: {
+      '중구': { cd: '23110', dong: ['연안동','신포동','신흥동','도원동','율목동','동인천동','개항동','영종동','용유동'] },
+      '동구': { cd: '23140', dong: ['만석동','화수동','송현동','화평동','금창동','송림동'] },
+      '미추홀구': { cd: '23177', dong: ['숭의동','용현동','학익동','도화동','주안동','관교동','문학동'] },
+      '연수구': { cd: '23181', dong: ['옥련동','선학동','연수동','청학동','동춘동','송도동'] },
+      '남동구': { cd: '23185', dong: ['구월동','간석동','만수동','장수서창동','서창동','남촌도림동','논현동','고잔동'] },
+      '부평구': { cd: '23190', dong: ['부평동','산곡동','청천동','갈산동','삼산동','부개동','일신동','십정동'] },
+      '계양구': { cd: '23195', dong: ['효성동','계산동','작전동','서운동','계양동'] },
+      '서구': { cd: '23200', dong: ['검암경서동','연희동','청라동','가정동','석남동','신현원창동','가좌동','검단동','당하동','원당동'] }
+    }
+  },
+  '광주광역시': {
+    cd: '24',
+    sgg: {
+      '동구': { cd: '24110', dong: ['충장동','동명동','계림동','산수동','지산동','서남동','학동','학운동','지원동'] },
+      '서구': { cd: '24140', dong: ['양동','농성동','광천동','유덕동','치평동','상무동','화정동','서창동','금호동','풍암동','동천동'] },
+      '남구': { cd: '24170', dong: ['양림동','방림동','사직동','월산동','백운동','봉선동','효덕동','송암동','대촌동'] },
+      '북구': { cd: '24200', dong: ['중흥동','중앙동','임동','신안동','용봉동','운암동','동림동','우산동','풍향동','문화동','석곡동','일곡동'] },
+      '광산구': { cd: '24230', dong: ['송정동','도산동','신흥동','어룡동','우산동','월곡동','운남동','신가동','수완동','하남동','첨단동','비아동'] }
+    }
+  },
+  '대전광역시': {
+    cd: '25',
+    sgg: {
+      '동구': { cd: '25110', dong: ['중앙동','신인동','효동','판암동','용운동','대동','자양동','가양동','용전동','성남동','홍도동','삼성동','대청동','산내동'] },
+      '중구': { cd: '25140', dong: ['은행선화동','목동','중촌동','대흥동','문창동','석교동','대사동','부사동','용두동','오류동','태평동','유천동','문화동','산성동'] },
+      '서구': { cd: '25170', dong: ['복수동','도마동','정림동','변동','용문동','탄방동','둔산동','괴정동','가장동','내동','갈마동','월평동','만년동','관저동','기성동'] },
+      '유성구': { cd: '25200', dong: ['진잠동','학하동','상대동','온천동','노은동','신성동','전민동','구즉동','관평동','원신흥동'] },
+      '대덕구': { cd: '25230', dong: ['오정동','대화동','회덕동','비래동','송촌동','중리동','신탄진동','석봉동','덕암동','목상동'] }
+    }
+  },
+  '울산광역시': {
+    cd: '26',
+    sgg: {
+      '중구': { cd: '26110', dong: ['학성동','반구동','복산동','중앙동','우정동','태화동','다운동','병영동','약사동'] },
+      '남구': { cd: '26140', dong: ['신정동','달동','삼산동','삼호동','무거동','옥동','야음장생포동','대현동','수암동','선암동'] },
+      '동구': { cd: '26170', dong: ['방어동','일산동','화정동','대송동','전하동','남목동'] },
+      '북구': { cd: '26200', dong: ['농소동','강동동','효문동','송정동','양정동','염포동'] },
+      '울주군': { cd: '26710', dong: ['온산읍','언양읍','온양읍','범서읍','청량읍','삼남읍','서생면','웅촌면','두동면','두서면','상북면','삼동면'] }
+    }
+  },
+  '경기도': {
+    cd: '41',
+    sgg: {
+      '수원시 장안구': { cd: '41111', dong: ['파장동','율천동','정자동','영화동','송죽동','조원동','연무동'] },
+      '수원시 권선구': { cd: '41113', dong: ['세류동','평동','서둔동','구운동','금곡동','호매실동','권선동','곡선동','입북동'] },
+      '수원시 팔달구': { cd: '41115', dong: ['행궁동','매교동','매산동','고등동','화서동','지동','우만동','인계동'] },
+      '수원시 영통구': { cd: '41117', dong: ['매탄동','원천동','광교동','영통동','망포동'] },
+      '성남시 수정구': { cd: '41131', dong: ['신흥동','태평동','수진동','단대동','산성동','양지동','복정동','신촌동','고등동','시흥동'] },
+      '성남시 중원구': { cd: '41133', dong: ['성남동','금광동','은행동','상대원동','하대원동','도촌동'] },
+      '성남시 분당구': { cd: '41135', dong: ['분당동','수내동','정자동','서현동','이매동','야탑동','금곡동','구미동','판교동','삼평동','백현동'] },
+      '고양시 덕양구': { cd: '41281', dong: ['주교동','원신동','흥도동','성사동','효자동','신도동','창릉동','화전동','대덕동','관산동','능곡동','행주동','화정동','행신동','고양동'] },
+      '고양시 일산동구': { cd: '41285', dong: ['식사동','중산동','정발산동','풍산동','백석동','마두동','장항동','고봉동'] },
+      '고양시 일산서구': { cd: '41287', dong: ['일산동','탄현동','주엽동','대화동','송포동','송산동'] },
+      '부천시': { cd: '41190', dong: ['원미동','심곡동','중동','상동','소사본동','범박동','괴안동','역곡동','오정동','대장동','신중동','상2동'] },
+      '안산시 단원구': { cd: '41273', dong: ['고잔동','와동','원곡동','신길동','초지동','선부동','대부동'] },
+      '안산시 상록구': { cd: '41271', dong: ['일동','이동','사동','사사동','본오동','부곡동','월피동','성포동','안산동','반월동'] },
+      '용인시 처인구': { cd: '41461', dong: ['중앙동','역북동','삼가동','유림동','동부동','포곡읍','모현읍','이동읍','남사읍','백암면','양지면','원삼면'] },
+      '용인시 기흥구': { cd: '41463', dong: ['신갈동','영덕동','구갈동','상갈동','보라동','기흥동','서농동','구성동','마북동','동백동','상하동','보정동'] },
+      '용인시 수지구': { cd: '41465', dong: ['풍덕천동','신봉동','죽전동','동천동','상현동','성복동'] }
+    }
+  }
+};
+// 시군구 코드 → [lat, lng] 중심 좌표 (API 불필요)
+const SGG_COORDS={
+  '11110':[37.5730,126.9794],'11140':[37.5641,126.9979],'11170':[37.5324,126.9904],
+  '11200':[37.5635,127.0364],'11215':[37.5385,127.0820],'11230':[37.5747,127.0397],
+  '11260':[37.6065,127.0927],'11290':[37.5894,127.0167],'11305':[37.6398,127.0255],
+  '11320':[37.6688,127.0471],'11350':[37.6542,127.0568],'11380':[37.6026,126.9291],
+  '11410':[37.5791,126.9368],'11440':[37.5538,126.9500],'11470':[37.5270,126.8560],
+  '11500':[37.5509,126.8495],'11530':[37.4954,126.8876],'11545':[37.4600,126.9001],
+  '11560':[37.5264,126.8962],'11590':[37.5124,126.9394],'11620':[37.4784,126.9516],
+  '11650':[37.4837,127.0325],'11680':[37.5172,127.0473],'11710':[37.5145,127.1060],
+  '11740':[37.5301,127.1237],
+  '21170':[35.1625,129.0531],'21200':[35.2059,129.0859],'21230':[35.1364,129.0847],
+  '21240':[35.2161,128.9921],'21260':[35.2113,128.9819],'21300':[35.1041,128.9749],
+  '21310':[35.2428,129.0924],'21350':[35.1629,129.1630],'21370':[35.1762,129.0806],
+  '21380':[35.1455,129.1135],
+  '22110':[35.8694,128.6060],'22140':[35.8868,128.6353],'22170':[35.8714,128.5592],
+  '22200':[35.8464,128.5975],'22230':[35.8861,128.5838],'22260':[35.8588,128.6307],
+  '22290':[35.8298,128.5327],
+  '23110':[37.4738,126.6216],'23140':[37.4740,126.6433],'23177':[37.4638,126.6507],
+  '23181':[37.4102,126.6780],'23185':[37.4490,126.7316],'23190':[37.5071,126.7218],
+  '23195':[37.5375,126.7378],'23200':[37.5450,126.6767],
+  '24110':[35.1468,126.9225],'24140':[35.1513,126.8913],'24170':[35.1327,126.9027],
+  '24200':[35.1741,126.9122],'24230':[35.1396,126.7936],
+  '25110':[36.3120,127.4546],'25140':[36.3252,127.4214],'25170':[36.3553,127.3837],
+  '25200':[36.3624,127.3562],'25230':[36.3464,127.4159],
+  '26110':[35.5695,129.3324],'26140':[35.5390,129.3355],'26170':[35.5050,129.4167],
+  '26200':[35.5822,129.3614],'26710':[35.5224,129.1804],
+  '41111':[37.2936,126.9980],'41113':[37.2545,127.0012],'41115':[37.2783,127.0086],
+  '41117':[37.2560,127.0460],'41131':[37.4440,127.1384],'41133':[37.4398,127.1398],
+  '41135':[37.3818,127.1217],'41281':[37.6341,126.8938],'41285':[37.6588,126.7842],
+  '41287':[37.6720,126.7543],'41190':[37.5035,126.7660],'41273':[37.3139,126.7817],
+  '41271':[37.3127,126.8265],'41461':[37.2339,127.2023],'41463':[37.2750,127.1145],
+  '41465':[37.3217,127.0972],
+};
+// GPS 좌표 → 가장 가까운 시군구코드 (Naver 지오코더 사용 불가 시 폴백)
+function _sggFromCoords(lat, lng) {
+  let minD = Infinity, best = '11440';
+  Object.entries(SGG_COORDS).forEach(([code, c]) => {
+    const d = (lat - c[0]) ** 2 + (lng - c[1]) ** 2;
+    if (d < minD) { minD = d; best = code; }
+  });
+  return best;
+}
+const HUES={'국공립':210,'민간':150,'가정':30,'직장':270,'유치원':0};
+const EMOJIS={'국공립':'🏛','민간':'🏢','가정':'🏠','직장':'🏭','유치원':'🎒'};
+const TC={'국공립':'#0066FF','민간':'#00A36B','가정':'#FF9200','직장':'#7A3DF5','유치원':'#E5484D'};
+
+// ── 인라인 SVG 아이콘 헬퍼 (홈화면과 동일 패턴: fill=currentColor, 부모 span color로 색 제어)
+const SVG={
+  pin:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="${s}" height="${s}"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg>`,
+  chat:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="${s}" height="${s}"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg>`,
+  search:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="${s}" height="${s}"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg>`,
+  eye:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M12 5c-4.78 0-8.84 2.94-10.5 7.1-.12.3-.12.5 0 .8C3.16 17.06 7.22 20 12 20s8.84-2.94 10.5-7.1c.12-.3.12-.5 0-.8C20.84 7.94 16.78 5 12 5zm0 13c-3.86 0-7.16-2.3-8.69-5.5C4.84 9.3 8.14 7 12 7s7.16 2.3 8.69 5.5C19.16 15.7 15.86 18 12 18z" fill="currentColor"/><path d="M12 8.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 1.8a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4z" fill="currentColor"/></svg>`,
+  heart:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M12 21.35c-.3 0-.59-.11-.82-.31C6.4 16.84 3 13.79 3 9.85 3 7.13 5.13 5 7.85 5c1.54 0 3.04.72 4.15 1.95C13.11 5.72 14.61 5 16.15 5 18.87 5 21 7.13 21 9.85c0 3.94-3.4 6.99-8.18 11.19-.23.2-.52.31-.82.31z" fill="currentColor"/></svg>`,
+  heartOutline:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M12 21.35c-.3 0-.59-.11-.82-.31C6.4 16.84 3 13.79 3 9.85 3 7.13 5.13 5 7.85 5c1.54 0 3.04.72 4.15 1.95C13.11 5.72 14.61 5 16.15 5 18.87 5 21 7.13 21 9.85c0 3.94-3.4 6.99-8.18 11.19-.23.2-.52.31-.82.31zM7.85 6.8C6.12 6.8 4.8 8.12 4.8 9.85c0 3.06 2.78 5.66 7.2 9.56 4.42-3.9 7.2-6.5 7.2-9.56 0-1.73-1.32-3.05-3.05-3.05-1.34 0-2.66.86-3.12 2.05a1 1 0 0 1-1.86 0C10.51 7.66 9.19 6.8 7.85 6.8z" fill="currentColor"/></svg>`,
+  share:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="${s}" height="${s}"><path d="M14 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM6 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm8 5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm-1.17-4.83a.9.9 0 0 1 1.17-.1l.1.1 2 2a.9.9 0 0 1-1.17 1.37l-.1-.1-2-2a.9.9 0 0 1 0-1.27Zm.1-4.27-.1.1-2 2a.9.9 0 0 1-1.27-1.27l.1-.1 2-2a.9.9 0 0 1 1.27 1.27Z" fill="currentColor" fill-rule="evenodd"/></svg>`,
+  clipboard:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M9 2a2 2 0 0 0-2 2H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1a2 2 0 0 0-2-2H9zm0 1.8h6a.2.2 0 0 1 .2.2v1a.2.2 0 0 1-.2.2H9a.2.2 0 0 1-.2-.2V4a.2.2 0 0 1 .2-.2zM6 5.8h.2A2 2 0 0 0 9 7.8h6a2 2 0 0 0 1.8-2H18a.2.2 0 0 1 .2.2v13a.2.2 0 0 1-.2.2H6a.2.2 0 0 1-.2-.2V6a.2.2 0 0 1 .2-.2z" fill="currentColor" fill-rule="evenodd"/></svg>`,
+  // 히어로 기관유형 아이콘 (흰색 64px 권장)
+  heroGongl:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M12 2 1 7v2h22V7L12 2zm-7 9v7H3v2h18v-2h-2v-7h-2v7h-3v-7h-2v7H8v-7H5z" fill="currentColor"/></svg>`,
+  heroMinkan:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M5 2a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h6v-4h2v4h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H5zm2 3h2v2H7V5zm4 0h2v2h-2V5zm4 0h2v2h-2V5zM7 9h2v2H7V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9zm-8 4h2v2H7v-2zm4 0h2v2h-2v-2zm4 0h2v2h-2v-2z" fill="currentColor"/></svg>`,
+  heroGajeong:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M12 3 2 11h3v9h5v-6h4v6h5v-9h3L12 3z" fill="currentColor"/></svg>`,
+  heroJikjang:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M9 3a2 2 0 0 0-2 2v1H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3V5a2 2 0 0 0-2-2H9zm0 2h6v1H9V5z" fill="currentColor"/></svg>`,
+  heroYuchiwon:(s)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${s}" height="${s}"><path d="M12 3 1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="currentColor"/></svg>`,
+};
+const HERO_ICONS={'국공립':'heroGongl','민간':'heroMinkan','가정':'heroGajeong','직장':'heroJikjang','유치원':'heroYuchiwon'};
+function svgSpan(svg,color,size,opt){
+  return `<span style="display:inline-flex;align-items:center;color:${color}${opt||''}">${SVG[svg](size)}</span>`;
+}
+const AV_COLORS=['#0066FF','#00A36B','#FF9200','#7A3DF5','#E5484D'];
+
+let DATA=[
+  {id:'a',name:'연남숲어린이집',type:'국공립',grade:'A',rating:4.7,reviews:38,addr:'서울 마포구 연남동 568-12',dist:'240m',phone:'02-336-0480',hours:'07:30~19:30 (연장~20:00)',cap:99,now:92,teachers:14,per:6.6,cctv:12,lat:37.5598,lng:126.9242},
+  {id:'b',name:'햇살가득어린이집',type:'민간',grade:'B',rating:4.3,reviews:21,addr:'서울 마포구 연남동 240-3',dist:'420m',phone:'02-322-1175',hours:'07:30~19:30',cap:80,now:74,teachers:11,per:6.7,cctv:8,lat:37.5622,lng:126.9260},
+  {id:'c',name:'성미산숲어린이집',type:'국공립',grade:'A',rating:4.6,reviews:17,addr:'서울 마포구 성산동 113-9',dist:'650m',phone:'02-3141-8820',hours:'07:30~19:30 (연장~20:00)',cap:60,now:58,teachers:9,per:6.4,cctv:10,lat:37.5565,lng:126.9208},
+  {id:'d',name:'아이꿈가정어린이집',type:'가정',grade:'B',rating:4.5,reviews:9,addr:'서울 마포구 연남동 387-1',dist:'310m',phone:'02-337-2244',hours:'07:30~19:30',cap:20,now:19,teachers:4,per:4.8,cctv:4,lat:37.5610,lng:126.9280},
+  {id:'e',name:'푸르니직장어린이집',type:'직장',grade:'A',rating:4.8,reviews:12,addr:'서울 마포구 동교동 165',dist:'780m',phone:'02-338-9912',hours:'08:00~19:00',cap:50,now:47,teachers:8,per:5.9,cctv:9,lat:37.5580,lng:126.9225},
+  {id:'f',name:'모아유치원',type:'유치원',grade:'B',rating:4.4,reviews:26,addr:'서울 마포구 망원동 415-2',dist:'1.1km',phone:'02-335-5560',hours:'09:00~18:00',cap:120,now:110,teachers:10,per:11.0,cctv:14,lat:37.5635,lng:126.9198},
+  {id:'g',name:'꿈나무어린이집',type:'민간',grade:'A',rating:4.5,reviews:15,addr:'서울 마포구 연남동 330-5',dist:'520m',phone:'02-333-7890',hours:'07:30~19:30',cap:45,now:41,teachers:7,per:5.9,cctv:7,lat:37.5590,lng:126.9268},
+  {id:'h',name:'사랑동산어린이집',type:'국공립',grade:'A',rating:4.6,reviews:31,addr:'서울 마포구 연남동 470-8',dist:'390m',phone:'02-334-2211',hours:'07:30~20:00',cap:70,now:65,teachers:10,per:6.5,cctv:11,lat:37.5618,lng:126.9232},
+];
+
+const REVIEWS=[
+  {name:'익명의 학부모 A',lv:2,rating:4.6,date:'2026.05',kid:'둘째 재원 2년차',text:'둘째까지 보내고 있어요. 선생님들이 정말 꼼꼼하게 봐주시고 알림장도 매일 사진과 함께 올라와요. 급식 식단도 알레르기 대응이 잘 되어 있어서 안심이에요.',instId:'a'},
+  {name:'익명의 학부모 B',lv:2,rating:4.8,date:'2026.04',kid:'만 3세 재원',text:'적응 기간 2주 동안 매일 전화로 상황을 알려주셔서 정말 안심됐어요. 원장님도 학부모 의견을 적극적으로 반영해 주십니다.',instId:'b'},
+  {name:'익명의 학부모 C',lv:1,rating:4.2,date:'2026.03',kid:'만 1세 재원',text:'시설은 깔끔하고 좋아요. 다만 하원 시간이 조금 빠듯해서 연장보육이 더 늘어나면 좋겠습니다.',instId:'c'},
+];
+const POSTS=[
+  {id:'p1', cat:'입소 Q&A', title:'0세반 지금 신청하면 대기 몇 번이에요?',
+   body:'이번 달에 입소 신청했는데 0세반 대기 순번이 어느 정도일지 궁금해요. 비슷한 시기 신청하신 분 계실까요? 보통 몇 달 정도 기다리는지도 알려주시면 감사하겠습니다.',
+   author:'연남동 학부모', lv:1, instId:'a', createdAt:Date.now()-3600e3,
+   views:42, likes:5, liked:false,
+   comments:[
+     {author:'둘째맘', lv:2, text:'저희는 3월 신청해서 4번이었어요! 9월쯤 연락 받았습니다.', createdAt:Date.now()-1800e3},
+     {author:'연남동 학부모', lv:1, text:'정보 감사해요! 저도 비슷하게 신청했어요.', createdAt:Date.now()-900e3},
+   ]},
+  {id:'p2', cat:'생활 정보', title:'겨울 실내화는 어떤 거 신기나요?',
+   body:'곧 겨울인데 어린이집에서 신기는 실내화 추천 부탁드려요. 미끄럼 방지 되는 걸로 사야 할까요?',
+   author:'연남동 학부모', lv:1, instId:null, createdAt:Date.now()-7200e3,
+   views:88, likes:12, liked:false, comments:[]},
+  {id:'p3', cat:'나눔·공지', title:'90 사이즈 원복 나눔해요 🙌',
+   body:'아이가 커서 작아진 90 사이즈 원복 나눔합니다. 상태 깨끗해요. 필요하신 분 댓글 주세요!',
+   author:'세아맘', lv:0, instId:'b', createdAt:Date.now()-86400e3,
+   views:31, likes:3, liked:false, comments:[]},
+];
+
+// 홈 DATA_LEN 치환
+function updateHomeMapTxt(){
+  const el=document.querySelector('.home-map-txt');
+  if(el)el.textContent=`내 주변 어린이집 ${DATA.length}곳`;
+}
+updateHomeMapTxt();
+
+// ── 상태
+let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],compare=new Set();
+let curScreen='home',prevScreen='home',segMode='map';
+// ── 위치 상태
+let curLat=37.5600, curLng=126.9240;
+let curSidoCd='11', curSigunguCd='11440';
+let curDongName='연남동';
+let myLocMarker=null;
+let _pendingCenter=null; // 지도 초기화 전에 감지된 좌표를 임시 보관
+let _skipGPS=false; // 지역 선택 후 goExplore 시 GPS 덮어쓰기 방지
+let _manualRegionSelected=false; // 사용자가 직접 지역 선택했을 때 true
+
+async function geocodeDong(sidoName, sggName, dongName){
+  return new Promise(resolve=>{
+    if(!naver||!naver.maps||!naver.maps.Service){resolve(null);return;}
+    naver.maps.Service.geocode({query:`${sidoName} ${sggName} ${dongName}`},(status,resp)=>{
+      if(status!==200||!resp.v2.addresses||!resp.v2.addresses.length){resolve(null);return;}
+      const a=resp.v2.addresses[0];
+      resolve({lat:parseFloat(a.y),lng:parseFloat(a.x)});
+    });
+  });
+}
+
+// ── 위치 텍스트 일괄 갱신
+function updateLocDisplay(name){
+  curDongName=name;
+  // 홈 헤더 위치 텍스트 (.home-loc-txt)
+  document.querySelectorAll('.home-loc-txt').forEach(el=>el.textContent=name);
+  // 탐색화면 검색 placeholder (#qi)
+  const qi=document.getElementById('qi');
+  if(qi)qi.placeholder=name+' 어린이집·유치원 이름 검색';
+  // 목록 화면 제목 (.list-title)
+  const lt=document.querySelector('.list-title');
+  if(lt)lt.textContent=name+' 어린이집';
+  // 커뮤니티 화면 동명 (.community-loc span)
+  const cl=document.querySelector('.community-loc span:not([style])');
+  if(cl)cl.textContent=name;
+}
+
+// ── 지역 선택 시트
+let regionStep=0; // 0=시도, 1=시군구, 2=읍면동
+let selSido='',selSgg='';
+
+function openRegionSheet(){
+  regionStep=0;selSido='';selSgg='';
+  renderRegionList();
+  document.getElementById('region-backdrop').style.display='block';
+  requestAnimationFrame(()=>{
+    document.getElementById('region-sheet').style.transform='translateY(0)';
+  });
+}
+
+function closeRegionSheet(){
+  document.getElementById('region-sheet').style.transform='translateY(100%)';
+  setTimeout(()=>{document.getElementById('region-backdrop').style.display='none';},300);
+}
+
+function renderRegionList(){
+  const bc=document.getElementById('region-breadcrumb');
+  const list=document.getElementById('region-list');
+  if(regionStep===0){
+    bc.textContent='';
+    list.innerHTML=Object.keys(REGION_DATA).map(s=>
+      `<div class="region-item${s===selSido?' selected':''}" onclick="selectSido('${s}')">${s}</div>`
+    ).join('');
+  } else if(regionStep===1){
+    bc.textContent=selSido;
+    const sggs=Object.keys(REGION_DATA[selSido].sgg);
+    list.innerHTML=sggs.map(g=>
+      `<div class="region-item${g===selSgg?' selected':''}" onclick="selectSgg('${g}')">${g} <span style="color:var(--text-assist);font-size:13px">›</span></div>`
+    ).join('');
+  } else {
+    bc.textContent=`${selSido} › ${selSgg}`;
+    const dongs=REGION_DATA[selSido].sgg[selSgg].dong;
+    list.innerHTML=dongs.map(d=>
+      `<div class="region-item" onclick="selectDong('${d}')">${d}</div>`
+    ).join('');
+  }
+}
+
+function selectSido(s){
+  selSido=s;regionStep=1;renderRegionList();
+}
+
+function selectSgg(g){
+  selSgg=g;regionStep=2;renderRegionList();
+}
+
+async function selectDong(dong){
+  const r=REGION_DATA[selSido];
+  const g=r.sgg[selSgg];
+  curSidoCd=r.cd;
+  curSigunguCd=g.cd;
+  updateLocDisplay(dong);
+  closeRegionSheet();
+  // 선택된 시군구 중심 좌표로 지도 센터 이동
+  const c=SGG_COORDS[curSigunguCd];
+  if(c){curLat=c[0];curLng=c[1];}
+  _manualRegionSelected=true;
+  updateMiniMap(); // await 전에 즉시 미니맵 반영
+  const apiData=await fetchChildcareData(curSigunguCd);
+  if(apiData&&apiData.length){
+    DATA=apiData;filtered=[...DATA];
+    renderHomeRows();
+    if(mapInited){
+      if(map&&curLat&&curLng)map.setCenter(new naver.maps.LatLng(curLat,curLng));
+      applyFilter();
+    }
+  }
+  // 지도 탭으로 자동 이동 (GPS 덮어쓰기 방지)
+  _skipGPS=true;
+  goExplore();
+}
+
+// ── 지도에 현재 위치 마커 적용 (map이 반드시 초기화된 상태에서만 호출)
+function _applyMyLocationToMap(lat,lng){
+  map.setCenter(new naver.maps.LatLng(lat,lng));
+  if(myLocMarker) myLocMarker.setMap(null);
+  myLocMarker=new naver.maps.Marker({
+    position:new naver.maps.LatLng(lat,lng),map,
+    icon:{
+      content:'<div style="width:16px;height:16px;border-radius:50%;background:#0066FF;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,102,255,.4)"></div>',
+      anchor:new naver.maps.Point(8,8)
+    }
+  });
+}
+
+// ── 현재 위치 감지 + 역지오코딩
+async function detectLocation(){
+  if(!navigator.geolocation){return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    curLat=pos.coords.latitude;
+    curLng=pos.coords.longitude;
+
+    if(map){
+      _applyMyLocationToMap(curLat,curLng);
+    } else {
+      // 지도가 아직 초기화되지 않은 경우 좌표만 보관 → initMap 완료 후 적용
+      _pendingCenter={lat:curLat,lng:curLng};
+    }
+
+    if(naver&&naver.maps&&naver.maps.Service){
+      naver.maps.Service.reverseGeocode({
+        coords:new naver.maps.LatLng(curLat,curLng),
+        orders:'admcode'
+      },(status,resp)=>{
+        if(status!==200){
+          // ibom.netlify.app 미등록 → 403 → SGG_COORDS nearest-neighbor 폴백
+          const nearCode=_sggFromCoords(curLat,curLng);
+          curSidoCd=nearCode.substring(0,2);
+          curSigunguCd=nearCode;
+          fetchChildcareData(curSigunguCd).then(apiData=>{
+            if(apiData&&apiData.length){
+              DATA=apiData;filtered=[...DATA];
+              renderHomeRows();
+              if(mapReady){renderMarkers();_markersDirty=false;}else{_markersDirty=true;}
+            }
+          });
+          return;
+        }
+        const res=resp.v2.results;
+        if(!res||!res.length)return;
+        const r=res[0].region;
+        const dong=(r.area3&&r.area3.name)||r.area2.name;
+        updateLocDisplay(dong);
+        const code=res[0].code&&res[0].code.admcode||'';
+        if(code.length>=5){
+          curSidoCd=code.substring(0,2);
+          curSigunguCd=code.substring(0,5);
+          fetchChildcareData(curSigunguCd).then(apiData=>{
+            if(apiData&&apiData.length){
+              DATA=apiData;filtered=[...DATA];
+              renderHomeRows();
+              if(mapReady){renderMarkers();_markersDirty=false;}else{_markersDirty=true;}
+            }
+          });
+        }
+      });
+    }
+  }, err=>console.warn('[아이봄] 위치 허용 필요:',err.message));
+}
+
+// ── 화면 전환
+function showScreen(id){
+  const prev=document.getElementById('scr-'+curScreen);
+  const next=document.getElementById('scr-'+id);
+  prev.classList.add('back');
+  prev.classList.remove('on-screen');
+  next.classList.remove('hidden','back');
+  prevScreen=curScreen;curScreen=id;
+  setTimeout(()=>{prev.classList.add('hidden');prev.classList.remove('back');},280);
+}
+function goBack(){
+  const cur=document.getElementById('scr-'+curScreen);
+  const prev=document.getElementById('scr-'+prevScreen);
+  cur.classList.add('hidden');
+  prev.classList.remove('hidden','back');
+  const tmp=curScreen;curScreen=prevScreen;prevScreen=tmp;
+}
+function goHome(){if(curScreen!=='home')showScreen('home');}
+function goExplore(){
+  if(curScreen==='explore')return;
+  showScreen('explore');
+  if(_skipGPS){
+    _skipGPS=false;
+    const wasInited=mapInited;
+    const targetLat=curLat, targetLng=curLng;
+    const applyCenter=()=>{
+      if(!map||!targetLat||!targetLng)return;
+      naver.maps.Event.trigger(map,'resize');
+      map.setCenter(new naver.maps.LatLng(targetLat,targetLng));
+      renderMarkers();
+    };
+    // mapReady가 될 때까지 폴링 → 고정 타이머 race 제거 (마커 누락 버그 수정)
+    const waitReadyThenCenter=()=>{
+      if(mapReady){applyCenter();_markersDirty=false;}
+      else{setTimeout(waitReadyThenCenter,60);}
+    };
+    setTimeout(()=>{
+      initMap();
+      if(wasInited&&mapReady){applyCenter();}
+      else{waitReadyThenCenter();}
+    },100);
+  } else {
+    setTimeout(()=>{initMap();detectLocation();},100);
+  }
+}
+async function goExploreKeepRegion(){
+  _skipGPS=true;
+  // SGG 중심 좌표로 맞춰 데이터 핀과 지도 센터를 일치시킴
+  const sggCoords=SGG_COORDS[curSigunguCd];
+  if(sggCoords){curLat=sggCoords[0];curLng=sggCoords[1];}
+  const apiData=await fetchChildcareData(curSigunguCd);
+  if(apiData&&apiData.length){DATA=apiData;filtered=[...DATA];}
+  goExplore();
+}
+function goList(){showScreen('list');renderList();}
+function goReviewDetail(idx){
+  const r=REVIEWS[idx];
+  if(!r)return;
+  const inst=DATA.find(x=>x.id===r.instId);
+  const instName=inst?inst.name:'';
+  const stars='★'.repeat(Math.round(r.rating))+'☆'.repeat(5-Math.round(r.rating));
+  const el=document.getElementById('review-detail-content');
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <div class="avatar" style="background:${AV_COLORS[idx%AV_COLORS.length]};flex-shrink:0;">${r.name[0]}</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--text)">${r.name}</div>
+        <div style="font-size:12px;color:var(--text-assist);margin-top:2px">${r.date} · ${r.kid}</div>
+      </div>
+    </div>
+    <div style="color:var(--star);font-size:15px;margin-bottom:12px;">${stars} <span style="color:var(--text-alt);font-size:13px;font-weight:600">${r.rating}</span></div>
+    <div style="font-size:15px;color:var(--text);line-height:1.75;margin-bottom:24px;">${r.text}</div>
+    ${instName?`
+    <div style="border-top:1px solid var(--line-soft);padding-top:20px;">
+      <div style="font-size:12px;color:var(--text-assist);margin-bottom:10px;">이 리뷰의 기관</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid var(--line);border-radius:14px;cursor:pointer;background:var(--bg-alt);" onclick="goDetail('${inst.id}')">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;">${instName}</div>
+          <div style="font-size:12px;color:var(--text-alt)">${inst.type} · 평가 ${inst.grade} · ★ ${inst.rating}</div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--text-assist);flex-shrink:0"><path d="M8.464 4.464a.9.9 0 0 0 0 1.272L14.728 12l-6.264 6.264a.9.9 0 1 0 1.272 1.272l6.9-6.9a.9.9 0 0 0 0-1.272l-6.9-6.9a.9.9 0 0 0-1.272 0z" fill="currentColor"/></svg>
+      </div>
+    </div>`:''}
+  `;
+  showScreen('review-detail');
+}
+function goDetail(id){
+  const d=DATA.find(x=>x.id===id);
+  if(!d)return;
+  document.getElementById('detail-htitle').textContent=d.name;
+  renderDetail(d);
+  showScreen('detail');
+}
+
+// ── 세그먼트
+function setSeg(mode){
+  segMode=mode;
+  if(mode==='map'){
+    document.getElementById('seg-map')&&(document.getElementById('seg-map').classList.add('on'));
+    document.getElementById('seg-list')&&(document.getElementById('seg-list').classList.remove('on'));
+    if(curScreen==='list')goBack();
+  } else {
+    document.getElementById('seg-map')&&(document.getElementById('seg-map').classList.remove('on'));
+    document.getElementById('seg-list')&&(document.getElementById('seg-list').classList.add('on'));
+    goList();
+  }
+}
+
+// ── 지도 초기화
+let mapInited=false;
+let mapReady=false; // 맵 resize 완료 후 마커 렌더 가능 시점
+let _markersDirty=false; // 맵 준비 전 데이터가 갱신된 경우 준비 완료 시 재렌더
+function initMap(){
+  if(mapInited)return;mapInited=true;
+  const c=new naver.maps.LatLng(curLat||37.5600,curLng||126.9240);
+  map=new naver.maps.Map('map',{center:c,zoom:15,mapTypeId:naver.maps.MapTypeId.NORMAL,
+    zoomControl:true,zoomControlOptions:{style:naver.maps.ZoomControlStyle.SMALL,position:naver.maps.Position.TOP_RIGHT}});
+  naver.maps.Event.addListener(map,'click',()=>{closeCard();clearSel();});
+  setTimeout(()=>{
+    document.getElementById('map-loading').classList.add('gone');
+    naver.maps.Event.trigger(map,'resize');
+    mapReady=true;
+    renderMarkers();
+    _markersDirty=false;
+    // detectLocation이 지도 초기화 전에 좌표를 감지한 경우 지금 적용
+    if(_pendingCenter){_applyMyLocationToMap(_pendingCenter.lat,_pendingCenter.lng);_pendingCenter=null;}
+  },250);
+
+}
+
+// ── 미니맵
+let miniMapInited=false;
+let _miniMapMarkers=[];
+function initMiniMap(){
+  if(miniMapInited)return;
+  const el=document.getElementById('mini-map');
+  if(!el||!naver||!naver.maps)return;
+  miniMapInited=true;
+  const c=new naver.maps.LatLng(curLat||37.5600,curLng||126.9240);
+  miniMap=new naver.maps.Map('mini-map',{center:c,zoom:14,mapTypeId:naver.maps.MapTypeId.NORMAL,
+    zoomControl:false,scrollWheel:false,draggable:false,pinchZoom:false,disableDoubleClickZoom:true});
+  _renderMiniMapMarkers();
+}
+function _renderMiniMapMarkers(){
+  if(!miniMap)return;
+  _miniMapMarkers.forEach(m=>m.setMap(null));
+  _miniMapMarkers=[];
+  DATA.slice(0,4).forEach(d=>{
+    const m=new naver.maps.Marker({position:new naver.maps.LatLng(d.lat,d.lng),map:miniMap,
+      icon:{content:`<div style="width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${TC[d.type]};border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);color:#fff;font-size:9px;font-weight:800">${d.rating}</span></div>`,
+        anchor:new naver.maps.Point(12,24)}});
+    _miniMapMarkers.push(m);
+  });
+}
+function updateMiniMap(){
+  if(!miniMapInited){initMiniMap();return;}
+  if(!miniMap)return;
+  miniMap.setCenter(new naver.maps.LatLng(curLat||37.5600,curLng||126.9240));
+  naver.maps.Event.trigger(miniMap,'resize');
+  _renderMiniMapMarkers();
+}
+
+// ── 마커
+function clearMarkers(){Object.values(markers).forEach(m=>m.setMap(null));markers={};}
+function renderMarkers(){
+  if(!map)return;
+  if(!mapReady){_markersDirty=true;return;} // 맵 resize 전이면 보류, 준비 완료 시 자동 재렌더
+  clearMarkers();
+  filtered.forEach(d=>{
+    const c=TC[d.type]||'#0066FF';const active=d.id===curSel;
+    const m=new naver.maps.Marker({
+      position:new naver.maps.LatLng(d.lat,d.lng),map,
+      icon:{
+        content:`<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+          ${active?`<div style="background:#fff;border-radius:10px;padding:6px 10px;margin-bottom:6px;box-shadow:0 6px 16px rgba(0,0,0,0.18);white-space:nowrap;border:1px solid rgba(112,115,124,0.22);">
+            <div style="font-size:12.5px;font-weight:700;color:rgba(46,47,51,0.88);font-family:'Pretendard',sans-serif;">${d.name}</div>
+            <div style="color:#FFB200;font-size:11.5px;font-weight:700;margin-top:2px;">★ ${d.rating} <span style="color:rgba(55,56,60,0.61);font-weight:500">리뷰 ${d.reviews}</span></div>
+          </div>`:''}
+          <div style="width:${active?36:28}px;height:${active?36:28}px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};border:2.5px solid #fff;box-shadow:${active?'0 4px 12px rgba(0,0,0,0.28)':'0 2px 6px rgba(0,0,0,0.18)'};display:flex;align-items:center;justify-content:center;">
+            <span style="transform:rotate(45deg);color:#fff;font-size:${active?13:10}px;font-weight:800;font-family:'Pretendard',sans-serif;">${d.rating}</span>
+          </div>
+        </div>`,
+        anchor:new naver.maps.Point(active?18:14,active?36+42+6:28)
+      }
+    });
+    naver.maps.Event.addListener(m,'click',()=>{selectItem(d.id);openCard(d);});
+    markers[d.id]=m;
+  });
+}
+
+// ── 하단 카드
+function openCard(d){
+  const el=document.getElementById('map-card');
+  el.innerHTML=`
+    <div class="map-card-row" onclick="goDetail('${d.id}')">
+      <div class="mc-thumb" style="background:linear-gradient(135deg,hsl(${HUES[d.type]} 52% 72%),hsl(${HUES[d.type]} 48% 60%))">${EMOJIS[d.type]}</div>
+      <div class="mc-info">
+        <div class="mc-title"><span class="mc-name">${d.name}</span><span class="grade g${d.grade}">평가 ${d.grade}</span></div>
+        <div class="mc-sub"><span class="badge b-${d.type}">${d.type}</span><div class="stars"><span style="color:var(--star)">★</span><span class="star-num">${d.rating}</span><span class="star-cnt">리뷰 ${d.reviews}</span></div></div>
+        <div class="mc-foot">${d.dist} · 교사 1인당 ${d.per}명</div>
+      </div>
+    </div>
+    <div class="map-card-btns">
+      <button class="mc-btn mc-btn-outline" onclick="toggleCompare('${d.id}')" id="cmp-btn-${d.id}">${compare.has(d.id)?'✓ 비교 담음':'+ 비교 담기'}</button>
+      <button class="mc-btn mc-btn-solid" onclick="goDetail('${d.id}')">상세 보기</button>
+    </div>
+  `;
+  el.classList.add('show');
+  updateCompareBar();
+}
+function closeCard(){document.getElementById('map-card').classList.remove('show');}
+
+// ── 비교
+function toggleCompare(id){
+  if(compare.has(id)){compare.delete(id);}
+  else{if(compare.size>=3){showToast('비교는 최대 3곳까지 가능해요');return;}compare.add(id);}
+  const btn=document.getElementById('cmp-btn-'+id);
+  if(btn)btn.textContent=compare.has(id)?'✓ 비교 담음':'+ 비교 담기';
+  updateCompareBar();
+  renderList();
+}
+function updateCompareBar(){
+  const bar=document.getElementById('compare-bar');
+  const txt=document.getElementById('compare-txt');
+  const cnt=document.getElementById('compare-cnt');
+  const bottom=document.getElementById('compare-bottom');
+  const btxt=document.getElementById('compare-bottom-txt');
+  if(compare.size>0){
+    bar&&bar.classList.add('show');
+    if(txt)txt.textContent=`${compare.size}곳 나란히 비교하기`;
+    if(cnt)cnt.textContent=compare.size;
+    if(bottom)bottom.style.display='';
+    if(btxt)btxt.textContent=compare.size;
+  } else {
+    bar&&bar.classList.remove('show');
+    if(bottom)bottom.style.display='none';
+  }
+}
+
+// ── 선택
+function selectItem(id){clearSel();curSel=id;renderMarkers();}
+function clearSel(){curSel=null;}
+
+// ── 필터
+function setType(t,btn){
+  curType=t;
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
+  btn.classList.add('on');
+  applyFilter();
+}
+function applyFilter(_fromApi){
+  const q=(document.getElementById('qi')?.value||'').toLowerCase().trim();
+  filtered=DATA.filter(d=>{
+    const tOk=curType==='전체'||d.type===curType;
+    const qOk=!q||d.name.toLowerCase().includes(q)||d.addr.toLowerCase().includes(q);
+    return tOk&&qOk;
+  });
+  renderMarkers();
+  renderList();
+  // API 검색: 검색어 2자 이상이고 API 재호출이 아닌 경우에만 타이머 등록
+  // 시퀀스 번호로 stale 응답 무시 (경쟁 조건 방지)
+  if(!_fromApi && q.length>=2){
+    clearTimeout(applyFilter._t);
+    applyFilter._seq=(applyFilter._seq||0)+1;
+    const seq=applyFilter._seq;
+    applyFilter._t=setTimeout(async()=>{
+      const apiData=await fetchChildcareData(curSigunguCd);
+      if(seq!==applyFilter._seq)return; // 더 새로운 요청이 발행됐으면 무시
+      if(apiData&&apiData.length){
+        DATA=apiData;
+        applyFilter(true); // DATA 교체 후 로컬 필터 재적용 (API 루프 방지)
+      }
+    },600);
+  }
+}
+
+// ── 목록
+function renderList(){
+  const el=document.getElementById('inst-list');
+  const sub=document.getElementById('list-sub');
+  if(sub)sub.textContent=`검색 결과 ${filtered.length}곳`;
+  if(!el)return;
+  if(!filtered.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico" style="display:flex;justify-content:center;color:var(--text-assist)">${SVG.search(32)}</div><div class="empty-txt">검색 결과가 없어요.<br>다른 키워드로 찾아보세요.</div></div>`;
+    return;
+  }
+  el.innerHTML=filtered.map(d=>`
+    <div class="inst-row" onclick="goDetail('${d.id}')">
+      <div class="inst-thumb" style="background:linear-gradient(135deg,hsl(${HUES[d.type]} 52% 72%),hsl(${HUES[d.type]} 48% 60%))">${EMOJIS[d.type]}</div>
+      <div class="inst-info">
+        <div class="inst-title"><span class="inst-name">${d.name}</span><span class="grade g${d.grade}">평가 ${d.grade}</span></div>
+        <div class="inst-sub"><span class="badge b-${d.type}">${d.type}</span><div class="stars"><span style="color:var(--star)">★</span><span class="star-num">${d.rating}</span><span class="star-cnt">리뷰 ${d.reviews}</span></div></div>
+        <div class="inst-foot">${svgSpan('pin','var(--text-assist)',12)} ${d.dist} · 정원 ${d.cap} / 현원 ${d.now}</div>
+      </div>
+      <div class="compare-chk${compare.has(d.id)?' on':''}" onclick="event.stopPropagation();toggleCompare('${d.id}')">${compare.has(d.id)?'<span style="color:#fff;font-size:14px">✓</span>':''}</div>
+    </div>
+  `).join('');
+}
+
+// ── 홈 기관 행
+function renderHomeRows(){
+  const el=document.getElementById('home-rows');
+  if(!el)return;
+  el.innerHTML=DATA.slice(0,3).map((d,i,arr)=>`
+    <div style="display:flex;gap:12px;padding:14px 0;border-bottom:${i<arr.length-1?'1px solid var(--line-soft)':'none'};cursor:pointer" onclick="goDetail('${d.id}')">
+      <div style="width:56px;height:56px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,hsl(${HUES[d.type]} 52% 72%),hsl(${HUES[d.type]} 48% 60%))">${SVG[HERO_ICONS[d.type]||'heroGongl'](28)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
+          <span style="font-size:15px;font-weight:700;color:var(--text)">${d.name}</span>
+          <span class="grade g${d.grade}">평가 ${d.grade}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:5px">
+          <span class="badge b-${d.type}">${d.type}</span>
+          <div class="stars"><span style="color:var(--star)">★</span><span class="star-num">${d.rating}</span><span class="star-cnt">리뷰 ${d.reviews}</span></div>
+        </div>
+        <div style="font-size:12px;color:var(--text-alt);display:flex;align-items:center;gap:3px">${svgSpan('pin','var(--text-assist)',12)} ${d.dist} · 정원 ${d.cap} / 현원 ${d.now}</div>
+      </div>
+      <span style="color:var(--text-assist);align-self:center;display:flex;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M8.464 4.464a.9.9 0 0 1 1.272 0l6.9 6.9a.9.9 0 0 1 0 1.272l-6.9 6.9a.9.9 0 1 1-1.272-1.272L14.728 12 8.464 5.736a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg></span>
+    </div>
+  `).join('');
+}
+
+// ── 상세
+function renderDetail(d){
+  const occ=(d.now&&d.cap)?Math.round(d.now/d.cap*100):null;
+  const el=document.getElementById('detail-content');
+  el.innerHTML=`
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <div class="detail-hero" style="background:linear-gradient(135deg,hsl(${HUES[d.type]} 52% 72%),hsl(${HUES[d.type]} 46% 56%))"><span style="display:flex;align-items:center;justify-content:center;color:#fff">${SVG[HERO_ICONS[d.type]||'heroGongl'](64)}</span></div>
+      <div class="detail-body-top">
+        <div class="detail-badges">
+          <span class="badge b-${d.type}">${d.type}</span>
+          <span class="grade g${d.grade}">평가 ${d.grade}</span>
+          <span style="font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;color:var(--blue);background:var(--blue-weak)"><span style="display:inline-flex;margin-right:3px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.557 19.557" width="12" height="12"><path d="M13.657 7.153a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5z" fill="currentColor"/><path d="M12.05 0c-.641 0-1.11 0-1.56.108a4 4 0 0 0-1.128.467c-.395.242-.726.573-1.179 1.027L3.388 7.396c-.571.572-1.038 1.039-1.387 1.45-.361.425-.648.848-.81 1.349-.255.783-.255 1.627 0 2.41.162.501.449.924.81 1.349.349.411.816.879 1.387 1.45l1.765 1.765c.572.571 1.039 1.038 1.45 1.387.425.361.848.648 1.349.81.783.254 1.627.254 2.41 0 .5-.162.923-.449 1.348-.81.411-.349.878-.816 1.45-1.387l5.795-5.794c.453-.454.784-.785 1.027-1.18a4 4 0 0 0 .467-1.128C19.558 8.617 19.558 8.149 19.557 7.508V5.792c.001-.641.001-1.109-.107-1.56a4 4 0 0 0-.467-1.127c-.242-.395-.573-.726-1.026-1.179L17.632 1.602C17.179 1.148 16.848.817 16.453.575A4 4 0 0 0 15.325.108C14.875 0 14.406 0 13.765 0H12.05z" fill="currentColor" fill-rule="evenodd"/></svg></span>CCTV ${d.cctv}대</span>
+        </div>
+        <div class="detail-dname">${d.name}</div>
+        <div class="stars" style="margin-bottom:7px">
+          <span style="color:var(--star);font-size:15px">★</span>
+          <span class="star-num" style="font-size:15px">${d.rating}</span>
+          <span class="star-cnt">리뷰 ${d.reviews}개</span>
+        </div>
+        <div class="detail-meta">${svgSpan('pin','var(--text-assist)',14)} ${d.addr} · ${d.dist}</div>
+        <div class="detail-meta"><span style="display:inline-flex;color:var(--text-assist)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="14" height="14"><path d="M9.4 4.5a.9.9 0 0 1 .9.9v4.627l2.211 2.211a.9.9 0 0 1-1.272 1.272L8.763 11.036A.9.9 0 0 1 8.5 10.385V5.4a.9.9 0 0 1 .9-.9z" fill="currentColor"/><path d="M9.9 0C4.432 0 0 4.432 0 9.9s4.432 9.9 9.9 9.9 9.9-4.432 9.9-9.9S15.368 0 9.9 0zM1.8 9.9C1.8 5.426 5.426 1.8 9.9 1.8s8.1 3.626 8.1 8.1-3.626 8.1-8.1 8.1S1.8 14.374 1.8 9.9z" fill="currentColor" fill-rule="evenodd"/></svg></span> ${d.hours}</div>
+      </div>
+      <div class="detail-tabs">
+        <button class="dtab on" id="dt-info" onclick="switchDTab('info')">정보</button>
+        <button class="dtab" id="dt-review" onclick="switchDTab('review')">리뷰</button>
+        <button class="dtab" id="dt-comm" onclick="switchDTab('comm')">커뮤니티</button>
+      </div>
+      <div class="detail-scroll">
+        <div class="detail-pad" id="dp-info">
+          <div class="sec-label"><span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg></span> 아이사랑 포털 공식 정보</div>
+          <div class="stat-grid">
+            <div class="stat-box"><div class="stat-ico" style="display:flex;justify-content:center;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="22" height="22"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></div><span class="stat-val">${d.now||'-'}</span><div class="stat-lbl">현원 (정원${d.cap||'-'})</div></div>
+            <div class="stat-box"><div class="stat-ico" style="display:flex;justify-content:center;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22.564 19.564" width="22" height="22"><path d="M10.879.095c.254-.127.552-.127.805 0l9.599 4.799c.204.102.409.205.569.304.156.097.423.279.577.602.101.213.145.444.133.674v5.926a.9.9 0 0 1-1.8 0V8.166l-2.08 1.04v4.585c.001.6.001 1.105-.159 1.568a3.1 3.1 0 0 1-.669 1.084c-.343.35-.795.576-1.332.843l-3.492 1.746c-.44.221-.811.407-1.213.482a2.7 2.7 0 0 1-1.07 0c-.402-.075-.773-.261-1.213-.482L6.042 17.286c-.537-.267-.989-.493-1.332-.843a3.1 3.1 0 0 1-.669-1.084c-.159-.463-.159-.968-.158-1.568V9.206L1.281 7.906C1.077 7.804.872 7.701.712 7.602.556 7.505.288 7.323.135 7-.045 6.62-.045 6.18.135 5.8.288 5.477.556 5.295.712 5.198.872 5.099 1.077 4.996 1.281 4.894L10.879.095zm.805 12.61 5.198-2.599v3.566c0 .783-.012.96-.06 1.101c-.069.154-.178.291-.314.411c-.104.106-.257.195-.957.545l-3.3 1.65c-.572.286-.704.343-.826.366a1 1 0 0 1-.406 0c-.122-.023-.254-.08-.826-.366l-3.3-1.65c-.7-.35-.853-.439-.957-.545a1.3 1.3 0 0 1-.314-.411c-.048-.141-.06-.318-.06-1.101v-3.566l5.197 2.599c.254.127.552.127.805 0zM2.294 6.4 11.282 10.894 20.269 6.4 11.282 1.906 2.294 6.4z" fill="currentColor" fill-rule="evenodd"/></svg></div><span class="stat-val">${d.teachers||'-'}</span><div class="stat-lbl">교사 수</div></div>
+            <div class="stat-box"><div class="stat-ico" style="display:flex;justify-content:center;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.3 19.8" width="22" height="22"><path d="M8.75 1.8H4.1c-.575 0-.952.001-1.24.025-.278.022-.394.062-.459.095A.9.9 0 0 0 2.02 2.4c-.034.066-.073.181-.096.459-.023.288-.024.665-.024 1.24v11.6c0 .575.001.952.024 1.241.023.278.062.393.096.459a.9.9 0 0 0 .381.381c.065.033.181.072.459.095.288.024.665.025 1.24.025H12.2c.575 0 .952-.001 1.24-.025.278-.023.393-.062.459-.095a.9.9 0 0 0 .381-.381c.034-.066.073-.181.096-.459.023-.288.024-.665.024-1.24V7.8h-3.279c-.255 0-.497 0-.701-.017a1.5 1.5 0 0 1-1.111-.748 1.5 1.5 0 0 1-.136-.499C8.75 6.332 8.75 6.09 8.75 5.836V1.8zM13.227 6 10.55 3.323V5.9c0 .055.045.1.1.1H13.227z" fill="currentColor"/></svg></div><span class="stat-val">${d.per||'-'}</span><div class="stat-lbl">교사당 아동</div></div>
+          </div>
+          <div class="info-card">
+            <div class="irow"><span class="ik">충원율</span><span class="iv" style="color:${occ!=null?(occ>90?'var(--red)':'var(--green)'):'var(--text-alt)'}">${occ!=null?occ+'%':'-'}</span></div>
+            <div class="irow"><span class="ik">운영 시간</span><span class="iv">${d.hours||'-'}</span></div>
+            <div class="irow"><span class="ik">전화번호</span><span class="iv">${d.phone||'-'}</span></div>
+            <div class="irow"><span class="ik">CCTV 설치</span><span class="iv">${d.cctv?d.cctv+'대':'-'}</span></div>
+            <div class="irow"><span class="ik">정부 평가</span><span class="iv">${d.grade}등급</span></div>
+          </div>
+        </div>
+        <div class="detail-pad" id="dp-review" style="display:none">
+          <div class="review-notice"><span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg></span> 리뷰 중 다수가 <b style="color:var(--blue)">재원 인증</b> 부모의 리뷰예요</div>
+          ${REVIEWS.map((r,i)=>`
+            <div class="rv-item">
+              <div class="rv-top">
+                <div class="avatar" style="background:${AV_COLORS[i%AV_COLORS.length]}">${r.name[0]}</div>
+                <span class="rv-name">${r.name}</span>
+                <span class="vbadge ${r.lv===2?'v2':'v1'}">${r.lv===2?'카드인증':'재원확인'}</span>
+                <span class="rv-date">${r.date}</span>
+              </div>
+              <div class="rv-stars">${'★'.repeat(Math.round(r.rating))}${'☆'.repeat(5-Math.round(r.rating))} <span style="font-size:12px;color:var(--text-alt)">${r.kid}</span></div>
+              <div class="rv-txt">${r.text}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="detail-pad" id="dp-comm" style="display:none">
+          ${(()=>{const list=POSTS.filter(p=>p.instId===d.id);
+            return list.length?list.map(p=>`
+            <div class="qna-item" onclick="goPost('${p.id}')">
+              <div class="qna-cat">${p.cat}</div>
+              <div class="qna-title">${p.title}</div>
+              <div class="qna-meta">댓글 ${p.comments.length}개 · 좋아요 ${p.likes}</div>
+            </div>
+          `).join(''):`<div class="empty"><div class="empty-ico" style="display:flex;justify-content:center;color:var(--text-assist)">${SVG.chat(32)}</div><div class="empty-txt">아직 글이 없어요.<br>첫 글을 남겨보세요.</div></div>`;})()}
+          <div class="qna-cta" onclick="goWrite('${d.id}')">+ 질문 올리기</div>
+        </div>
+      </div>
+      <div class="detail-footer">
+        <button class="dftr-btn dftr-ghost" onclick="showToast('전화 연결 중...')"><span style='display:inline-flex;margin-right:5px'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"><path d="M6.54 5c.06.89.21 1.76.45 2.59l-1.2 1.2c-.41-1.2-.67-2.47-.76-3.79h1.51m9.86 12.02c.85.24 1.72.39 2.6.45v1.49c-1.32-.09-2.59-.35-3.8-.75l1.2-1.19M7.5 3H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1-1.24 0-2.45-.2-3.57-.57a.84.84 0 0 0-.31-.05c-.26 0-.51.1-.71.29l-2.2 2.2a15.149 15.149 0 0 1-6.59-6.59l2.2-2.2c.28-.28.38-.67.29-1.04C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1z" fill="currentColor"/></svg></span>전화하기</button>
+        <button class="dftr-btn dftr-solid" onclick="showToast('평가 기능은 준비 중이에요!')"><span style='display:inline-flex;margin-right:5px'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="15" height="15"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg></span>평가하기</button>
+      </div>
+    </div>
+  `;
+}
+
+function switchDTab(t){
+  ['info','review','comm'].forEach(k=>{
+    document.getElementById('dt-'+k)?.classList.toggle('on',k===t);
+    const p=document.getElementById('dp-'+k);
+    if(p)p.style.display=k===t?'':'none';
+  });
+}
+
+// ── 커뮤니티
+let curCommCat='all';   // 커뮤니티 카테고리 필터
+let curPostId=null;     // 현재 보는 글
+let writePreset=null;   // 작성 시 기관 프리셋(instId)
+let writeCat=null;      // 작성 카테고리
+
+const CAT_BADGE={'입소 Q&A':'badge-qa','생활 정보':'badge-info','나눔·공지':'badge-share'};
+
+function relTime(ts){
+  const diff=Math.floor((Date.now()-ts)/1000);
+  if(diff<60)return '방금 전';
+  if(diff<3600)return `${Math.floor(diff/60)}분 전`;
+  if(diff<86400)return `${Math.floor(diff/3600)}시간 전`;
+  if(diff<2592000)return `${Math.floor(diff/86400)}일 전`;
+  return `${Math.floor(diff/2592000)}개월 전`;
+}
+
+function goCommunity(){showScreen('community');renderCommunity();}
+
+function setCommCat(cat,el){
+  curCommCat=cat;
+  document.querySelectorAll('#community-chips .fchip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  renderCommunity();
+}
+
+function renderCommunity(){
+  const el=document.getElementById('community-list');
+  if(!el)return;
+  const list=POSTS
+    .filter(p=>curCommCat==='all'||p.cat===curCommCat)
+    .sort((a,b)=>b.createdAt-a.createdAt);
+  if(!list.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico" style="display:flex;justify-content:center;color:var(--text-assist)">${SVG.chat(32)}</div><div class="empty-txt">아직 글이 없어요.<br>첫 글을 남겨보세요.</div></div>`;
+    return;
+  }
+  el.innerHTML=list.map(p=>{
+    const inst=p.instId?DATA.find(x=>x.id===p.instId):null;
+    return `
+    <div class="post-card" onclick="goPost('${p.id}')">
+      <div class="post-card-top">
+        <span class="cat-badge ${CAT_BADGE[p.cat]}">${p.cat}</span>
+        ${inst?`<span class="inst-tag-chip">${svgSpan('pin','var(--text-alt)',11)} ${inst.name}</span>`:''}
+      </div>
+      <div class="post-card-title">${p.title}</div>
+      <div class="post-card-body">${p.body}</div>
+      <div class="post-card-meta">
+        <span>${p.author}</span>
+        <span>·</span>
+        <span>${relTime(p.createdAt)}</span>
+        <span class="pm-ico">${svgSpan('chat','var(--text-assist)',13)} ${p.comments.length}</span>
+        <span class="pm-ico">${svgSpan('heart','var(--text-assist)',13)} ${p.likes}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function goPost(id){
+  const p=POSTS.find(x=>x.id===id);
+  if(!p)return;
+  p.views++;
+  curPostId=id;
+  renderPost(p);
+  showScreen('post');
+}
+
+function renderPost(p){
+  const inst=p.instId?DATA.find(x=>x.id===p.instId):null;
+  const el=document.getElementById('post-scroll');
+  el.innerHTML=`
+    ${inst?`<div class="post-inst-chip" onclick="goDetail('${inst.id}')">${svgSpan('pin','var(--blue)',12)} ${inst.name}</div>`:''}
+    <div class="post-cat" style="margin-top:${inst?'12px':'0'}"><span class="cat-badge ${CAT_BADGE[p.cat]}">${p.cat}</span></div>
+    <div class="post-title">${p.title}</div>
+    <div class="post-author">
+      <div class="avatar" style="background:${AV_COLORS[p.author.charCodeAt(0)%AV_COLORS.length]}">${p.author[0]}</div>
+      <span class="post-author-name">${p.author}</span>
+      ${p.lv?`<span class="vbadge ${p.lv===2?'v2':'v1'}">${p.lv===2?'카드인증':'재원확인'}</span>`:''}
+      <span class="post-author-time">${relTime(p.createdAt)}</span>
+    </div>
+    <div class="post-body">${p.body}</div>
+    <div class="post-stats">
+      <span class="ps-item">${svgSpan('eye','var(--text-alt)',15)} 조회 ${p.views}</span>
+      <span class="ps-item">${svgSpan('heart','var(--text-alt)',14)} ${p.likes}</span>
+      <span class="ps-item">${svgSpan('chat','var(--text-alt)',14)} ${p.comments.length}</span>
+    </div>
+    <div class="post-actions">
+      <button class="post-act-btn${p.liked?' liked':''}" onclick="toggleLike('${p.id}')">${p.liked?svgSpan('heart','var(--red)',16):svgSpan('heartOutline','var(--text-alt)',16)} 좋아요 ${p.likes}</button>
+      <button class="post-act-btn" onclick="showToast('링크가 복사되었어요')">${svgSpan('share','var(--text)',15)} 공유</button>
+    </div>
+    <div class="comment-head">댓글 ${p.comments.length}</div>
+    <div class="comment-list" id="comment-list">
+      ${p.comments.length?p.comments.map(c=>`
+        <div class="comment-item">
+          <div class="comment-top">
+            <div class="avatar" style="width:24px;height:24px;font-size:11px;background:${AV_COLORS[c.author.charCodeAt(0)%AV_COLORS.length]}">${c.author[0]}</div>
+            <span class="comment-name">${c.author}</span>
+            ${c.lv?`<span class="vbadge ${c.lv===2?'v2':'v1'}">${c.lv===2?'카드인증':'재원확인'}</span>`:''}
+            <span class="comment-time">${relTime(c.createdAt)}</span>
+          </div>
+          <div class="comment-text">${c.text}</div>
+        </div>
+      `).join(''):`<div class="empty" style="padding:28px 20px"><div class="empty-txt">첫 댓글을 남겨보세요</div></div>`}
+    </div>
+  `;
+}
+
+function toggleLike(id){
+  const p=POSTS.find(x=>x.id===id);
+  if(!p)return;
+  p.liked=!p.liked;
+  p.likes+=p.liked?1:-1;
+  renderPost(p);
+}
+
+function addComment(){
+  const input=document.getElementById('comment-input');
+  const txt=input.value.trim();
+  if(!txt){
+    const bar=document.getElementById('comment-bar');
+    bar.classList.add('shake');
+    setTimeout(()=>bar.classList.remove('shake'),350);
+    showToast('댓글을 입력해주세요');
+    return;
+  }
+  const p=POSTS.find(x=>x.id===curPostId);
+  if(!p)return;
+  p.comments.push({author:'연남동 학부모',lv:0,text:txt,createdAt:Date.now()});
+  input.value='';
+  renderPost(p);
+  const sc=document.getElementById('post-scroll');
+  sc.scrollTop=sc.scrollHeight;
+}
+
+function goWrite(presetInstId){
+  writePreset=presetInstId||null;
+  writeCat=null;
+  document.getElementById('title-input').value='';
+  document.getElementById('body-textarea').value='';
+  document.querySelectorAll('#cat-select .fchip').forEach(c=>c.classList.remove('on'));
+  renderInstTag();
+  checkWriteValid();
+  showScreen('write');
+}
+
+function setWriteCat(cat,el){
+  writeCat=cat;
+  document.querySelectorAll('#cat-select .fchip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  checkWriteValid();
+}
+
+function renderInstTag(){
+  const el=document.getElementById('inst-tag-row');
+  if(writePreset){
+    const inst=DATA.find(x=>x.id===writePreset);
+    el.innerHTML=`<span class="inst-tag-active">${svgSpan('pin','var(--blue)',13)} ${inst?inst.name:'기관'}<span class="inst-tag-x" onclick="clearInstTag()">✕</span></span>`;
+  } else {
+    el.innerHTML=`<span class="inst-tag-none">연결된 기관 없음 (동네 전체 글)</span>`;
+  }
+}
+
+function clearInstTag(){writePreset=null;renderInstTag();}
+
+function checkWriteValid(){
+  const title=document.getElementById('title-input').value.trim();
+  const body=document.getElementById('body-textarea').value.trim();
+  const ok=writeCat&&title&&body;
+  document.getElementById('write-submit').classList.toggle('off',!ok);
+  return ok;
+}
+
+function submitPost(){
+  if(!checkWriteValid()){
+    showToast('카테고리·제목·내용을 모두 입력해주세요');
+    return;
+  }
+  const title=document.getElementById('title-input').value.trim();
+  const body=document.getElementById('body-textarea').value.trim();
+  const instId=writePreset;
+  POSTS.unshift({
+    id:'p'+Date.now(), cat:writeCat, title, body,
+    author:'연남동 학부모', lv:0, instId,
+    createdAt:Date.now(), views:0, likes:0, liked:false, comments:[]
+  });
+  goBack();
+  if(instId){
+    const el=document.getElementById('dp-comm');
+    if(el){
+      const list=POSTS.filter(p=>p.instId===instId);
+      el.innerHTML=(list.length?list.map(p=>`
+        <div class="qna-item" onclick="goPost('${p.id}')">
+          <div class="qna-cat">${p.cat}</div>
+          <div class="qna-title">${p.title}</div>
+          <div class="qna-meta">댓글 ${p.comments.length}개 · 좋아요 ${p.likes}</div>
+        </div>`).join(''):`<div class="empty"><div class="empty-ico" style="display:flex;justify-content:center;color:var(--text-assist)">${SVG.chat(32)}</div><div class="empty-txt">아직 글이 없어요.<br>첫 글을 남겨보세요.</div></div>`)+
+        `<div class="qna-cta" onclick="goWrite('${instId}')">+ 질문 올리기</div>`;
+    }
+  } else {
+    renderCommunity();
+  }
+  showToast('글이 등록되었어요');
+}
+
+// ── 토스트
+function showToast(msg){
+  const el=document.getElementById('toast-el');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+// ── 보육정보공개포털 API 연동
+// API 명세: arcode(시군구5자리) 단일 파라미터. 응답: crname/crtel/craddr/crcapat
+async function fetchChildcareData(arcode='11440') {
+  try {
+    const API_KEY = '331c32628aec465da2d3a695863ac314';
+    const apiEndpoint = `http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request?key=${API_KEY}&arcode=${arcode}&stcode=`;
+    const url = `https://corsproxy.io/?url=${encodeURIComponent(apiEndpoint)}`;
+    const res = await fetch(url);
+    const text = await res.text();
+    const xml = new DOMParser().parseFromString(text, 'text/xml');
+    // 에러 응답 체크 (errcode 태그로 오류 감지)
+    const errCode = xml.querySelector('errcode')?.textContent?.trim();
+    console.log('[아이봄] API arcode='+arcode+' errcode='+errCode+' items='+xml.querySelectorAll('item').length+' raw='+text.substring(0,200));
+    if (errCode) return null;
+
+    const items = xml.querySelectorAll('item');
+    if (!items.length) return null;
+
+    // 템플릿 응답 감지: sidoname이 숫자만 있으면 API가 스키마 예시를 반환한 것
+    const firstSido = items[0]?.querySelector('sidoname')?.textContent?.trim();
+    if (/^\d+$/.test(firstSido || '')) {
+      console.warn('[아이봄] API 템플릿 응답 감지 (sidoname='+firstSido+'), 더미 데이터로 폴백');
+      return null;
+    }
+
+    function inferType(name) {
+      if(/구립|시립|국공립|공립/.test(name)) return '국공립';
+      if(/직장/.test(name)) return '직장';
+      if(/가정/.test(name)) return '가정';
+      if(/유치원/.test(name)) return '유치원';
+      return '민간';
+    }
+
+    // 해시 기반 오프셋 (API la/lo가 비어있을 때 폴백)
+    const baseLat = curLat || 37.5665;
+    const baseLng = curLng || 126.978;
+    function nameHash(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+      return h;
+    }
+    return Array.from(items).map((el, i) => {
+      const get = tag => el.querySelector(tag)?.textContent?.trim() || '';
+      const name = get('crname') || '어린이집 ' + (i+1);
+      const type = inferType(name);
+      // API가 제공하는 실제 좌표 우선 사용, 없으면 해시 오프셋
+      const apiLat = parseFloat(get('la'));
+      const apiLng = parseFloat(get('lo'));
+      const h = nameHash(name);
+      const lat = (apiLat && apiLng) ? apiLat : baseLat + (((h & 0xFF) / 255) - 0.5) * 0.03;
+      const lng = (apiLat && apiLng) ? apiLng : baseLng + ((((h >> 8) & 0xFF) / 255) - 0.5) * 0.04;
+      const cap = parseInt(get('crcapat')) || 0;
+      const now = parseInt(get('crpop')) || 0;
+      const teachers = parseInt(get('crchcnt')) || 0;
+      const per = (teachers > 0 && now > 0) ? Math.round(now / teachers * 10) / 10 : 0;
+      return {
+        id: 'api-' + i,
+        name,
+        type,
+        grade: 'B',
+        rating: 4.0,
+        reviews: 0,
+        addr: get('craddr'),
+        dist: '거리 미상',
+        phone: get('crtelno'),
+        hours: '07:30 ~ 19:30',
+        cap,
+        now,
+        teachers,
+        per,
+        cctv: 0,
+        lat,
+        lng
+      };
+    });
+  } catch (e) {
+    console.warn('[아이봄] API 연동 실패, 더미 데이터 사용:', e.message);
+    return null;
+  }
+}
+
+// ── 초기 렌더
+async function initApp(){
+  const apiData = await fetchChildcareData();
+  if (apiData && apiData.length) {
+    DATA = apiData;
+    filtered = [...DATA];
+    updateHomeMapTxt();
+  }
+  renderHomeRows();
+  detectLocation();
+  setTimeout(initMiniMap, 600);
+}
+initApp();
+</script>
+</body>
+</html>
