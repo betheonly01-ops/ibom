@@ -2,3 +2,4 @@
 .netlify
 .gstack/
 config.js
+gen-suji-data.js

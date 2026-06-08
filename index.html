@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>아이봄</title>
 <script src="config.js"></script>
+<script src="suji-static.js"></script>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=3ny7sdsg44&submodules=geocoder"></script>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
@@ -1914,6 +1915,11 @@ function showToast(msg){
 // ── 보육정보공개포털 API 연동
 // API 명세: arcode(시군구5자리) 단일 파라미터. 응답: crname/crtel/craddr/crcapat
 async function fetchChildcareData(arcode='11440') {
+  // 수지구(41465) — 아이사랑 API 미지원 코드, 내장 정적 데이터 사용
+  if (arcode === '41465' && typeof SUJI_STATIC !== 'undefined' && SUJI_STATIC.length) {
+    console.log('[아이봄] 수지구 정적 데이터 사용:', SUJI_STATIC.length + '개');
+    return SUJI_STATIC;
+  }
   try {
     const API_KEY = window.IBOM_API_KEY || '';
     const apiEndpoint = `http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request?key=${API_KEY}&arcode=${arcode}&stcode=`;
