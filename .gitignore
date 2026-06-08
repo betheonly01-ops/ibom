@@ -3,3 +3,5 @@
 .gstack/
 config.js
 gen-suji-data.js
+test-api-coverage.js
+test-moi-codes.js
