@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+                                                                                                                ㄱ<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>아이봄</title>
+<script src="config.js"></script>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=3ny7sdsg44&submodules=geocoder"></script>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
@@ -420,6 +421,39 @@ html,body{
 
 /* ── 홈 지도 미리보기용 작은 맵 */
 #mini-map{width:100%;height:100%;}
+/* ── 평가 작성 화면 (C5) */
+#scr-review-write{background:var(--bg);}
+.rw-header{padding:env(safe-area-inset-top,44px) 16px 12px;display:flex;align-items:center;gap:8px;background:var(--bg);border-bottom:1px solid var(--line-soft);flex-shrink:0;}
+.rw-title-wrap{flex:1;}
+.rw-title{font-size:17px;font-weight:700;color:var(--text);}
+.rw-sub{font-size:12px;color:var(--text-alt);margin-top:1px;}
+.rw-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;}
+.rw-body::-webkit-scrollbar{display:none;}
+.rw-sec-label{font-size:12.5px;font-weight:700;color:var(--text-alt);margin-bottom:10px;}
+.rw-card{background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px 16px;margin-bottom:16px;}
+.rw-row{display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--line-soft);}
+.rw-row:last-child{border-bottom:none;}
+.rw-lbl-wrap{flex:1;}
+.rw-lbl{font-size:14.5px;font-weight:700;color:var(--text);}
+.rw-desc{font-size:11.5px;color:var(--text-alt);margin-top:2px;}
+.star-input-row{display:flex;gap:4px;}
+.star-btn{background:none;border:none;cursor:pointer;font-size:26px;line-height:1;padding:2px;color:var(--text-assist);transition:color .1s,transform .1s;-webkit-tap-highlight-color:transparent;}
+.star-btn.on{color:var(--star);}
+.star-btn:active{transform:scale(1.2);}
+.rw-text-card{background:var(--bg);border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:14px;margin-bottom:6px;}
+.rw-textarea{width:100%;min-height:96px;border:none;outline:none;font-size:14px;font-family:var(--font);color:var(--text);line-height:1.65;resize:none;background:transparent;}
+.rw-textarea::placeholder{color:var(--text-assist);}
+.rw-counter{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-alt);margin-bottom:16px;}
+.rw-notice{display:flex;align-items:flex-start;gap:8px;background:var(--bg-alt);border-radius:10px;padding:11px 13px;margin-bottom:16px;}
+.rw-notice-txt{font-size:12px;color:var(--text-alt);line-height:1.55;}
+.rw-footer{padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--line-soft);background:var(--bg);flex-shrink:0;}
+.rw-submit{width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;}
+/* ── 평가 완료 화면 (C6) */
+#scr-review-done{background:var(--bg);}
+.rwd-header{padding:env(safe-area-inset-top,44px) 16px 0;background:var(--bg);flex-shrink:0;min-height:calc(env(safe-area-inset-top,44px) + 16px);}
+.rwd-body{flex:1;overflow-y:auto;padding:16px 16px 24px;display:flex;flex-direction:column;}
+.rwd-footer{padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0;}
+.rwd-btn{width:100%;padding:15px;background:var(--bg-alt);color:var(--text);border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;}
 </style>
 </head>
 <body>
@@ -645,6 +679,59 @@ html,body{
         <div class="write-label">내용</div>
         <textarea class="body-textarea" id="body-textarea" placeholder="이웃과 나누고 싶은 이야기를 적어주세요" oninput="checkWriteValid()"></textarea>
       </div>
+    </div>
+  </div>
+
+    </div>
+
+  <!-- ══ 평가 작성 화면 (C5) ══ -->
+  <div class="screen hidden" id="scr-review-write">
+    <div class="rw-header">
+      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
+      <div class="rw-title-wrap">
+        <div class="rw-title">평가하기</div>
+        <div class="rw-sub" id="rw-inst-name"></div>
+      </div>
+    </div>
+    <div class="rw-body">
+      <div class="rw-sec-label">항목별 별점 (6개)</div>
+      <div class="rw-card" id="rw-rubric-rows"></div>
+      <div class="rw-sec-label">텍스트 리뷰</div>
+      <div class="rw-text-card">
+        <textarea class="rw-textarea" id="rw-text" placeholder="이 기관을 경험하며 느낀 점을 솔직하게 적어주세요. (최소 50자)" maxlength="1000" oninput="onRwTextInput()"></textarea>
+      </div>
+      <div class="rw-counter">
+        <span>최소 50자 이상</span>
+        <span id="rw-char-cnt"><b style="color:var(--blue)">0</b> / 1,000자</span>
+      </div>
+      <div class="rw-notice">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="flex-shrink:0;margin-top:1px"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0 4a1 1 0 0 1 1 1v5a1 1 0 1 1-2 0v-5a1 1 0 0 1 1-1z" fill="var(--text-assist)"/></svg>
+        <div class="rw-notice-txt">같은 기관에는 6개월에 1회 작성할 수 있어요. 등록 후에도 수정·삭제할 수 있습니다.</div>
+      </div>
+    </div>
+    <div class="rw-footer">
+      <button class="rw-submit" onclick="submitReview()">리뷰 등록하기</button>
+    </div>
+  </div>
+
+  <!-- ══ 평가 완료 화면 (C6) ══ -->
+  <div class="screen hidden" id="scr-review-done">
+    <div class="rwd-header"></div>
+    <div class="rwd-body">
+      <div style="text-align:center;margin-top:20px;margin-bottom:24px">
+        <div style="width:72px;height:72px;border-radius:36px;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="40" height="40"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="var(--green)"/></svg>
+        </div>
+        <div style="font-size:20px;font-weight:800;color:var(--text)">리뷰가 등록됐어요</div>
+        <div style="font-size:14px;color:var(--text-alt);margin-top:8px;line-height:1.65">솔직한 리뷰가<br>다른 부모님께 큰 도움이 됩니다.</div>
+      </div>
+      <div style="background:var(--bg-alt);border-radius:14px;padding:16px;display:flex;align-items:center;gap:12px">
+        <span style="font-size:22px;color:var(--star)">★</span>
+        <div style="font-size:13.5px;color:var(--text);line-height:1.5">평균 별점이 업데이트됐어요.<br>이웃들이 더 좋은 선택을 할 수 있어요.</div>
+      </div>
+    </div>
+    <div class="rwd-footer">
+      <button class="rwd-btn" onclick="goReviewDone()">확인</button>
     </div>
   </div>
 
@@ -875,6 +962,15 @@ const REVIEWS=[
   {name:'익명의 학부모 B',lv:2,rating:4.8,date:'2026.04',kid:'만 3세 재원',text:'적응 기간 2주 동안 매일 전화로 상황을 알려주셔서 정말 안심됐어요. 원장님도 학부모 의견을 적극적으로 반영해 주십니다.',instId:'b'},
   {name:'익명의 학부모 C',lv:1,rating:4.2,date:'2026.03',kid:'만 1세 재원',text:'시설은 깔끔하고 좋아요. 다만 하원 시간이 조금 빠듯해서 연장보육이 더 늘어나면 좋겠습니다.',instId:'c'},
 ];
+const RUBRIC=[
+  {key:'교사 친절도',desc:'선생님의 태도와 소통 방식'},
+  {key:'안전 및 위생',desc:'시설 청결도와 안전 환경'},
+  {key:'교육 프로그램',desc:'놀이·학습 프로그램의 질'},
+  {key:'급식 품질',desc:'식단 구성과 알레르기 대응'},
+  {key:'소통·투명성',desc:'알림장·행사 안내 등 소통'},
+  {key:'종합 만족도',desc:'전반적인 만족도'},
+];
+let rwScores=[5,5,4,4,5,5],rwInstId=null;
 const POSTS=[
   {id:'p1', cat:'입소 Q&A', title:'0세반 지금 신청하면 대기 몇 번이에요?',
    body:'이번 달에 입소 신청했는데 0세반 대기 순번이 어느 정도일지 궁금해요. 비슷한 시기 신청하신 분 계실까요? 보통 몇 달 정도 기다리는지도 알려주시면 감사하겠습니다.',
@@ -903,7 +999,7 @@ updateHomeMapTxt();
 
 // ── 상태
 let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],compare=new Set();
-let curScreen='home',prevScreen='home',segMode='map';
+let curScreen='home',prevScreen='home',segMode='map',curDetail=null;
 // ── 위치 상태
 let curLat=37.5600, curLng=126.9240;
 let curSidoCd='11', curSigunguCd='11440';
@@ -1172,6 +1268,7 @@ function goReviewDetail(idx){
 function goDetail(id){
   const d=DATA.find(x=>x.id===id);
   if(!d)return;
+  curDetail=d;
   document.getElementById('detail-htitle').textContent=d.name;
   renderDetail(d);
   showScreen('detail');
@@ -1483,7 +1580,7 @@ function renderDetail(d){
       </div>
       <div class="detail-footer">
         <button class="dftr-btn dftr-ghost" onclick="showToast('전화 연결 중...')"><span style='display:inline-flex;margin-right:5px'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"><path d="M6.54 5c.06.89.21 1.76.45 2.59l-1.2 1.2c-.41-1.2-.67-2.47-.76-3.79h1.51m9.86 12.02c.85.24 1.72.39 2.6.45v1.49c-1.32-.09-2.59-.35-3.8-.75l1.2-1.19M7.5 3H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1-1.24 0-2.45-.2-3.57-.57a.84.84 0 0 0-.31-.05c-.26 0-.51.1-.71.29l-2.2 2.2a15.149 15.149 0 0 1-6.59-6.59l2.2-2.2c.28-.28.38-.67.29-1.04C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1z" fill="currentColor"/></svg></span>전화하기</button>
-        <button class="dftr-btn dftr-solid" onclick="showToast('평가 기능은 준비 중이에요!')"><span style='display:inline-flex;margin-right:5px'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="15" height="15"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg></span>평가하기</button>
+        <button class="dftr-btn dftr-solid" onclick="goReviewWrite(curDetail)"><span style='display:inline-flex;margin-right:5px'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="15" height="15"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg></span>평가하기</button>
       </div>
     </div>
   `;
@@ -1701,6 +1798,52 @@ function submitPost(){
 }
 
 // ── 토스트
+
+// ── 평가 작성 (C5)
+function goReviewWrite(d){
+  if(!d)return;
+  rwInstId=d.id;
+  rwScores=[5,5,4,4,5,5];
+  document.getElementById('rw-inst-name').textContent=d.name;
+  document.getElementById('rw-text').value='';
+  document.getElementById('rw-char-cnt').innerHTML='<b style="color:var(--blue)">0</b> / 1,000자';
+  renderRubricRows();
+  showScreen('review-write');
+}
+function renderRubricRows(){
+  document.getElementById('rw-rubric-rows').innerHTML=RUBRIC.map((r,i)=>`
+    <div class="rw-row">
+      <div class="rw-lbl-wrap">
+        <div class="rw-lbl">${r.key}</div>
+        <div class="rw-desc">${r.desc}</div>
+      </div>
+      <div class="star-input-row" id="si-${i}">
+        ${[1,2,3,4,5].map(s=>`<button type="button" class="star-btn${s<=rwScores[i]?' on':''}" onclick="setRwScore(${i},${s})">★</button>`).join('')}
+      </div>
+    </div>`).join('');
+}
+function setRwScore(idx,val){
+  rwScores[idx]=val;
+  document.querySelectorAll(`#si-${idx} .star-btn`).forEach((b,j)=>b.classList.toggle('on',j<val));
+}
+function onRwTextInput(){
+  const len=document.getElementById('rw-text').value.length;
+  document.getElementById('rw-char-cnt').innerHTML=`<b style="color:var(--blue)">${len}</b> / 1,000자`;
+}
+function submitReview(){
+  const text=document.getElementById('rw-text').value.trim();
+  if(text.length<50){showToast('리뷰 내용을 50자 이상 입력해주세요');return;}
+  const inst=DATA.find(d=>d.id===rwInstId);
+  if(inst){
+    const avg=Math.round(rwScores.reduce((a,b)=>a+b,0)/rwScores.length*10)/10;
+    inst.rating=Math.round((inst.rating*inst.reviews+avg)/(inst.reviews+1)*10)/10;
+    inst.reviews+=1;
+    REVIEWS.unshift({name:'익명의 학부모',lv:1,rating:avg,date:new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'2-digit'}).replace('. ','년 ').replace('.','월'),kid:'재원 중',text,instId:rwInstId});
+  }
+  showScreen('review-done');
+}
+function goReviewDone(){if(curDetail)renderDetail(curDetail);showScreen('detail');}
+
 function showToast(msg){
   const el=document.getElementById('toast-el');
   el.textContent=msg;el.classList.add('show');
@@ -1712,7 +1855,7 @@ function showToast(msg){
 // API 명세: arcode(시군구5자리) 단일 파라미터. 응답: crname/crtel/craddr/crcapat
 async function fetchChildcareData(arcode='11440') {
   try {
-    const API_KEY = '331c32628aec465da2d3a695863ac314';
+    const API_KEY = window.IBOM_API_KEY || '';
     const apiEndpoint = `http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request?key=${API_KEY}&arcode=${arcode}&stcode=`;
     const url = `https://corsproxy.io/?url=${encodeURIComponent(apiEndpoint)}`;
     const res = await fetch(url);
