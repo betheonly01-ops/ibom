@@ -1153,12 +1153,32 @@ async function detectLocation(){
               DATA=apiData;filtered=[...DATA];
               renderHomeRows();
               if(mapReady){renderMarkers();_markersDirty=false;}else{_markersDirty=true;}
+            } else {
+              // 이 지역 API 데이터 없음 → 기존 핀 유지
+              if(mapReady){renderMarkers();}
+              showToast('이 지역 어린이집 정보를 불러올 수 없어요');
             }
           });
           return;
         }
         const res=resp.v2.results;
-        if(!res||!res.length)return;
+        if(!res||!res.length){
+          // admcode 결과 없음 → nearest-neighbor 폴백
+          const nearCode=_sggFromCoords(curLat,curLng);
+          curSidoCd=nearCode.substring(0,2);
+          curSigunguCd=nearCode;
+          fetchChildcareData(curSigunguCd).then(apiData=>{
+            if(apiData&&apiData.length){
+              DATA=apiData;filtered=[...DATA];
+              renderHomeRows();
+              if(mapReady){renderMarkers();_markersDirty=false;}else{_markersDirty=true;}
+            } else {
+              if(mapReady){renderMarkers();}
+              showToast('이 지역 어린이집 정보를 불러올 수 없어요');
+            }
+          });
+          return;
+        }
         const r=res[0].region;
         const dong=(r.area3&&r.area3.name)||r.area2.name;
         updateLocDisplay(dong);
@@ -1171,6 +1191,9 @@ async function detectLocation(){
               DATA=apiData;filtered=[...DATA];
               renderHomeRows();
               if(mapReady){renderMarkers();_markersDirty=false;}else{_markersDirty=true;}
+            } else {
+              if(mapReady){renderMarkers();}
+              showToast('이 지역 어린이집 정보를 불러올 수 없어요');
             }
           });
         }
