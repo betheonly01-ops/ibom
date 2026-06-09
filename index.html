@@ -10,8 +10,8 @@
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 :root{
-  --blue:#6FC0F0;--blue-weak:#E8F5FE;--blue-line:#B2D9F0;
-  --sky-strong:#3FA8E6;--sprout:#92C24F;--sprout-deep:#6FA438;--sprout-tint:#EEF6E1;--purple:#7A3DF5;
+  --blue:#0066FF;--blue-weak:#EAF2FE;--blue-line:#C9DEFE;
+  --purple:#7A3DF5;
   --text:rgba(46,47,51,0.88);--text-alt:rgba(55,56,60,0.61);--text-assist:rgba(55,56,60,0.28);
   --line:rgba(112,115,124,0.22);--line-soft:rgba(112,115,124,0.12);
   --bg:#fff;--bg-alt:#F7F7F8;
@@ -100,7 +100,7 @@ html,body{
 }
 .mc-btn-outline{background:var(--bg-alt);color:var(--text);}
 .mc-btn-solid{background:var(--blue);color:#fff;}
-.mc-btn-solid:hover{background:var(--sky-strong);}
+.mc-btn-solid:hover{background:#0054D1;}
 
 /* 내 위치 버튼 */
 .btn-my-loc{
@@ -112,7 +112,7 @@ html,body{
 }
 .btn-my-loc:active{box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .btn-my-loc.locating{animation:loc-pulse .8s ease-in-out infinite alternate;}
-@keyframes loc-pulse{from{box-shadow:0 2px 10px rgba(111,192,240,.35);}to{box-shadow:0 2px 16px rgba(111,192,240,.6);}}
+@keyframes loc-pulse{from{box-shadow:0 2px 10px rgba(0,102,255,.2);}to{box-shadow:0 2px 16px rgba(0,102,255,.5);}}
 
 /* 비교 바 */
 .compare-bar{
@@ -120,7 +120,7 @@ html,body{
   background:var(--blue);border-radius:12px;padding:15px;
   display:flex;align-items:center;justify-content:center;gap:8px;
   font-size:15px;font-weight:700;color:#fff;cursor:pointer;
-  box-shadow:0 6px 20px rgba(111,192,240,0.45);
+  box-shadow:0 6px 20px rgba(0,102,255,0.4);
   transform:translateY(120%);transition:transform .3s .1s cubic-bezier(.4,0,.2,1);
 }
 .compare-bar.show{transform:translateY(0);}
@@ -189,7 +189,7 @@ html,body{
 .btn-compare{
   width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;
   font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;
-  box-shadow:0 4px 16px rgba(111,192,240,0.4);
+  box-shadow:0 4px 16px rgba(0,102,255,0.3);
 }
 
 /* ── 상세 화면 */
@@ -223,14 +223,6 @@ html,body{
 .detail-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .detail-scroll::-webkit-scrollbar{display:none;}
 .detail-pad{padding:16px;}
-.detail-footer{
-  padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));
-  border-top:1px solid var(--line-soft);display:flex;gap:9px;flex-shrink:0;background:var(--bg);
-}
-.dftr-btn{flex:1;padding:14px;border-radius:12px;font-size:14px;font-weight:700;font-family:var(--font);border:none;cursor:pointer;}
-.dftr-ghost{background:var(--bg-alt);color:var(--text);}
-.dftr-solid{background:var(--blue);color:#fff;}
-
 /* 정보 섹션 */
 .sec-label{font-size:12px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;margin-bottom:10px;}
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
@@ -246,11 +238,11 @@ html,body{
 
 /* 뱃지 공통 */
 .badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.02em;}
-.b-국공립{color:var(--sky-strong);background:var(--blue-weak);}
+.b-국공립{color:#0066FF;background:#EAF2FE;}
 .b-민간{color:#00A36B;background:#E3F9EF;}
-.b-가정{color:var(--orange);background:var(--orange-bg);}
-.b-직장{color:var(--purple);background:#F1ECFE;}
-.b-유치원{color:#E5484D;background:var(--red-bg);}
+.b-가정{color:#FF9200;background:#FEF4E6;}
+.b-직장{color:#7A3DF5;background:#F1ECFE;}
+.b-유치원{color:#E5484D;background:#FEECEC;}
 .grade{display:inline-flex;align-items:center;font-size:11px;font-weight:800;padding:2px 7px;border-radius:5px;}
 .gA{color:var(--green-text);background:var(--green-bg);}
 .gB{color:var(--blue);background:var(--blue-weak);}
@@ -268,7 +260,7 @@ html,body{
 .rv-top{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
 .avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;flex-shrink:0;}
 .rv-name{font-size:13.5px;font-weight:700;color:var(--text);}
-.vbadge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:1000px;}
+.vbadge{display:inline-flex;align-items:center;gap:2px;font-size:11px;font-weight:700;padding:2px 7px;border-radius:1000px;}
 .v2{color:var(--blue);background:var(--blue-weak);}
 .v1{color:#5A5C63;background:#EEEFF1;}
 .rv-date{margin-left:auto;font-size:11.5px;color:var(--text-assist);}
@@ -310,7 +302,7 @@ html,body{
   position:absolute;right:18px;bottom:calc(var(--nav-h) + 18px);z-index:25;
   width:54px;height:54px;border-radius:50%;background:var(--blue);border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;color:#fff;
-  box-shadow:0 6px 20px rgba(111,192,240,0.45);transition:transform .15s;
+  box-shadow:0 6px 20px rgba(0,102,255,0.4);transition:transform .15s;
 }
 .fab-write:active{transform:scale(0.92);}
 
@@ -466,7 +458,7 @@ html,body{
 .seed-card{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:background .12s;}
 .seed-card:active{background:var(--bg-alt);}
 .seed-card-cat{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:7px;}
-.seed-card-cat.c-qa{color:var(--sky-strong);background:var(--blue-weak);}
+.seed-card-cat.c-qa{color:#0066FF;background:#EAF2FE;}
 .seed-card-cat.c-life{color:var(--green-text);background:var(--green-bg);}
 .seed-card-cat.c-share{color:var(--orange-text);background:var(--orange-bg);}
 .seed-card-q{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.45;}
@@ -526,7 +518,7 @@ html,body{
 .my-row-ttl{font-size:14.5px;font-weight:600;color:var(--text);flex:1;}
 .my-row-val{font-size:13px;color:var(--text-alt);}
 .vbadge-lv{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:11.5px;font-weight:700;}
-.vbadge-lv.lv2{background:var(--blue-weak);color:var(--sky-strong);}
+.vbadge-lv.lv2{background:var(--blue-weak);color:var(--blue);}
 .vbadge-lv.lv1{background:var(--bg-alt);color:var(--text-alt);}
 /* ── 평가 완료 화면 (C6) */
 #scr-review-done{background:var(--bg);}
@@ -542,12 +534,6 @@ html,body{
   <!-- ══ 홈 화면 ══ -->
   <div class="screen" id="scr-home">
     <div class="home-top">
-      <div class="home-loc" onclick="openRegionSheet()" style="cursor:pointer">
-        <span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="20" height="20"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span>
-        <span class="home-loc-txt">연남동</span>
-        <span style="color:var(--text-alt);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path d="M4.464 8.464a.9.9 0 0 1 1.272 0L12 14.728l6.264-6.264a.9.9 0 1 1 1.272 1.272l-6.9 6.9a.9.9 0 0 1-1.272 0l-6.9-6.9a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg></span>
-        <span style="margin-left:auto;color:var(--text);cursor:pointer;display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.325 19.8" width="22" height="22"><path d="M9.163 0C6.938 0 5.108.788 3.851 2.274 2.611 3.74 2.013 5.783 2.013 8.15v.75c0 2.465-.683 3.925-1.656 4.868-.382.37-.422.882-.285 1.258.138.383.519.774 1.09.774H17.163c.572 0 .953-.391 1.091-.774.136-.376.097-.888-.285-1.258-.973-.943-1.656-2.403-1.656-4.868v-.75c0-2.367-.598-4.41-1.838-5.876C13.217.788 11.388 0 9.163 0zM3.813 8.15c0-2.085.527-3.667 1.412-4.713C6.092 2.411 7.388 1.8 9.163 1.8s3.071.611 3.938 1.637c.885 1.046 1.412 2.628 1.412 4.713v.75c0 2.163.468 3.827 1.319 5.1H2.494c.851-1.273 1.319-2.937 1.319-5.1v-.75z" fill="currentColor" fill-rule="evenodd"/><path d="M7.163 18a.9.9 0 0 0 0 1.8h4a.9.9 0 0 0 0-1.8h-4z" fill="currentColor"/></svg></span>
-      </div>
       <button class="home-search" onclick="goExploreKeepRegion()">
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
         <span style="font-size:14.5px;color:var(--text-assist)">어린이집·유치원 이름 검색</span>
@@ -582,7 +568,7 @@ html,body{
       </div>
     </div>
 
-    <div class="bottom-nav"><button class="nav-item" onclick="goHome()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:var(--blue)">홈</span></button><button class="nav-item" onclick="goExploreKeepRegion()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">탐색</span></button><button class="nav-item" onclick="goCommunity()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">커뮤니티</span></button><button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">관심</span></button><button class="nav-item" onclick="goMy()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">MY</span></button></div>
+    <div class="bottom-nav"><button class="nav-item" onclick="goHome()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:var(--blue)">홈</span></button><button class="nav-item" onclick="goExploreKeepRegion()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">탐색</span></button><button class="nav-item" onclick="goCommunity()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 3C7 3 3 6.8 3 11.5c0 2.5 1.1 4.8 2.9 6.4L5 21l3.3-1.4C9.4 19.9 10.7 20 12 20c5 0 9-3.8 9-8.5S17 3 12 3z"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">커뮤니티</span></button><button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">관심</span></button><button class="nav-item" onclick="goMy()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:8px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span style="font-size:10px;font-weight:600;color:rgba(55,56,60,0.28)">MY</span></button></div>
   </div>
 
   <!-- ══ 탐색(지도) 화면 ══ -->
@@ -617,7 +603,7 @@ html,body{
 
     <!-- 내 위치 플로팅 버튼 -->
     <button class="btn-my-loc" id="btn-my-loc" onclick="goMyLocation()" title="내 위치로 이동">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--sky-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="8" stroke-width="1.5" stroke-dasharray="2 2"/>
       </svg>
     </button>
@@ -628,11 +614,11 @@ html,body{
     </div>
 
     <div class="bottom-nav">
-      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span class="nav-lbl">홈</span></button>
+      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V21H15v-6H9v6H3V10.5z"/></svg></span><span class="nav-lbl">홈</span></button>
       <button class="nav-item on" onclick="goExplore()"><span class="nav-ico" style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl" style="color:var(--blue)">탐색</span></button>
-      <button class="nav-item" onclick="goCommunity()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
+      <button class="nav-item" onclick="goCommunity()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 3C7 3 3 6.8 3 11.5c0 2.5 1.1 4.8 2.9 6.4L5 21l3.3-1.4C9.4 19.9 10.7 20 12 20c5 0 9-3.8 9-8.5S17 3 12 3z"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
       <button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">관심</span></button>
-      <button class="nav-item" onclick="goMy()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span class="nav-lbl">MY</span></button>
+      <button class="nav-item" onclick="goMy()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span class="nav-lbl">MY</span></button>
     </div>
   </div>
 
@@ -669,11 +655,11 @@ html,body{
       </button>
     </div>
     <div class="bottom-nav">
-      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span class="nav-lbl">홈</span></button>
+      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V21H15v-6H9v6H3V10.5z"/></svg></span><span class="nav-lbl">홈</span></button>
       <button class="nav-item on"><span class="nav-ico" style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl" style="color:var(--blue)">탐색</span></button>
-      <button class="nav-item" onclick="goCommunity()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
+      <button class="nav-item" onclick="goCommunity()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 3C7 3 3 6.8 3 11.5c0 2.5 1.1 4.8 2.9 6.4L5 21l3.3-1.4C9.4 19.9 10.7 20 12 20c5 0 9-3.8 9-8.5S17 3 12 3z"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
       <button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">관심</span></button>
-      <button class="nav-item" onclick="goMy()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span class="nav-lbl">MY</span></button>
+      <button class="nav-item" onclick="goMy()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span class="nav-lbl">MY</span></button>
     </div>
   </div>
 
@@ -692,7 +678,7 @@ html,body{
       <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
       <span class="detail-htitle" id="detail-htitle"></span>
       <button class="hdr-icon-btn" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="22" height="22"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></button>
-      <button class="hdr-icon-btn" onclick="showToast('공유 링크를 복사했어요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="22" height="22"><path d="M14 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM6 9a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm8 5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Zm-1.17-4.83a.9.9 0 0 1 1.17-.1l.1.1 2 2a.9.9 0 0 1-1.17 1.37l-.1-.1-2-2a.9.9 0 0 1 0-1.27Zm.1-4.27-.1.1-2 2a.9.9 0 0 1-1.27-1.27l.1-.1 2-2a.9.9 0 0 1 1.27 1.27Z" fill="currentColor" fill-rule="evenodd"/></svg></button>
+      <button class="hdr-icon-btn" onclick="showToast('공유 링크를 복사했어요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="22" height="22"><circle cx="15" cy="3" r="2.5" fill="currentColor"/><circle cx="15" cy="17" r="2.5" fill="currentColor"/><circle cx="5" cy="10" r="2.5" fill="currentColor"/><line x1="7.3" y1="11.2" x2="12.7" y2="15.8" stroke="currentColor" stroke-width="1.5"/><line x1="7.3" y1="8.8" x2="12.7" y2="4.2" stroke="currentColor" stroke-width="1.5"/></svg></button>
     </div>
     <div id="detail-content" style="flex:1;display:flex;flex-direction:column;overflow:hidden;"></div>
   </div>
@@ -717,11 +703,11 @@ html,body{
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
     </button>
     <div class="bottom-nav">
-      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span class="nav-lbl">홈</span></button>
+      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V21H15v-6H9v6H3V10.5z"/></svg></span><span class="nav-lbl">홈</span></button>
       <button class="nav-item" onclick="goExplore()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">탐색</span></button>
       <button class="nav-item on" onclick="goCommunity()"><span class="nav-ico" style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg></span><span class="nav-lbl" style="color:var(--blue)">커뮤니티</span></button>
       <button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">관심</span></button>
-      <button class="nav-item" onclick="goMy()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></span><span class="nav-lbl">MY</span></button>
+      <button class="nav-item" onclick="goMy()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span class="nav-lbl">MY</span></button>
     </div>
   </div>
 
@@ -869,7 +855,7 @@ html,body{
       <div class="my-card">
         <div class="my-row" onclick="showToast('재원 인증 관리 기능은 v1.1에서 오픈 예정이에요!')">
           <div class="my-row-ico" style="background:var(--blue-weak);">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="18" height="18" style="color:var(--sky-strong)"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="18" height="18" style="color:var(--blue)"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
           </div>
           <div style="flex:1">
             <div class="my-row-ttl">현재 인증 단계</div>
@@ -878,8 +864,8 @@ html,body{
           <span class="vbadge-lv lv2">Lv.2</span>
         </div>
         <div class="my-row" onclick="showToast('아이사랑 OAuth 인증은 v1.1에서 오픈 예정이에요!')">
-          <div class="my-row-ico" style="background:var(--sprout-tint);">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--sprout-deep)"><path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm-1 6v5.586l-3.707 3.707 1.414 1.414L12.414 14H17v-2h-3.586L13 8H11z" fill="currentColor"/></svg>
+          <div class="my-row-ico" style="background:var(--blue-weak);">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--blue)"><path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm-1 6v5.586l-3.707 3.707 1.414 1.414L12.414 14H17v-2h-3.586L13 8H11z" fill="currentColor"/></svg>
           </div>
           <div style="flex:1">
             <div class="my-row-ttl">Lv.3으로 업그레이드</div>
@@ -901,7 +887,7 @@ html,body{
         </div>
         <div class="my-row" onclick="showToast('커뮤니티 활동 내역은 v1.1에서 오픈 예정이에요!')">
           <div class="my-row-ico" style="background:var(--blue-weak);">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="17" height="17" style="color:var(--sky-strong)"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="17" height="17" style="color:var(--blue)"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z" fill="currentColor"/></svg>
           </div>
           <span class="my-row-ttl">커뮤니티 답변</span>
           <span class="my-row-val">5개</span>
@@ -944,7 +930,7 @@ html,body{
     <div class="cs-drag"></div>
     <div class="cs-inst-row" id="cs-inst-row">
       <div class="cs-inst-ico">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--sky-strong)"><path d="M12 2 1 7v2h22V7L12 2zm-7 9v7H3v2h18v-2h-2v-7h-2v7h-3v-7h-2v7H8v-7H5z" fill="currentColor"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--blue)"><path d="M12 2 1 7v2h22V7L12 2zm-7 9v7H3v2h18v-2h-2v-7h-2v7h-3v-7h-2v7H8v-7H5z" fill="currentColor"/></svg>
       </div>
       <span id="cs-inst-name" style="font-size:13px;font-weight:600;color:var(--text-alt)"></span>
     </div>
@@ -952,7 +938,7 @@ html,body{
     <textarea class="cs-textarea" id="cs-textarea" placeholder="재원 경험을 바탕으로 솔직하게 적어주세요" oninput="onCsInput()"></textarea>
     <div class="cs-footer">
       <span class="cs-user-note">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="12" height="12" style="color:var(--sky-strong);vertical-align:middle;margin-right:3px"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="12" height="12" style="color:var(--blue);vertical-align:middle;margin-right:3px"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
         김지수 · 재원인증 회원으로 등록돼요
       </span>
       <span class="cs-char-cnt" id="cs-char-cnt">0</span>
@@ -1153,7 +1139,7 @@ function _sggFromCoords(lat, lng) {
 }
 const HUES={'국공립':210,'민간':150,'가정':30,'직장':270,'유치원':0};
 const EMOJIS={'국공립':'🏛','민간':'🏢','가정':'🏠','직장':'🏭','유치원':'🎒'};
-const TC={'국공립':'#3FA8E6','민간':'#00A36B','가정':'#FF9200','직장':'#7A3DF5','유치원':'#E5484D'};
+const TC={'국공립':'#0066FF','민간':'#00A36B','가정':'#FF9200','직장':'#7A3DF5','유치원':'#E5484D'};
 
 // ── 인라인 SVG 아이콘 헬퍼 (홈화면과 동일 패턴: fill=currentColor, 부모 span color로 색 제어)
 const SVG={
@@ -1176,7 +1162,7 @@ const HERO_ICONS={'국공립':'heroGongl','민간':'heroMinkan','가정':'heroGa
 function svgSpan(svg,color,size,opt){
   return `<span style="display:inline-flex;align-items:center;color:${color}${opt||''}">${SVG[svg](size)}</span>`;
 }
-const AV_COLORS=['#3FA8E6','#00A36B','#FF9200','#7A3DF5','#E5484D'];
+const AV_COLORS=['#0066FF','#00A36B','#FF9200','#7A3DF5','#E5484D'];
 
 let DATA=[
   {id:'a',name:'연남숲어린이집',type:'국공립',grade:'A',rating:4.7,reviews:38,addr:'서울 마포구 연남동 568-12',dist:'240m',phone:'02-336-0480',hours:'07:30~19:30 (연장~20:00)',cap:99,now:92,teachers:14,per:6.6,cctv:12,lat:37.5598,lng:126.9242},
@@ -1247,6 +1233,7 @@ updateHomeMapTxt();
 // ── 상태
 let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],compare=new Set();
 let curScreen='home',prevScreen='home',segMode='map',curDetail=null;
+const screenStack=[];
 // ── 위치 상태
 let curLat=37.5600, curLng=126.9240;
 let curSidoCd='11', curSigunguCd='11440';
@@ -1365,7 +1352,7 @@ function _applyMyLocationToMap(lat,lng){
   myLocMarker=new naver.maps.Marker({
     position:new naver.maps.LatLng(lat,lng),map,
     icon:{
-      content:'<div style="width:16px;height:16px;border-radius:50%;background:#3FA8E6;border:3px solid #fff;box-shadow:0 2px 6px rgba(63,168,230,.4)"></div>',
+      content:'<div style="width:16px;height:16px;border-radius:50%;background:#0066FF;border:3px solid #fff;box-shadow:0 2px 6px rgba(0,102,255,.4)"></div>',
       anchor:new naver.maps.Point(8,8)
     }
   });
@@ -1456,15 +1443,18 @@ function showScreen(id){
   prev.classList.add('back');
   prev.classList.remove('on-screen');
   next.classList.remove('hidden','back');
+  screenStack.push(curScreen);
   prevScreen=curScreen;curScreen=id;
   setTimeout(()=>{prev.classList.add('hidden');prev.classList.remove('back');},280);
 }
 function goBack(){
   const cur=document.getElementById('scr-'+curScreen);
-  const prev=document.getElementById('scr-'+prevScreen);
+  const target=screenStack.length>0?screenStack.pop():prevScreen;
+  const prev=document.getElementById('scr-'+target);
   cur.classList.add('hidden');
   prev.classList.remove('hidden','back');
-  const tmp=curScreen;curScreen=prevScreen;prevScreen=tmp;
+  prevScreen=screenStack.length>0?screenStack[screenStack.length-1]:target;
+  curScreen=target;
 }
 function goMyLocation(){
   if(!navigator.geolocation){showToast('위치 서비스를 지원하지 않는 브라우저예요');return;}
@@ -1643,7 +1633,7 @@ function renderMarkers(){
   if(!mapReady){_markersDirty=true;return;} // 맵 resize 전이면 보류, 준비 완료 시 자동 재렌더
   clearMarkers();
   filtered.forEach(d=>{
-    const c=TC[d.type]||'#6FC0F0';const active=d.id===curSel;
+    const c=TC[d.type]||'#0066FF';const active=d.id===curSel;
     const m=new naver.maps.Marker({
       position:new naver.maps.LatLng(d.lat,d.lng),map,
       icon:{
@@ -1801,7 +1791,7 @@ function renderDetail(d){
   const occ=(d.now&&d.cap)?Math.round(d.now/d.cap*100):null;
   const el=document.getElementById('detail-content');
   el.innerHTML=`
-    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;">
       <div class="detail-hero" style="background:linear-gradient(135deg,hsl(${HUES[d.type]} 52% 72%),hsl(${HUES[d.type]} 46% 56%))"><span style="display:flex;align-items:center;justify-content:center;color:#fff">${SVG[HERO_ICONS[d.type]||'heroGongl'](64)}</span></div>
       <div class="detail-body-top">
         <div class="detail-badges">
@@ -1825,18 +1815,46 @@ function renderDetail(d){
       </div>
       <div class="detail-scroll">
         <div class="detail-pad" id="dp-info">
-          <div class="sec-label"><span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg></span> 아이사랑 포털 공식 정보</div>
-          <div class="stat-grid">
-            <div class="stat-box"><div class="stat-ico" style="display:flex;justify-content:center;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="22" height="22"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0s4.4 1.97 4.4 4.4-1.97 4.4-4.4 4.4S4.5 6.83 4.5 4.4z" fill="currentColor"/><path d="M8.9 10.746c-2.312 0-4.469.453-6.084 1.322C1.203 12.937 0 14.312 0 16.146v.328c0 .186 0 .376.013.539.015.181.051.405.167.633.158.311.41.563.721.721.228.117.452.152.633.167.163.013.353.013.539.013h13.654c.186 0 .376 0 .539-.013.181-.015.405-.05.633-.167.311-.158.563-.41.721-.721.116-.228.152-.452.167-.633C17.8 16.85 17.8 16.66 17.8 16.473v-.327c0-1.834-1.203-3.209-2.816-4.078-1.615-.869-3.772-1.322-6.084-1.322z" fill="currentColor"/></svg></div><span class="stat-val">${d.now||'-'}</span><div class="stat-lbl">현원 (정원${d.cap||'-'})</div></div>
-            <div class="stat-box"><div class="stat-ico" style="display:flex;justify-content:center;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22.564 19.564" width="22" height="22"><path d="M10.879.095c.254-.127.552-.127.805 0l9.599 4.799c.204.102.409.205.569.304.156.097.423.279.577.602.101.213.145.444.133.674v5.926a.9.9 0 0 1-1.8 0V8.166l-2.08 1.04v4.585c.001.6.001 1.105-.159 1.568a3.1 3.1 0 0 1-.669 1.084c-.343.35-.795.576-1.332.843l-3.492 1.746c-.44.221-.811.407-1.213.482a2.7 2.7 0 0 1-1.07 0c-.402-.075-.773-.261-1.213-.482L6.042 17.286c-.537-.267-.989-.493-1.332-.843a3.1 3.1 0 0 1-.669-1.084c-.159-.463-.159-.968-.158-1.568V9.206L1.281 7.906C1.077 7.804.872 7.701.712 7.602.556 7.505.288 7.323.135 7-.045 6.62-.045 6.18.135 5.8.288 5.477.556 5.295.712 5.198.872 5.099 1.077 4.996 1.281 4.894L10.879.095zm.805 12.61 5.198-2.599v3.566c0 .783-.012.96-.06 1.101c-.069.154-.178.291-.314.411c-.104.106-.257.195-.957.545l-3.3 1.65c-.572.286-.704.343-.826.366a1 1 0 0 1-.406 0c-.122-.023-.254-.08-.826-.366l-3.3-1.65c-.7-.35-.853-.439-.957-.545a1.3 1.3 0 0 1-.314-.411c-.048-.141-.06-.318-.06-1.101v-3.566l5.197 2.599c.254.127.552.127.805 0zM2.294 6.4 11.282 10.894 20.269 6.4 11.282 1.906 2.294 6.4z" fill="currentColor" fill-rule="evenodd"/></svg></div><span class="stat-val">${d.teachers||'-'}</span><div class="stat-lbl">교사 수</div></div>
-            <div class="stat-box"><div class="stat-ico" style="display:flex;justify-content:center;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.3 19.8" width="22" height="22"><path d="M8.75 1.8H4.1c-.575 0-.952.001-1.24.025-.278.022-.394.062-.459.095A.9.9 0 0 0 2.02 2.4c-.034.066-.073.181-.096.459-.023.288-.024.665-.024 1.24v11.6c0 .575.001.952.024 1.241.023.278.062.393.096.459a.9.9 0 0 0 .381.381c.065.033.181.072.459.095.288.024.665.025 1.24.025H12.2c.575 0 .952-.001 1.24-.025.278-.023.393-.062.459-.095a.9.9 0 0 0 .381-.381c.034-.066.073-.181.096-.459.023-.288.024-.665.024-1.24V7.8h-3.279c-.255 0-.497 0-.701-.017a1.5 1.5 0 0 1-1.111-.748 1.5 1.5 0 0 1-.136-.499C8.75 6.332 8.75 6.09 8.75 5.836V1.8zM13.227 6 10.55 3.323V5.9c0 .055.045.1.1.1H13.227z" fill="currentColor"/></svg></div><span class="stat-val">${d.per||'-'}</span><div class="stat-lbl">교사당 아동</div></div>
+          <!-- 학부모 종합 평점 -->
+          <div style="font-size:15px;font-weight:800;color:var(--text);margin:16px 0 10px;">학부모 종합 평점</div>
+          <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;align-items:center;gap:16px;margin-bottom:20px;box-shadow:0 1px 2px rgba(23,23,23,0.04);">
+            <div style="text-align:center;flex-shrink:0;">
+              <div style="font-size:36px;font-weight:800;color:var(--text);line-height:1;">${d.rating}</div>
+              <div style="color:var(--star);font-size:13px;margin:4px 0;">★★★★★</div>
+              <div style="font-size:11.5px;color:var(--text-alt);">리뷰 ${d.reviews}</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:7px;">
+              ${['교사 친절도','안전·위생','교육 프로그램','급식 품질','소통·투명성'].map((lbl,i)=>{
+                const val=(d.rating-0.2+i*0.1).toFixed(1);
+                const pct=Math.round(parseFloat(val)/5*100);
+                return `<div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:11.5px;color:var(--text-alt);width:64px;flex-shrink:0;">${lbl}</span>
+                  <div style="flex:1;height:5px;background:var(--bg-alt);border-radius:3px;overflow:hidden;">
+                    <div style="width:${pct}%;height:100%;background:var(--star);border-radius:3px;"></div>
+                  </div>
+                  <span style="font-size:11.5px;color:var(--text-alt);width:22px;text-align:right;">${val}</span>
+                </div>`;
+              }).join('')}
+            </div>
           </div>
-          <div class="info-card">
-            <div class="irow"><span class="ik">충원율</span><span class="iv" style="color:${occ!=null?(occ>90?'var(--red)':'var(--green)'):'var(--text-alt)'}">${occ!=null?occ+'%':'-'}</span></div>
-            <div class="irow"><span class="ik">운영 시간</span><span class="iv">${d.hours||'-'}</span></div>
-            <div class="irow"><span class="ik">전화번호</span><span class="iv">${d.phone||'-'}</span></div>
-            <div class="irow"><span class="ik">CCTV 설치</span><span class="iv">${d.cctv?d.cctv+'대':'-'}</span></div>
-            <div class="irow"><span class="ik">정부 평가</span><span class="iv">${d.grade}등급</span></div>
+          <!-- 기본 정보 -->
+          <div style="font-size:15px;font-weight:800;color:var(--text);margin:0 0 10px;">기본 정보</div>
+          <div style="background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(23,23,23,0.04);margin-bottom:20px;">
+            ${[
+              ['정원 / 현원',`${d.cap||'-'}명 / ${d.now||'-'}명`],
+              ['교사 수',`${d.teachers||'-'}명`],
+              ['교사 1인당 아동',`${d.per||'-'}명`],
+              ['충원율',`${d.now&&d.cap?Math.round(d.now/d.cap*100)+'%':'-'}`],
+              ['운영 시간',d.hours||'-'],
+              ['전화번호',d.phone||'-'],
+              ['CCTV 설치',d.cctv?d.cctv+'대':'-'],
+              ['정부 평가',d.grade?d.grade+'등급':'-'],
+            ].map(([k,v],i,a)=>`
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 16px;${i<a.length-1?'border-bottom:1px solid var(--line-soft)':''}">
+                <span style="font-size:14px;color:var(--text-alt);">${k}</span>
+                <span style="font-size:14px;font-weight:700;color:var(--text);">${v}</span>
+              </div>
+            `).join('')}
           </div>
         </div>
         <div class="detail-pad" id="dp-review" style="display:none">
@@ -1846,7 +1864,10 @@ function renderDetail(d){
               <div class="rv-top">
                 <div class="avatar" style="background:${AV_COLORS[i%AV_COLORS.length]}">${r.name[0]}</div>
                 <span class="rv-name">${r.name}</span>
-                <span class="vbadge ${r.lv===2?'v2':'v1'}">${r.lv===2?'카드인증':'재원확인'}</span>
+                <span class="vbadge ${r.lv===2?'v2':'v1'}">${r.lv===2?
+                  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="11" height="11"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg> 카드인증` :
+                  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="11" height="11"><path d="M9.9 0C4.432 0 0 4.432 0 9.9s4.432 9.9 9.9 9.9 9.9-4.432 9.9-9.9S15.368 0 9.9 0zm-.05 14.35l-3.9-3.7 1.2-1.25 2.7 2.55 5.1-5.25 1.2 1.25-6.3 6.4z" fill="currentColor"/></svg> 재원확인`
+                }</span>
                 <span class="rv-date">${r.date}</span>
               </div>
               <div class="rv-stars">${'★'.repeat(Math.round(r.rating))}${'☆'.repeat(5-Math.round(r.rating))} <span style="font-size:12px;color:var(--text-alt)">${r.kid}</span></div>
@@ -1872,15 +1893,20 @@ function renderDetail(d){
           <div id="seed-list-${d.id}" style="padding:0 16px 90px;">
             ${renderSeedCards(d.id,'전체')}
           </div>
-          <button onclick="goWrite('${d.id}')" style="position:sticky;bottom:16px;left:calc(100% - 72px);display:block;width:52px;height:52px;border-radius:50%;background:var(--blue);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(63,168,230,.35);font-size:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-right:16px;">
+          <button onclick="goWrite('${d.id}')" style="position:sticky;bottom:16px;left:calc(100% - 72px);display:block;width:52px;height:52px;border-radius:50%;background:var(--blue);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,102,255,.35);font-size:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-right:16px;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="20" height="20"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg>
           </button>
         </div>
       </div>
-      <div class="detail-footer">
-        <button class="dftr-btn dftr-ghost" onclick="showToast('전화 연결 중...')"><span style='display:inline-flex;margin-right:5px'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"><path d="M6.54 5c.06.89.21 1.76.45 2.59l-1.2 1.2c-.41-1.2-.67-2.47-.76-3.79h1.51m9.86 12.02c.85.24 1.72.39 2.6.45v1.49c-1.32-.09-2.59-.35-3.8-.75l1.2-1.19M7.5 3H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.49c0-.55-.45-1-1-1-1.24 0-2.45-.2-3.57-.57a.84.84 0 0 0-.31-.05c-.26 0-.51.1-.71.29l-2.2 2.2a15.149 15.149 0 0 1-6.59-6.59l2.2-2.2c.28-.28.38-.67.29-1.04C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1z" fill="currentColor"/></svg></span>전화하기</button>
-        <button class="dftr-btn dftr-solid" onclick="goReviewWrite(curDetail)"><span style='display:inline-flex;margin-right:5px'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="15" height="15"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg></span>평가하기</button>
-      </div>
+      <button onclick="goReviewWrite(curDetail)"
+        style="position:absolute;right:18px;bottom:22px;z-index:20;
+          display:flex;align-items:center;gap:7px;
+          background:var(--blue);color:#fff;border:none;border-radius:100px;
+          padding:14px 20px;font-size:15px;font-weight:700;font-family:var(--font);
+          box-shadow:0 6px 20px rgba(0,102,255,0.35);cursor:pointer;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="17" height="17"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg>
+        평가하기
+      </button>
     </div>
   `;
 }
@@ -1924,7 +1950,7 @@ function filterSeeds(instId,cat,el){
 function renderReviewReqBanner(d){
   // 전략1: 파랑 — 리뷰 적은 기관에 노출 (프로토타입: 10개 미만)
   if(d.reviews>=10)return '';
-  return `<div class="nudge-banner" style="background:linear-gradient(135deg,var(--blue-weak),#E0F0FD);border:1px solid rgba(111,192,240,.3);" onclick="openNudge('${d.id}','strategy1')">
+  return `<div class="nudge-banner" style="background:linear-gradient(135deg,var(--blue-weak),#E0F0FD);border:1px solid rgba(0,102,255,.3);" onclick="openNudge('${d.id}','strategy1')">
     <div class="nudge-banner-ico" style="background:var(--blue);">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="18" height="18" style="color:#fff"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868z" fill="currentColor" fill-rule="evenodd"/></svg>
     </div>
@@ -2017,7 +2043,7 @@ function openNudge(instId,strategy){
     </div>
     <button class="ns-cta" style="background:#FF7A00;" onclick="closeNudge();goReviewWrite(curDetail)">리뷰 작성하기</button>`;
   } else {
-    html=`<div class="ns-ico-circle" style="background:linear-gradient(135deg,var(--blue),var(--sky-strong))">
+    html=`<div class="ns-ico-circle" style="background:linear-gradient(135deg,var(--blue),var(--blue))">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="26" height="26" style="color:#fff"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg>
     </div>
     <div class="ns-title">첫 리뷰를 남겨보세요</div>
