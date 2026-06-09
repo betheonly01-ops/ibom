@@ -53,6 +53,7 @@ html,body{
   position:absolute;top:0;left:0;right:0;z-index:20;
   padding:env(safe-area-inset-top,44px) 14px 0;
 }
+.map-top,.list-header{min-height:100px;}
 .search-bar{
   display:flex;align-items:center;gap:8px;background:#fff;
   border-radius:12px;padding:11px 14px;
@@ -209,10 +210,10 @@ html,body{
   display:flex;align-items:center;justify-content:center;font-size:20px;
 }
 .detail-hero{height:150px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.detail-body-top{padding:0 16px 14px;border-bottom:1px solid var(--line-soft);flex-shrink:0;}
-.detail-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.detail-body-top{padding:12px 16px 16px;border-bottom:1px solid var(--line-soft);flex-shrink:0;}
+.detail-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
 .detail-dname{font-size:21px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.2;}
-.detail-meta{font-size:13.5px;color:var(--text-alt);display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.detail-meta{font-size:13.5px;color:var(--text-alt);display:flex;align-items:center;gap:5px;margin-bottom:6px;}
 .detail-tabs{display:flex;border-bottom:1px solid var(--line);flex-shrink:0;}
 .dtab{
   flex:1;padding:12px 0;font-size:14.5px;font-weight:700;font-family:var(--font);
@@ -222,7 +223,7 @@ html,body{
 .dtab.on{color:var(--text);border-bottom-color:var(--text);}
 .detail-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .detail-scroll::-webkit-scrollbar{display:none;}
-.detail-pad{padding:16px;}
+.detail-pad{padding:16px;padding-bottom:80px;}
 /* 정보 섹션 */
 .sec-label{font-size:12px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;margin-bottom:10px;}
 .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
@@ -536,7 +537,7 @@ html,body{
     <div class="home-top">
       <button class="home-search" onclick="goExploreKeepRegion()">
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
-        <span style="font-size:14.5px;color:var(--text-assist)">어린이집·유치원 이름 검색</span>
+        <span style="font-size:14.5px;color:var(--text-assist)">어린이집 검색</span>
       </button>
     </div>
 
@@ -582,19 +583,18 @@ html,body{
     <div class="map-top">
       <div class="search-bar">
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
-        <input class="search-bar-txt" id="qi" placeholder="연남동" oninput="applyFilter()">
+        <input class="search-bar-txt" id="qi" placeholder="어린이집 검색" oninput="applyFilter()">
         <div class="seg">
           <button class="seg-btn on" id="seg-map" onclick="setSeg('map')">지도</button>
           <button class="seg-btn" id="seg-list" onclick="setSeg('list')">목록</button>
         </div>
       </div>
       <div class="filter-chips">
-        <div class="fchip on" onclick="setType('전체',this)">전체</div>
-        <div class="fchip" onclick="setType('국공립',this)">국공립</div>
-        <div class="fchip" onclick="setType('민간',this)">민간</div>
-        <div class="fchip" onclick="setType('가정',this)">가정</div>
-        <div class="fchip" onclick="setType('직장',this)">직장</div>
-        <div class="fchip" onclick="setType('유치원',this)">유치원</div>
+        <div class="fchip on" data-type="전체" onclick="setType('전체',this)">전체</div>
+        <div class="fchip" data-type="국공립" onclick="setType('국공립',this)">국공립</div>
+        <div class="fchip" data-type="민간" onclick="setType('민간',this)">민간</div>
+        <div class="fchip" data-type="가정" onclick="setType('가정',this)">가정</div>
+        <div class="fchip" data-type="직장" onclick="setType('직장',this)">직장</div>
       </div>
     </div>
 
@@ -636,12 +636,11 @@ html,body{
         </div>
       </div>
       <div class="list-chips">
-        <div class="fchip on" onclick="setType('전체',this)">전체</div>
-        <div class="fchip" onclick="setType('국공립',this)">국공립</div>
-        <div class="fchip" onclick="setType('민간',this)">민간</div>
-        <div class="fchip" onclick="setType('가정',this)">가정</div>
-        <div class="fchip" onclick="setType('직장',this)">직장</div>
-        <div class="fchip" onclick="setType('유치원',this)">유치원</div>
+        <div class="fchip on" data-type="전체" onclick="setType('전체',this)">전체</div>
+        <div class="fchip" data-type="국공립" onclick="setType('국공립',this)">국공립</div>
+        <div class="fchip" data-type="민간" onclick="setType('민간',this)">민간</div>
+        <div class="fchip" data-type="가정" onclick="setType('가정',this)">가정</div>
+        <div class="fchip" data-type="직장" onclick="setType('직장',this)">직장</div>
       </div>
       <div class="sort-row">
         <button class="sort-btn">별점 높은순 ▾</button>
@@ -678,7 +677,7 @@ html,body{
       <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
       <span class="detail-htitle" id="detail-htitle"></span>
       <button class="hdr-icon-btn" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="22" height="22"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></button>
-      <button class="hdr-icon-btn" onclick="showToast('공유 링크를 복사했어요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="22" height="22"><circle cx="15" cy="3" r="2.5" fill="currentColor"/><circle cx="15" cy="17" r="2.5" fill="currentColor"/><circle cx="5" cy="10" r="2.5" fill="currentColor"/><line x1="7.3" y1="11.2" x2="12.7" y2="15.8" stroke="currentColor" stroke-width="1.5"/><line x1="7.3" y1="8.8" x2="12.7" y2="4.2" stroke="currentColor" stroke-width="1.5"/></svg></button>
+      <button class="hdr-icon-btn" onclick="showToast('공유 링크를 복사했어요!')" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.3 19.299" width="22" height="22" fill="none"><path d="M14.9 0C13.022 0 11.5 1.522 11.5 3.4c0 .267.031.526.089.775L5.852 7.293C5.233 6.65 4.363 6.249 3.4 6.249 1.522 6.249 0 7.771 0 9.649c0 1.878 1.522 3.4 3.4 3.4.963 0 1.832-.4 2.45-1.043l5.739 3.119c-.058.248-.089.508-.089.774 0 1.878 1.522 3.4 3.4 3.4s3.4-1.522 3.4-3.4-1.522-3.4-3.4-3.4c-.963 0-1.832.401-2.452 1.044L6.711 10.425C6.769 10.176 6.8 9.916 6.8 9.649c0-.266-.031-.526-.089-.774l5.738-3.119C13.068 6.4 13.937 6.8 14.9 6.8c1.878 0 3.4-1.522 3.4-3.4S16.778 0 14.9 0zm-1.6 3.4c0-.884.716-1.6 1.6-1.6s1.6.716 1.6 1.6-.716 1.6-1.6 1.6-1.6-.716-1.6-1.6zM1.8 9.649c0-.884.716-1.6 1.6-1.6s1.6.716 1.6 1.6-.716 1.6-1.6 1.6-1.6-.716-1.6-1.6zm11.5 6.25c0-.884.716-1.6 1.6-1.6s1.6.716 1.6 1.6-.716 1.6-1.6 1.6-1.6-.716-1.6-1.6z" fill="currentColor" fill-rule="evenodd"/></svg></button>
     </div>
     <div id="detail-content" style="flex:1;display:flex;flex-direction:column;overflow:hidden;"></div>
   </div>
@@ -755,8 +754,6 @@ html,body{
     </div>
   </div>
 
-    </div>
-
   <!-- ══ 평가 작성 화면 (C5) ══ -->
   <div class="screen hidden" id="scr-review-write">
     <div class="rw-header">
@@ -812,9 +809,6 @@ html,body{
   <div class="screen hidden" id="scr-my">
     <div class="my-header">
       <span class="my-header-ttl">MY</span>
-      <button style="background:none;border:none;padding:4px;cursor:pointer;color:var(--text-alt)" onclick="goBack()">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><path d="M19.14 4.93a1 1 0 0 1 0 1.41L13.41 12l5.73 5.66a1 1 0 0 1-1.41 1.41L12 13.41l-5.73 5.66a1 1 0 0 1-1.41-1.41L10.59 12 4.86 6.34a1 1 0 0 1 1.41-1.41L12 10.59l5.73-5.66a1 1 0 0 1 1.41 0z" fill="currentColor"/></svg>
-      </button>
     </div>
     <div class="my-scroll">
       <!-- 프로필 카드 -->
@@ -920,7 +914,14 @@ html,body{
           <span class="my-row-val">v1.0</span>
         </div>
       </div>
-      <div style="height:32px;"></div>
+      <div style="height:calc(var(--nav-h) + 16px);"></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V21H15v-6H9v6H3V10.5z"/></svg></span><span class="nav-lbl">홈</span></button>
+      <button class="nav-item" onclick="goExplore()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">탐색</span></button>
+      <button class="nav-item" onclick="goCommunity()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 3C7 3 3 6.8 3 11.5c0 2.5 1.1 4.8 2.9 6.4L5 21l3.3-1.4C9.4 19.9 10.7 20 12 20c5 0 9-3.8 9-8.5S17 3 12 3z"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
+      <button class="nav-item" onclick="showToast('관심 기능은 v1.1에서 오픈 예정이에요!')"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-lbl">관심</span></button>
+      <button class="nav-item on" onclick="goMy()"><span class="nav-ico" style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M12 12.75c2.07 0 3.75-1.68 3.75-3.75S14.07 5.25 12 5.25 8.25 6.93 8.25 9s1.68 3.75 3.75 3.75zM12 3a6 6 0 1 1 0 12A6 6 0 0 1 12 3zm-8 18c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"/></svg></span><span class="nav-lbl" style="color:var(--blue)">MY</span></button>
     </div>
   </div>
 
@@ -951,6 +952,13 @@ html,body{
   <div id="nudge-sheet">
     <div class="ns-drag"></div>
     <div id="ns-content" style="padding:0 0 20px;"></div>
+  </div>
+
+  <!-- ══ 리뷰 상세 바텀시트 ══ -->
+  <div id="review-sheet-backdrop" onclick="closeReviewSheet()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:35;"></div>
+  <div id="review-sheet" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:20px 20px 0 0;z-index:36;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);padding:20px 20px 40px;max-height:70%;overflow-y:auto;">
+    <div style="width:36px;height:4px;background:var(--line);border-radius:2px;margin:0 auto 20px;"></div>
+    <div id="review-sheet-content"></div>
   </div>
 
   <div class="toast" id="toast-el"></div>
@@ -1261,7 +1269,7 @@ function updateLocDisplay(name){
   document.querySelectorAll('.home-loc-txt').forEach(el=>el.textContent=name);
   // 탐색화면 검색 placeholder (#qi)
   const qi=document.getElementById('qi');
-  if(qi)qi.placeholder=name+' 어린이집·유치원 이름 검색';
+  if(qi)qi.placeholder='어린이집 검색';
   // 목록 화면 제목 (.list-title)
   const lt=document.querySelector('.list-title');
   if(lt)lt.textContent=name+' 어린이집';
@@ -1634,6 +1642,7 @@ function renderMarkers(){
   clearMarkers();
   filtered.forEach(d=>{
     const c=TC[d.type]||'#0066FF';const active=d.id===curSel;
+    const shortName=d.name.replace('어린이집','').replace('유치원','').slice(0,5);
     const m=new naver.maps.Marker({
       position:new naver.maps.LatLng(d.lat,d.lng),map,
       icon:{
@@ -1642,11 +1651,11 @@ function renderMarkers(){
             <div style="font-size:12.5px;font-weight:700;color:rgba(46,47,51,0.88);font-family:'Pretendard',sans-serif;">${d.name}</div>
             <div style="color:#FFB200;font-size:11.5px;font-weight:700;margin-top:2px;">★ ${d.rating} <span style="color:rgba(55,56,60,0.61);font-weight:500">리뷰 ${d.reviews}</span></div>
           </div>`:''}
-          <div style="width:${active?36:28}px;height:${active?36:28}px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${c};border:2.5px solid #fff;box-shadow:${active?'0 4px 12px rgba(0,0,0,0.28)':'0 2px 6px rgba(0,0,0,0.18)'};display:flex;align-items:center;justify-content:center;">
-            <span style="transform:rotate(45deg);color:#fff;font-size:${active?13:10}px;font-weight:800;font-family:'Pretendard',sans-serif;">${d.rating}</span>
+          <div style="background:${c};border-radius:${active?12:10}px;padding:${active?'5px 10px':'4px 8px'};border:2px solid #fff;box-shadow:${active?'0 4px 12px rgba(0,0,0,0.28)':'0 2px 6px rgba(0,0,0,0.18)'};white-space:nowrap;">
+            <span style="color:#fff;font-size:${active?12:10}px;font-weight:700;font-family:'Pretendard',sans-serif;">${shortName}</span>
           </div>
         </div>`,
-        anchor:new naver.maps.Point(active?18:14,active?36+42+6:28)
+        anchor:new naver.maps.Point(active?40:30,active?36+16:28)
       }
     });
     naver.maps.Event.addListener(m,'click',()=>{selectItem(d.id);openCard(d);});
@@ -1710,8 +1719,8 @@ function clearSel(){curSel=null;}
 // ── 필터
 function setType(t,btn){
   curType=t;
-  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'));
-  btn.classList.add('on');
+  document.querySelectorAll('.fchip[data-type]').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll(`.fchip[data-type="${t}"]`).forEach(c=>c.classList.add('on'));
   applyFilter();
 }
 function applyFilter(_fromApi){
@@ -1786,6 +1795,61 @@ function renderHomeRows(){
   `).join('');
 }
 
+// ── 5각형 레이더 차트
+function renderRadarChart(){
+  const labels=['교사 친절도','안전·위생','교육 프로그램','급식 품질','소통·투명성'];
+  const values=[3.8,3.9,4.0,4.1,4.2];
+  const cx=85,cy=85,R=60;
+  const ang=i=>(2*Math.PI*i/5)-Math.PI/2;
+  const ptStr=(scale)=>labels.map((_,i)=>`${(cx+scale*R*Math.cos(ang(i))).toFixed(1)},${(cy+scale*R*Math.sin(ang(i))).toFixed(1)}`).join(' ');
+  const rings=[0.2,0.6,1.0].map(s=>`<polygon points="${ptStr(s)}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join('');
+  const axes=labels.map((_,i)=>`<line x1="${cx}" y1="${cy}" x2="${(cx+R*Math.cos(ang(i))).toFixed(1)}" y2="${(cy+R*Math.sin(ang(i))).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`).join('');
+  const dataPts=values.map((v,i)=>`${(cx+(v/5)*R*Math.cos(ang(i))).toFixed(1)},${(cy+(v/5)*R*Math.sin(ang(i))).toFixed(1)}`).join(' ');
+  const dataPoly=`<polygon points="${dataPts}" fill="var(--blue)" fill-opacity="0.14" stroke="var(--blue)" stroke-width="1.6" stroke-linejoin="round"/>`;
+  const vertices=values.map((v,i)=>`<circle cx="${(cx+(v/5)*R*Math.cos(ang(i))).toFixed(1)}" cy="${(cy+(v/5)*R*Math.sin(ang(i))).toFixed(1)}" r="3" fill="var(--blue)"/>`).join('');
+  const labelEls=labels.map((lbl,i)=>{
+    const lx=cx+(R+18)*Math.cos(ang(i));
+    const ly=cy+(R+18)*Math.sin(ang(i));
+    let anchor='middle';
+    if(Math.cos(ang(i))>0.2)anchor='start';
+    else if(Math.cos(ang(i))<-0.2)anchor='end';
+    return `<text x="${lx.toFixed(1)}" y="${(ly+3.5).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="600" fill="var(--text-alt)" font-family="var(--font)">${lbl}</text>`;
+  }).join('');
+  return `<div style="display:flex;justify-content:center;"><svg xmlns="http://www.w3.org/2000/svg" width="170" height="170" viewBox="0 0 170 170">${rings}${axes}${dataPoly}${vertices}${labelEls}</svg></div>`;
+}
+
+// ── 리뷰 상세 바텀시트
+function openReviewSheet(r){
+  const bd=document.getElementById('review-sheet-backdrop');
+  const sh=document.getElementById('review-sheet');
+  const ct=document.getElementById('review-sheet-content');
+  ct.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <div style="width:36px;height:36px;border-radius:18px;background:linear-gradient(135deg,hsl(200 55% 68%),hsl(240 50% 58%));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;">${r.name?r.name[0]:'익'}</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:14px;font-weight:700;color:var(--text)">${r.name||'익명의 학부모'}</span>
+          ${r.lv===2?`<span class="vbadge v2" style="font-size:11px;padding:2px 6px">카드인증</span>`:''}
+          ${r.lv===1?`<span class="vbadge v1" style="font-size:11px;padding:2px 6px">재원확인</span>`:''}
+          <span style="margin-left:auto;font-size:11.5px;color:var(--text-assist)">${r.date||''}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-alt);margin-top:2px;">${r.kid||''}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:4px;margin-bottom:12px;align-items:center;">
+      ${[1,2,3,4,5].map(i=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2a1 1 0 0 1 .894.553l2.382 4.827 5.328.773a1 1 0 0 1 .554 1.706l-3.855 3.757.91 5.307a1 1 0 0 1-1.451 1.054L12 17.347l-4.762 2.63a1 1 0 0 1-1.451-1.054l.91-5.307L2.842 9.86a1 1 0 0 1 .554-1.706l5.328-.773L11.106 2.553A1 1 0 0 1 12 2z" fill="${i<=Math.round(r.rating||4)?'#FFB200':'#E4E5E9'}"/></svg>`).join('')}
+      <span style="font-size:13px;font-weight:700;color:var(--text);margin-left:4px">${r.rating||4}</span>
+    </div>
+    <div style="font-size:14.5px;color:var(--text);line-height:1.7;">${r.text||''}</div>
+  `;
+  bd.style.display='block';
+  sh.style.transform='translateY(0)';
+}
+function closeReviewSheet(){
+  document.getElementById('review-sheet-backdrop').style.display='none';
+  document.getElementById('review-sheet').style.transform='translateY(100%)';
+}
+
 // ── 상세
 function renderDetail(d){
   const occ=(d.now&&d.cap)?Math.round(d.now/d.cap*100):null;
@@ -1815,27 +1879,10 @@ function renderDetail(d){
       </div>
       <div class="detail-scroll">
         <div class="detail-pad" id="dp-info">
-          <!-- 학부모 종합 평점 -->
-          <div style="font-size:15px;font-weight:800;color:var(--text);margin:16px 0 10px;">학부모 종합 평점</div>
-          <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;align-items:center;gap:16px;margin-bottom:20px;box-shadow:0 1px 2px rgba(23,23,23,0.04);">
-            <div style="text-align:center;flex-shrink:0;">
-              <div style="font-size:36px;font-weight:800;color:var(--text);line-height:1;">${d.rating}</div>
-              <div style="color:var(--star);font-size:13px;margin:4px 0;">★★★★★</div>
-              <div style="font-size:11.5px;color:var(--text-alt);">리뷰 ${d.reviews}</div>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;gap:7px;">
-              ${['교사 친절도','안전·위생','교육 프로그램','급식 품질','소통·투명성'].map((lbl,i)=>{
-                const val=(d.rating-0.2+i*0.1).toFixed(1);
-                const pct=Math.round(parseFloat(val)/5*100);
-                return `<div style="display:flex;align-items:center;gap:8px;">
-                  <span style="font-size:11.5px;color:var(--text-alt);width:64px;flex-shrink:0;">${lbl}</span>
-                  <div style="flex:1;height:5px;background:var(--bg-alt);border-radius:3px;overflow:hidden;">
-                    <div style="width:${pct}%;height:100%;background:var(--star);border-radius:3px;"></div>
-                  </div>
-                  <span style="font-size:11.5px;color:var(--text-alt);width:22px;text-align:right;">${val}</span>
-                </div>`;
-              }).join('')}
-            </div>
+          <!-- 아이사랑 포털 공식 정보 레이블 -->
+          <div style="font-size:12px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:5px;margin:14px 0 10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15" style="color:var(--blue)"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
+            아이사랑 포털 공식 정보
           </div>
           <!-- 기본 정보 -->
           <div style="font-size:15px;font-weight:800;color:var(--text);margin:0 0 10px;">기본 정보</div>
@@ -1856,11 +1903,23 @@ function renderDetail(d){
               </div>
             `).join('')}
           </div>
+          <!-- 학부모 종합 평점 -->
+          <div style="font-size:15px;font-weight:800;color:var(--text);margin:0 0 10px;">학부모 종합 평점</div>
+          <div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:20px;box-shadow:0 1px 2px rgba(23,23,23,0.04);">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <div style="font-size:36px;font-weight:800;color:var(--text);line-height:1;">${d.rating}</div>
+              <div>
+                <div style="color:var(--star);font-size:15px;letter-spacing:1px;">★★★★★</div>
+                <div style="font-size:11.5px;color:var(--text-alt);margin-top:2px;">리뷰 ${d.reviews}개</div>
+              </div>
+            </div>
+            ${renderRadarChart()}
+          </div>
         </div>
         <div class="detail-pad" id="dp-review" style="display:none">
           <div class="review-notice"><span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg></span> 리뷰 중 다수가 <b style="color:var(--blue)">재원 인증</b> 부모의 리뷰예요</div>
           ${REVIEWS.map((r,i)=>`
-            <div class="rv-item">
+            <div class="rv-item" style="cursor:pointer;" onclick='openReviewSheet(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
               <div class="rv-top">
                 <div class="avatar" style="background:${AV_COLORS[i%AV_COLORS.length]}">${r.name[0]}</div>
                 <span class="rv-name">${r.name}</span>
