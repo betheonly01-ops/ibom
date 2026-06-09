@@ -100,7 +100,7 @@ html,body{
 }
 .mc-btn-outline{background:var(--bg-alt);color:var(--text);}
 .mc-btn-solid{background:var(--blue);color:#fff;}
-.mc-btn-solid:hover{background:#0054D1;}
+.mc-btn-solid:hover{background:var(--sky-strong);}
 
 /* 내 위치 버튼 */
 .btn-my-loc{
@@ -112,7 +112,7 @@ html,body{
 }
 .btn-my-loc:active{box-shadow:0 1px 4px rgba(0,0,0,.2);}
 .btn-my-loc.locating{animation:loc-pulse .8s ease-in-out infinite alternate;}
-@keyframes loc-pulse{from{box-shadow:0 2px 10px rgba(0,102,255,.2);}to{box-shadow:0 2px 16px rgba(0,102,255,.5);}}
+@keyframes loc-pulse{from{box-shadow:0 2px 10px rgba(111,192,240,.35);}to{box-shadow:0 2px 16px rgba(111,192,240,.6);}}
 
 /* 비교 바 */
 .compare-bar{
@@ -120,7 +120,7 @@ html,body{
   background:var(--blue);border-radius:12px;padding:15px;
   display:flex;align-items:center;justify-content:center;gap:8px;
   font-size:15px;font-weight:700;color:#fff;cursor:pointer;
-  box-shadow:0 6px 20px rgba(0,102,255,0.4);
+  box-shadow:0 6px 20px rgba(111,192,240,0.45);
   transform:translateY(120%);transition:transform .3s .1s cubic-bezier(.4,0,.2,1);
 }
 .compare-bar.show{transform:translateY(0);}
@@ -189,7 +189,7 @@ html,body{
 .btn-compare{
   width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;
   font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;
-  box-shadow:0 4px 16px rgba(0,102,255,0.3);
+  box-shadow:0 4px 16px rgba(111,192,240,0.4);
 }
 
 /* ── 상세 화면 */
@@ -246,11 +246,11 @@ html,body{
 
 /* 뱃지 공통 */
 .badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;letter-spacing:.02em;}
-.b-국공립{color:#3FA8E6;background:#E8F5FE;}
+.b-국공립{color:var(--sky-strong);background:var(--blue-weak);}
 .b-민간{color:#00A36B;background:#E3F9EF;}
-.b-가정{color:#FF9200;background:#FEF4E6;}
-.b-직장{color:#7A3DF5;background:#F1ECFE;}
-.b-유치원{color:#E5484D;background:#FEECEC;}
+.b-가정{color:var(--orange);background:var(--orange-bg);}
+.b-직장{color:var(--purple);background:#F1ECFE;}
+.b-유치원{color:#E5484D;background:var(--red-bg);}
 .grade{display:inline-flex;align-items:center;font-size:11px;font-weight:800;padding:2px 7px;border-radius:5px;}
 .gA{color:var(--green-text);background:var(--green-bg);}
 .gB{color:var(--blue);background:var(--blue-weak);}
@@ -310,7 +310,7 @@ html,body{
   position:absolute;right:18px;bottom:calc(var(--nav-h) + 18px);z-index:25;
   width:54px;height:54px;border-radius:50%;background:var(--blue);border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;color:#fff;
-  box-shadow:0 6px 20px rgba(0,102,255,0.4);transition:transform .15s;
+  box-shadow:0 6px 20px rgba(111,192,240,0.45);transition:transform .15s;
 }
 .fab-write:active{transform:scale(0.92);}
 
@@ -466,7 +466,7 @@ html,body{
 .seed-card{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:background .12s;}
 .seed-card:active{background:var(--bg-alt);}
 .seed-card-cat{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:7px;}
-.seed-card-cat.c-qa{color:#3FA8E6;background:#E8F5FE;}
+.seed-card-cat.c-qa{color:var(--sky-strong);background:var(--blue-weak);}
 .seed-card-cat.c-life{color:var(--green-text);background:var(--green-bg);}
 .seed-card-cat.c-share{color:var(--orange-text);background:var(--orange-bg);}
 .seed-card-q{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.45;}
@@ -1643,7 +1643,7 @@ function renderMarkers(){
   if(!mapReady){_markersDirty=true;return;} // 맵 resize 전이면 보류, 준비 완료 시 자동 재렌더
   clearMarkers();
   filtered.forEach(d=>{
-    const c=TC[d.type]||'#0066FF';const active=d.id===curSel;
+    const c=TC[d.type]||'#6FC0F0';const active=d.id===curSel;
     const m=new naver.maps.Marker({
       position:new naver.maps.LatLng(d.lat,d.lng),map,
       icon:{
