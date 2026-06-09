@@ -2296,7 +2296,7 @@ async function fetchChildcareData(arcode='11440') {
     return SUJI_STATIC;
   }
   try {
-    const API_KEY = window.IBOM_API_KEY || '';
+    const API_KEY = window.IBOM_API_KEY || '935016bfacfa4383a027ee85d70328db';
     const apiEndpoint = `http://api.childcare.go.kr/mediate/rest/cpmsapi030/cpmsapi030/request?key=${API_KEY}&arcode=${arcode}&stcode=`;
     const url = `https://corsproxy.io/?url=${encodeURIComponent(apiEndpoint)}`;
     const res = await fetch(url);
