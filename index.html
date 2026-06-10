@@ -12,7 +12,7 @@
 :root{
   --blue:#0066FF;--blue-weak:#EAF2FE;--blue-line:#C9DEFE;
   --purple:#7A3DF5;
-  --text:rgba(46,47,51,0.88);--text-alt:rgba(55,56,60,0.61);--text-assist:rgba(55,56,60,0.28);
+  --text:rgba(46,47,51,0.88);--text-alt:rgba(55,56,60,0.61);--text-sub:rgba(55,56,60,0.61);--text-assist:rgba(55,56,60,0.28);
   --line:rgba(112,115,124,0.22);--line-soft:rgba(112,115,124,0.12);
   --bg:#fff;--bg-alt:#F7F7F8;
   --green:#00BF40;--green-bg:#E5FBEC;--green-text:#006E25;
@@ -146,8 +146,10 @@ html,body{
   padding-top:8px;
 }
 .nav-ico{font-size:22px;line-height:1;}
-.nav-lbl{font-size:10px;font-weight:600;color:var(--text-assist);}
+.nav-lbl{font-size:10px;font-weight:500;color:var(--text-alt);}
 .nav-item.on .nav-lbl{color:var(--blue);}
+.bottom-nav .nav-item>span:last-child{font-size:10px;font-weight:500;color:rgba(55,56,60,0.6)!important;}
+.bottom-nav .nav-item.on>span:last-child{color:var(--blue)!important;}
 .nav-dot{width:4px;height:4px;border-radius:50%;background:var(--blue);margin-top:-2px;}
 
 /* ── 목록 화면 */
@@ -535,6 +537,7 @@ html,body{
   <!-- ══ 홈 화면 ══ -->
   <div class="screen" id="scr-home">
     <div class="home-top">
+      <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;margin-bottom:12px;">아이봄</div>
       <button class="home-search" onclick="goExploreKeepRegion()">
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
         <span style="font-size:14.5px;color:var(--text-assist)">어린이집 검색</span>
@@ -1181,9 +1184,9 @@ let DATA=[
 ];
 
 const REVIEWS=[
-  {name:'익명의 학부모 A',lv:2,rating:4.6,date:'2026.05',kid:'둘째 재원 2년차',text:'둘째까지 보내고 있어요. 선생님들이 정말 꼼꼼하게 봐주시고 알림장도 매일 사진과 함께 올라와요. 급식 식단도 알레르기 대응이 잘 되어 있어서 안심이에요.',instId:'a'},
-  {name:'익명의 학부모 B',lv:2,rating:4.8,date:'2026.04',kid:'만 3세 재원',text:'적응 기간 2주 동안 매일 전화로 상황을 알려주셔서 정말 안심됐어요. 원장님도 학부모 의견을 적극적으로 반영해 주십니다.',instId:'b'},
-  {name:'익명의 학부모 C',lv:1,rating:4.2,date:'2026.03',kid:'만 1세 재원',text:'시설은 깔끔하고 좋아요. 다만 하원 시간이 조금 빠듯해서 연장보육이 더 늘어나면 좋겠습니다.',instId:'c'},
+  {name:'익명의 학부모 A',lv:2,rating:4.6,date:'2026.05',kid:'둘째 재원 2년차',text:'둘째까지 보내고 있어요. 선생님들이 정말 꼼꼼하게 봐주시고 알림장도 매일 사진과 함께 올라와요. 급식 식단도 알레르기 대응이 잘 되어 있어서 안심이에요.',instId:'a',scores:[5.0,4.5,4.5,5.0,4.5],helpful:38},
+  {name:'익명의 학부모 B',lv:2,rating:4.8,date:'2026.04',kid:'만 3세 재원',text:'적응 기간 2주 동안 매일 전화로 상황을 알려주셔서 정말 안심됐어요. 원장님도 학부모 의견을 적극적으로 반영해 주십니다.',instId:'b',scores:[5.0,5.0,4.5,4.5,5.0],helpful:21},
+  {name:'익명의 학부모 C',lv:1,rating:4.2,date:'2026.03',kid:'만 1세 재원',text:'시설은 깔끔하고 좋아요. 다만 하원 시간이 조금 빠듯해서 연장보육이 더 늘어나면 좋겠습니다.',instId:'c',scores:[4.0,4.5,4.0,4.0,4.5],helpful:12},
 ];
 const RUBRIC=[
   {key:'교사 친절도',desc:'선생님의 태도와 소통 방식'},
@@ -1195,16 +1198,16 @@ const RUBRIC=[
 ];
 
 const SEED_QUESTIONS=[
-  {id:'sq1',cat:'입소 Q&A',q:'입소 대기는 보통 얼마나 걸리나요?',answers:2},
-  {id:'sq2',cat:'입소 Q&A',q:'입소 서류 준비는 어떻게 하나요? 꼭 챙겨야 할 것이 있나요?',answers:1},
-  {id:'sq3',cat:'입소 Q&A',q:'대기 순번은 어디서 실시간으로 확인할 수 있나요?',answers:3},
-  {id:'sq4',cat:'입소 Q&A',q:'형제·자매 재원 시 입소 가산점이 있나요?',answers:0},
-  {id:'sq5',cat:'생활 정보',q:'하원 시간을 유연하게 조정할 수 있나요? 연장 보육은 어떻게 신청하나요?',answers:2},
-  {id:'sq6',cat:'생활 정보',q:'식품 알레르기가 있는 아이도 급식 식단 대체가 가능한가요?',answers:1},
-  {id:'sq7',cat:'생활 정보',q:'교사 1인당 아동 수가 실제로는 어떤가요? 선생님이 자주 바뀌나요?',answers:4},
-  {id:'sq8',cat:'생활 정보',q:'CCTV를 부모가 직접 확인할 수 있는 방법이 있나요?',answers:1},
-  {id:'sq9',cat:'생활 정보',q:'아이사랑 알림장 앱 알림이 잘 오나요? 사진도 올라오나요?',answers:3},
-  {id:'sq10',cat:'나눔·공지',q:'입소 전 미리 준비하면 좋은 어린이집 가방·실내화·준비물이 있나요?',answers:2},
+  {id:'sq1',cat:'입소 Q&A',q:'입소 대기 기간이 얼마나 됐나요?',answers:2},
+  {id:'sq2',cat:'입소 Q&A',q:'적응 기간은 며칠 정도 걸렸나요? 어떻게 진행됐나요?',answers:1},
+  {id:'sq3',cat:'입소 Q&A',q:'등원 첫날, 어떻게 준비하면 좋을까요?',answers:3},
+  {id:'sq4',cat:'입소 Q&A',q:'원복이나 준비물은 어디서 구매하셨나요?',answers:0},
+  {id:'sq5',cat:'생활 정보',q:'급식 식단 어때요? 아이가 잘 먹나요?',answers:2},
+  {id:'sq6',cat:'생활 정보',q:'선생님과 소통은 주로 어떻게 하시나요? (알림장/앱/전화 등)',answers:1},
+  {id:'sq7',cat:'생활 정보',q:'어린이집 행사나 특별 수업이 자주 있나요?',answers:4},
+  {id:'sq8',cat:'생활 정보',q:'연장보육 이용하시는 분 계세요? 어떤지 궁금해요.',answers:1},
+  {id:'sq9',cat:'나눔·생활',q:'어린이집 주변에 추천하는 소아과나 약국 있으세요?',answers:3},
+  {id:'sq10',cat:'나눔·생활',q:'이 어린이집 다니면서 가장 좋았던 점 하나만 말해주세요.',answers:2},
 ];
 
 const SEED_ANSWERS={}; // instId → sqId → answer text (in-memory)
@@ -1642,20 +1645,21 @@ function renderMarkers(){
   clearMarkers();
   filtered.forEach(d=>{
     const c=TC[d.type]||'#0066FF';const active=d.id===curSel;
-    const shortName=d.name.replace('어린이집','').replace('유치원','').slice(0,5);
+    const pillBg=active?'var(--blue)':'#fff';
+    const nameColor=active?'#fff':'var(--text)';
+    const subColor=active?'rgba(255,255,255,0.85)':'var(--text-sub)';
+    const starColor=active?'#FFD86B':'#FFB200';
     const m=new naver.maps.Marker({
       position:new naver.maps.LatLng(d.lat,d.lng),map,
       icon:{
         content:`<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-          ${active?`<div style="background:#fff;border-radius:10px;padding:6px 10px;margin-bottom:6px;box-shadow:0 6px 16px rgba(0,0,0,0.18);white-space:nowrap;border:1px solid rgba(112,115,124,0.22);">
-            <div style="font-size:12.5px;font-weight:700;color:rgba(46,47,51,0.88);font-family:'Pretendard',sans-serif;">${d.name}</div>
-            <div style="color:#FFB200;font-size:11.5px;font-weight:700;margin-top:2px;">★ ${d.rating} <span style="color:rgba(55,56,60,0.61);font-weight:500">리뷰 ${d.reviews}</span></div>
-          </div>`:''}
-          <div style="background:${c};border-radius:${active?12:10}px;padding:${active?'5px 10px':'4px 8px'};border:2px solid #fff;box-shadow:${active?'0 4px 12px rgba(0,0,0,0.28)':'0 2px 6px rgba(0,0,0,0.18)'};white-space:nowrap;">
-            <span style="color:#fff;font-size:${active?12:10}px;font-weight:700;font-family:'Pretendard',sans-serif;">${shortName}</span>
+          <div style="background:${pillBg};border-radius:12px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15);white-space:nowrap;font-family:'Pretendard',sans-serif;${active?'':'border:1px solid rgba(112,115,124,0.16);'}">
+            <div style="font-size:12px;font-weight:600;color:${nameColor};">${d.name}</div>
+            <div style="font-size:11px;margin-top:2px;"><span style="color:${starColor};font-weight:700;">★</span> <span style="color:${subColor};font-weight:600;">${d.rating}</span></div>
           </div>
+          <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid ${pillBg};margin-top:-1px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.1));"></div>
         </div>`,
-        anchor:new naver.maps.Point(active?40:30,active?36+16:28)
+        anchor:new naver.maps.Point(40,52)
       }
     });
     naver.maps.Event.addListener(m,'click',()=>{selectItem(d.id);openCard(d);});
@@ -1866,24 +1870,50 @@ function openReviewSheet(r){
   const bd=document.getElementById('review-sheet-backdrop');
   const sh=document.getElementById('review-sheet');
   const ct=document.getElementById('review-sheet-content');
+  const rubricLabels=['교사 친절도','안전 및 위생','교육 프로그램','급식 품질','소통 투명성'];
+  const scores=r.scores||[5.0,4.5,4.5,5.0,4.5];
+  const helpful=r.helpful!=null?r.helpful:38;
+  const resInfo=`${r.kid||'둘째 재원 2년차'} · ${r.date||'2026.05'}`;
   ct.innerHTML=`
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-      <div style="width:36px;height:36px;border-radius:18px;background:linear-gradient(135deg,hsl(200 55% 68%),hsl(240 50% 58%));display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700;">${r.name?r.name[0]:'익'}</div>
-      <div style="flex:1">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="width:40px;height:40px;border-radius:20px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;flex-shrink:0;">${r.name?r.name[0]:'익'}</div>
+      <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-          <span style="font-size:14px;font-weight:700;color:var(--text)">${r.name||'익명의 학부모'}</span>
-          ${r.lv===2?`<span class="vbadge v2" style="font-size:11px;padding:2px 6px">카드인증</span>`:''}
-          ${r.lv===1?`<span class="vbadge v1" style="font-size:11px;padding:2px 6px">재원확인</span>`:''}
-          <span style="margin-left:auto;font-size:11.5px;color:var(--text-assist)">${r.date||''}</span>
+          <span style="font-size:15px;font-weight:700;color:var(--text)">${r.name||'익명의 학부모'}</span>
+          <span style="display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:#3FA8E6;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="13" height="13"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
+            카드인증
+          </span>
         </div>
-        <div style="font-size:12px;color:var(--text-alt);margin-top:2px;">${r.kid||''}</div>
+        <div style="font-size:12.5px;color:var(--text-sub);margin-top:3px;">${resInfo}</div>
       </div>
     </div>
-    <div style="display:flex;gap:4px;margin-bottom:12px;align-items:center;">
-      ${[1,2,3,4,5].map(i=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 2a1 1 0 0 1 .894.553l2.382 4.827 5.328.773a1 1 0 0 1 .554 1.706l-3.855 3.757.91 5.307a1 1 0 0 1-1.451 1.054L12 17.347l-4.762 2.63a1 1 0 0 1-1.451-1.054l.91-5.307L2.842 9.86a1 1 0 0 1 .554-1.706l5.328-.773L11.106 2.553A1 1 0 0 1 12 2z" fill="${i<=Math.round(r.rating||4)?'#FFB200':'#E4E5E9'}"/></svg>`).join('')}
-      <span style="font-size:13px;font-weight:700;color:var(--text);margin-left:4px">${r.rating||4}</span>
+    <div style="background:var(--blue-weak);border-radius:14px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;">
+      <div style="text-align:center;">
+        <div style="font-size:32px;font-weight:700;color:var(--text);line-height:1;">${(r.rating||4).toFixed(1)}</div>
+        <div style="font-size:11px;color:var(--text-sub);margin-top:4px;">종합 평점</div>
+      </div>
+      <div style="display:flex;gap:2px;">
+        ${[1,2,3,4,5].map(i=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path d="M12 2a1 1 0 0 1 .894.553l2.382 4.827 5.328.773a1 1 0 0 1 .554 1.706l-3.855 3.757.91 5.307a1 1 0 0 1-1.451 1.054L12 17.347l-4.762 2.63a1 1 0 0 1-1.451-1.054l.91-5.307L2.842 9.86a1 1 0 0 1 .554-1.706l5.328-.773L11.106 2.553A1 1 0 0 1 12 2z" fill="${i<=Math.round(r.rating||4)?'#FFB200':'#E4E5E9'}"/></svg>`).join('')}
+      </div>
     </div>
-    <div style="font-size:14.5px;color:var(--text);line-height:1.7;">${r.text||''}</div>
+    <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;">항목별 평가</div>
+    <div style="display:flex;flex-direction:column;gap:11px;margin-bottom:18px;">
+      ${rubricLabels.map((lab,i)=>`
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:12.5px;color:var(--text-sub);width:74px;flex-shrink:0;">${lab}</span>
+          <div style="flex:1;height:6px;border-radius:3px;background:#EEF;overflow:hidden;">
+            <div style="height:100%;width:${(scores[i]/5*100)}%;background:#6FC0F0;border-radius:3px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:700;color:var(--text);width:38px;text-align:right;flex-shrink:0;"><span style="color:#FFB200;">★</span> ${scores[i].toFixed(1)}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="font-size:14.5px;color:var(--text);line-height:1.7;margin-bottom:18px;">${r.text||''}</div>
+    <button id="rv-helpful-btn" data-on="0" data-base="${helpful}" onclick="toggleHelpful(this)" style="display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--text-sub);font-size:13.5px;font-weight:700;cursor:pointer;transition:all .15s;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17"><path d="M7 10v11M3 11h4v10H3a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1zm4 0 4.5-7.5a2 2 0 0 1 3.7 1.4L18 10h3.5a2 2 0 0 1 2 2.3l-1.4 7a2 2 0 0 1-2 1.7H7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      도움돼요 <span id="rv-helpful-cnt">${helpful}</span>
+    </button>
   `;
   bd.style.display='block';
   sh.style.transform='translateY(0)';
@@ -1891,6 +1921,14 @@ function openReviewSheet(r){
 function closeReviewSheet(){
   document.getElementById('review-sheet-backdrop').style.display='none';
   document.getElementById('review-sheet').style.transform='translateY(100%)';
+}
+function toggleHelpful(btn){
+  const base=+btn.dataset.base, on=btn.dataset.on==='1';
+  btn.dataset.on=on?'0':'1';
+  const cnt=document.getElementById('rv-helpful-cnt');
+  if(cnt)cnt.textContent=on?base:base+1;
+  if(on){btn.style.background='#fff';btn.style.color='var(--text-sub)';btn.style.borderColor='var(--line)';}
+  else{btn.style.background='var(--blue-weak)';btn.style.color='var(--blue)';btn.style.borderColor='var(--blue)';}
 }
 
 // ── 상세
@@ -1983,13 +2021,13 @@ function renderDetail(d){
             ${renderBadgeBanner(d)}
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
               <span style="font-size:17px;">✨</span>
-              <span style="font-size:13px;font-weight:600;color:var(--text-alt)">아이봄 씨앗 질문 10개 · 재원 인증 부모가 답해요</span>
+              <span style="font-size:13px;font-weight:600;color:var(--text-alt)">아이봄 씨앗질문 10개 · 재원 인증 부모가 답해요</span>
             </div>
             <div style="display:flex;gap:7px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none;" id="seed-cats-${d.id}">
               <div class="fchip on" onclick="filterSeeds('${d.id}','전체',this)">전체</div>
               <div class="fchip" onclick="filterSeeds('${d.id}','입소 Q&amp;A',this)">입소 Q&amp;A</div>
               <div class="fchip" onclick="filterSeeds('${d.id}','생활 정보',this)">생활 정보</div>
-              <div class="fchip" onclick="filterSeeds('${d.id}','나눔·공지',this)">나눔·공지</div>
+              <div class="fchip" onclick="filterSeeds('${d.id}','나눔·생활',this)">나눔·생활</div>
             </div>
           </div>
           <div id="seed-list-${d.id}" style="padding:0 16px 90px;">
@@ -2030,17 +2068,27 @@ function getCatClass(cat){
   if(cat==='생활 정보')return 'c-life';
   return 'c-share';
 }
+function seedCardHTML(instId,s,instAnswers){
+  const myAns=instAnswers[s.id];
+  const totalAns=s.answers+(myAns?1:0);
+  return `<div class="seed-card" onclick="openCompose('${instId}','${s.id}')">
+    <span class="seed-card-cat ${getCatClass(s.cat)}">${s.cat}</span>
+    <div class="seed-card-q">${s.q}</div>
+    <div class="seed-card-ans${myAns?' has-ans':''}">${myAns?'내 답변: '+myAns.substring(0,30)+'…':(totalAns>0?`답변 ${totalAns}개`:'아직 답변이 없어요. 첫 답변을 남겨보세요.')}</div>
+  </div>`;
+}
 function renderSeedCards(instId,cat){
-  const seeds=cat==='전체'?SEED_QUESTIONS:SEED_QUESTIONS.filter(s=>s.cat===cat);
   const instAnswers=(SEED_ANSWERS[instId]||{});
-  return seeds.map(s=>{
-    const myAns=instAnswers[s.id];
-    const totalAns=s.answers+(myAns?1:0);
-    return `<div class="seed-card" onclick="openCompose('${instId}','${s.id}')">
-      <span class="seed-card-cat ${getCatClass(s.cat)}">${s.cat}</span>
-      <div class="seed-card-q">${s.q}</div>
-      <div class="seed-card-ans${myAns?' has-ans':''}">${myAns?'내 답변: '+myAns.substring(0,30)+'…':(totalAns>0?`답변 ${totalAns}개`:'아직 답변이 없어요. 첫 답변을 남겨보세요.')}</div>
-    </div>`;
+  if(cat!=='전체'){
+    return SEED_QUESTIONS.filter(s=>s.cat===cat).map(s=>seedCardHTML(instId,s,instAnswers)).join('');
+  }
+  // 전체: 카테고리별 섹션 헤더로 묶어서 표시
+  const order=['입소 Q&A','생활 정보','나눔·생활'];
+  return order.map(c=>{
+    const seeds=SEED_QUESTIONS.filter(s=>s.cat===c);
+    if(!seeds.length)return '';
+    return `<div style="font-size:13px;font-weight:700;color:var(--text-alt);margin:14px 0 8px;">${c}</div>
+      ${seeds.map(s=>seedCardHTML(instId,s,instAnswers)).join('')}`;
   }).join('');
 }
 function filterSeeds(instId,cat,el){
