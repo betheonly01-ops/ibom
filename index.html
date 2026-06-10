@@ -1653,9 +1653,9 @@ function renderMarkers(){
       position:new naver.maps.LatLng(d.lat,d.lng),map,
       icon:{
         content:`<div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-          <div style="background:${pillBg};border-radius:12px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15);white-space:nowrap;font-family:'Pretendard',sans-serif;${active?'':'border:1px solid rgba(112,115,124,0.16);'}">
-            <div style="font-size:12px;font-weight:600;color:${nameColor};">${d.name}</div>
-            <div style="font-size:11px;margin-top:2px;"><span style="color:${starColor};font-weight:700;">★</span> <span style="color:${subColor};font-weight:600;">${d.rating}</span></div>
+          <div style="background:${pillBg};border-radius:12px;padding:6px 10px;box-shadow:0 2px 8px rgba(0,0,0,.15);white-space:nowrap;font-family:'Pretendard',sans-serif;text-align:center;${active?'':'border:1px solid rgba(112,115,124,0.16);'}">
+            <div style="font-size:12px;font-weight:600;color:${nameColor};">${d.name.length>6?d.name.slice(0,6)+'…':d.name}</div>
+            <div style="font-size:11px;margin-top:2px;text-align:center;"><span style="color:${starColor};font-weight:700;">★</span> <span style="color:${subColor};font-weight:600;">${d.rating}</span></div>
           </div>
           <div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid ${pillBg};margin-top:-1px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.1));"></div>
         </div>`,
@@ -1846,23 +1846,23 @@ function applySortToFiltered(){
 function renderRadarChart(){
   const labels=['친절도','안전·위생','프로그램','급식','소통·투명성'];
   const values=[3.8,3.9,4.0,4.1,4.2];
-  const cx=120,cy=90,R=60;
+  const cx=150,cy=115,R=85;
   const ang=i=>(2*Math.PI*i/5)-Math.PI/2;
   const ptStr=(scale)=>labels.map((_,i)=>`${(cx+scale*R*Math.cos(ang(i))).toFixed(1)},${(cy+scale*R*Math.sin(ang(i))).toFixed(1)}`).join(' ');
-  const rings=[0.2,0.6,1.0].map(s=>`<polygon points="${ptStr(s)}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join('');
-  const axes=labels.map((_,i)=>`<line x1="${cx}" y1="${cy}" x2="${(cx+R*Math.cos(ang(i))).toFixed(1)}" y2="${(cy+R*Math.sin(ang(i))).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`).join('');
+  const rings=[0.2,0.6,1.0].map(s=>`<polygon points="${ptStr(s)}" fill="none" stroke="var(--line)" stroke-width="1.2"/>`).join('');
+  const axes=labels.map((_,i)=>`<line x1="${cx}" y1="${cy}" x2="${(cx+R*Math.cos(ang(i))).toFixed(1)}" y2="${(cy+R*Math.sin(ang(i))).toFixed(1)}" stroke="var(--line)" stroke-width="1.2"/>`).join('');
   const dataPts=values.map((v,i)=>`${(cx+(v/5)*R*Math.cos(ang(i))).toFixed(1)},${(cy+(v/5)*R*Math.sin(ang(i))).toFixed(1)}`).join(' ');
-  const dataPoly=`<polygon points="${dataPts}" fill="var(--blue)" fill-opacity="0.14" stroke="var(--blue)" stroke-width="1.6" stroke-linejoin="round"/>`;
-  const vertices=values.map((v,i)=>`<circle cx="${(cx+(v/5)*R*Math.cos(ang(i))).toFixed(1)}" cy="${(cy+(v/5)*R*Math.sin(ang(i))).toFixed(1)}" r="3" fill="var(--blue)"/>`).join('');
+  const dataPoly=`<polygon points="${dataPts}" fill="var(--blue)" fill-opacity="0.14" stroke="var(--blue)" stroke-width="2" stroke-linejoin="round"/>`;
+  const vertices=values.map((v,i)=>`<circle cx="${(cx+(v/5)*R*Math.cos(ang(i))).toFixed(1)}" cy="${(cy+(v/5)*R*Math.sin(ang(i))).toFixed(1)}" r="4" fill="var(--blue)"/>`).join('');
   const labelEls=labels.map((lbl,i)=>{
-    const lx=cx+(R+18)*Math.cos(ang(i));
-    const ly=cy+(R+18)*Math.sin(ang(i));
+    const lx=cx+(R+22)*Math.cos(ang(i));
+    const ly=cy+(R+22)*Math.sin(ang(i));
     let anchor='middle';
     if(Math.cos(ang(i))>0.2)anchor='start';
     else if(Math.cos(ang(i))<-0.2)anchor='end';
-    return `<text x="${lx.toFixed(1)}" y="${(ly+3.5).toFixed(1)}" text-anchor="${anchor}" font-size="11" font-weight="600" fill="var(--text-alt)" font-family="var(--font)">${lbl}</text>`;
+    return `<text x="${lx.toFixed(1)}" y="${(ly+4).toFixed(1)}" text-anchor="${anchor}" font-size="12" font-weight="600" fill="var(--text-alt)" font-family="var(--font)">${lbl}</text>`;
   }).join('');
-  return `<div style="display:flex;justify-content:center;padding:0 10px;"><svg xmlns="http://www.w3.org/2000/svg" width="240" height="185" viewBox="-25 -5 290 200" overflow="visible">${rings}${axes}${dataPoly}${vertices}${labelEls}</svg></div>`;
+  return `<div style="display:flex;justify-content:center;padding:0 8px;"><svg xmlns="http://www.w3.org/2000/svg" width="300" height="240" viewBox="-20 -20 340 270" overflow="visible">${rings}${axes}${dataPoly}${vertices}${labelEls}</svg></div>`;
 }
 
 // ── 리뷰 상세 바텀시트
@@ -1880,7 +1880,7 @@ function openReviewSheet(r){
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <span style="font-size:15px;font-weight:700;color:var(--text)">${r.name||'익명의 학부모'}</span>
-          <span style="display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:#3FA8E6;">
+          <span style="display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;color:var(--blue);">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="13" height="13"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
             카드인증
           </span>
@@ -1902,8 +1902,8 @@ function openReviewSheet(r){
       ${rubricLabels.map((lab,i)=>`
         <div style="display:flex;align-items:center;gap:10px;">
           <span style="font-size:12.5px;color:var(--text-sub);width:74px;flex-shrink:0;">${lab}</span>
-          <div style="flex:1;height:6px;border-radius:3px;background:#EEF;overflow:hidden;">
-            <div style="height:100%;width:${(scores[i]/5*100)}%;background:#6FC0F0;border-radius:3px;"></div>
+          <div style="flex:1;height:6px;border-radius:3px;background:var(--blue-weak);overflow:hidden;">
+            <div style="height:100%;width:${(scores[i]/5*100)}%;background:var(--blue);border-radius:3px;"></div>
           </div>
           <span style="font-size:12px;font-weight:700;color:var(--text);width:38px;text-align:right;flex-shrink:0;"><span style="color:#FFB200;">★</span> ${scores[i].toFixed(1)}</span>
         </div>
@@ -1960,13 +1960,14 @@ function renderDetail(d){
       </div>
       <div class="detail-scroll">
         <div class="detail-pad" id="dp-info">
-          <!-- 아이사랑 포털 공식 정보 레이블 -->
-          <div style="font-size:12px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:5px;margin:14px 0 10px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15" style="color:var(--blue)"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
-            아이사랑 포털 공식 정보
+          <!-- 기본 정보 + 아이사랑 포털 공식 정보 -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:14px 0 10px;">
+            <div style="font-size:15px;font-weight:800;color:var(--text);">기본 정보</div>
+            <div style="font-size:11px;font-weight:700;color:var(--blue);display:flex;align-items:center;gap:4px;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="13" height="13" style="color:var(--blue)"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
+              아이사랑 포털 공식 정보
+            </div>
           </div>
-          <!-- 기본 정보 -->
-          <div style="font-size:15px;font-weight:800;color:var(--text);margin:0 0 10px;">기본 정보</div>
           <div style="background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(23,23,23,0.04);margin-bottom:20px;">
             ${[
               ['정원 / 현원',`${d.cap||'-'}명 / ${d.now||'-'}명`],
