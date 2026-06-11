@@ -286,13 +286,27 @@ html,body{
 
 /* 커뮤니티 목록 화면 */
 #scr-community{background:var(--bg);}
-.community-header{padding:env(safe-area-inset-top,44px) 16px 0;background:var(--bg);border-bottom:1px solid var(--line-soft);flex-shrink:0;}
-.community-loc{display:flex;align-items:center;gap:4px;padding-top:6px;font-size:12px;color:var(--text-alt);}
-.community-title{font-size:17px;font-weight:800;color:var(--text);padding:2px 0 4px;}
-.community-chips{display:flex;gap:7px;overflow-x:auto;padding:8px 0;margin:0 -16px;padding-left:16px;padding-right:16px;}
+.community-header{padding:env(safe-area-inset-top,16px) 16px 0;background:var(--bg);flex-shrink:0;}
+.community-loc{display:flex;align-items:center;gap:4px;padding-top:6px;font-size:12px;color:var(--text-alt);cursor:pointer;}
+.community-title{font-size:17px;font-weight:800;color:var(--text);padding:4px 0 0;}
+.comm-seg{display:flex;margin:6px -16px 0;border-bottom:1px solid var(--line-soft);}
+.comm-seg-btn{flex:1;padding:9px 0;font-size:14px;font-weight:600;color:var(--text-alt);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:var(--font);cursor:pointer;transition:color .2s;}
+.comm-seg-btn.on{color:var(--blue);border-bottom-color:var(--blue);}
+.comm-pane{flex:1;display:none;flex-direction:column;overflow:hidden;}
+.comm-pane.on{display:flex;}
+.community-chips{display:flex;gap:7px;overflow-x:auto;padding:8px 16px;flex-shrink:0;}
 .community-chips::-webkit-scrollbar{display:none;}
-.community-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 16px 0;}
+.community-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px calc(var(--nav-h) + 80px);}
 .community-list::-webkit-scrollbar{display:none;}
+.comm-sect-hd{padding:14px 16px 8px;font-size:14px;font-weight:800;color:var(--text);}
+.comm-sect-empty{margin:0 16px 12px;padding:14px 16px;font-size:13px;color:var(--text-assist);text-align:center;background:var(--bg-alt);border-radius:12px;}
+.comm-inst-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;}
+.comm-inst-item:active{background:var(--bg-alt);}
+.comm-inst-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.comm-inst-info{flex:1;min-width:0;}
+.comm-inst-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.comm-inst-sub{font-size:12px;color:var(--text-alt);margin-top:2px;}
+.comm-inst-cnt{font-size:12px;color:var(--text-assist);flex-shrink:0;}
 .post-card{padding:14px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;}
 .post-card:active{background:var(--bg-alt);}
 .post-card-top{display:flex;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap;}
@@ -550,7 +564,6 @@ html,body{
         <div id="mini-map"></div>
         <div class="home-map-label">
           <span class="home-map-txt">내 주변 어린이집 ${DATA_LEN}곳</span>
-          <span class="home-map-btn">지도에서 찾기</span>
         </div>
       </div>
 
@@ -577,7 +590,7 @@ html,body{
     <div class="map-top">
       <div class="search-bar">
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
-        <input class="search-bar-txt" id="qi" placeholder="어린이집 검색" oninput="applyFilter()">
+        <input class="search-bar-txt" id="qi" placeholder="어린이집 검색" oninput="applyFilter();if(curScreen==='explore'&&this.value.trim()){document.getElementById('qi-list').value=this.value;showScreen('list');renderList();}">
         <div class="seg">
           <button class="seg-btn on" id="seg-map" onclick="setSeg('map')">지도</button>
           <button class="seg-btn" id="seg-list" onclick="setSeg('list')">목록</button>
@@ -593,8 +606,8 @@ html,body{
     </div>
 
     <!-- 이 지역 검색 -->
-    <div id="search-area-btn" style="display:none;position:absolute;top:calc(env(safe-area-inset-top,16px) + 108px);left:50%;transform:translateX(-50%);z-index:35;">
-      <button onclick="searchThisArea()" style="background:#fff;color:var(--blue);border:none;border-radius:1000px;padding:8px 18px;font-size:13px;font-weight:700;font-family:var(--font);box-shadow:0 2px 10px rgba(0,0,0,0.2);cursor:pointer;white-space:nowrap;">이 지역 검색</button>
+    <div id="search-area-btn" style="display:none;position:absolute;bottom:calc(var(--nav-h,64px) + 16px);left:50%;transform:translateX(-50%);z-index:35;">
+      <button onclick="searchThisArea()" style="background:var(--blue);color:#fff;border:none;border-radius:1000px;padding:8px 18px;font-size:13px;font-weight:700;font-family:var(--font);box-shadow:0 2px 10px rgba(0,0,0,0.2);cursor:pointer;white-space:nowrap;">이 지역 검색</button>
     </div>
 
     <!-- 하단 선택 카드 -->
@@ -622,12 +635,13 @@ html,body{
   <div class="screen hidden" id="scr-list">
     <div class="list-header">
       <div class="search-bar">
+        <button class="back-btn" onclick="goBack()" style="background:none;border:none;padding:8px;cursor:pointer;display:flex;align-items:center;color:var(--text);">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </button>
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
         <input class="search-bar-txt" id="qi-list" placeholder="어린이집 검색" oninput="document.getElementById('qi').value=this.value;applyFilter()">
-        <div class="seg">
-          <button class="seg-btn" onclick="setSeg('map')">지도</button>
-          <button class="seg-btn on">목록</button>
-        </div>
       </div>
       <div class="list-chips">
         <div class="fchip on" data-type="전체" onclick="setType('전체',this)">전체</div>
@@ -636,9 +650,8 @@ html,body{
         <div class="fchip" data-type="가정" onclick="setType('가정',this)">가정</div>
         <div class="fchip" data-type="직장" onclick="setType('직장',this)">직장</div>
       </div>
-      <div class="sort-row" style="display:flex;align-items:center;justify-content:space-between;">
+      <div class="sort-row" style="display:flex;align-items:center;justify-content:flex-end;">
         <button class="sort-btn" id="sort-btn" onclick="openSortSheet()"><span id="sort-btn-txt">별점 높은순</span> ▾</button>
-        <button class="sort-btn" onclick="showMapWithFiltered()" style="color:var(--blue);">지도로 보기</button>
       </div>
     </div>
     <div class="inst-list" id="inst-list"></div>
@@ -674,19 +687,29 @@ html,body{
   <!-- ══ 커뮤니티 목록 화면 ══ -->
   <div class="screen hidden" id="scr-community">
     <div class="community-header">
-      <div class="community-loc">
+      <div class="community-loc" onclick="openRegionSheet()">
         <span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="13" height="13"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/></svg></span>
-        <span>연남동</span>
+        <span id="comm-dong-name">연남동</span>
+        <span style="display:inline-flex;color:var(--text-alt)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg></span>
       </div>
       <div class="community-title">우리동네 커뮤니티</div>
+      <div class="comm-seg">
+        <button class="comm-seg-btn on" id="seg-feed" onclick="switchCommTab('feed')">동네 피드</button>
+        <button class="comm-seg-btn" id="seg-inst" onclick="switchCommTab('inst')">기관별</button>
+      </div>
+    </div>
+    <div class="comm-pane on" id="pane-feed">
       <div class="community-chips" id="community-chips">
         <div class="fchip on" onclick="setCommCat('all',this)">전체</div>
         <div class="fchip" onclick="setCommCat('입소 Q&amp;A',this)">입소 Q&amp;A</div>
         <div class="fchip" onclick="setCommCat('생활 정보',this)">생활 정보</div>
         <div class="fchip" onclick="setCommCat('나눔·공지',this)">나눔·공지</div>
       </div>
+      <div class="community-list" id="community-list"></div>
     </div>
-    <div class="community-list" id="community-list"></div>
+    <div class="comm-pane" id="pane-inst">
+      <div class="community-list" id="comm-inst-list"></div>
+    </div>
     <button class="fab-write" onclick="goWrite(null)" aria-label="글쓰기">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
     </button>
@@ -1144,8 +1167,8 @@ function formatDist(m){
   if(m<1000)return Math.round(m/100)*100+'m';
   return (Math.round(m/100)/10).toFixed(1)+'km';
 }
-// GPS 허용 여부: 기본 좌표(연남동)에서 벗어났으면 실제 위치로 간주
-function gpsAvailable(){return curLat!==37.5600||curLng!==126.9240;}
+// GPS 허용 여부: 기본 좌표(강남역)에서 벗어났으면 실제 위치로 간주
+function gpsAvailable(){return curLat!==37.4979||curLng!==127.0276;}
 // DATA 각 항목에 현재 위치 기준 거리(_m: 미터, dist: 표시문자열) 채움
 function recomputeDist(){
   if(typeof curLat==='undefined')return;
@@ -1205,9 +1228,9 @@ let DATA=[
 ];
 
 const REVIEWS=[
-  {name:'익명의 학부모 A',lv:2,rating:4.6,date:'2026.05',kid:'둘째 재원 2년차',text:'둘째까지 보내고 있어요. 선생님들이 정말 꼼꼼하게 봐주시고 알림장도 매일 사진과 함께 올라와요. 급식 식단도 알레르기 대응이 잘 되어 있어서 안심이에요.',instId:'a',scores:[5.0,4.5,4.5,5.0,4.5],helpful:38},
-  {name:'익명의 학부모 B',lv:2,rating:4.8,date:'2026.04',kid:'만 3세 재원',text:'적응 기간 2주 동안 매일 전화로 상황을 알려주셔서 정말 안심됐어요. 원장님도 학부모 의견을 적극적으로 반영해 주십니다.',instId:'b',scores:[5.0,5.0,4.5,4.5,5.0],helpful:21},
-  {name:'익명의 학부모 C',lv:1,rating:4.2,date:'2026.03',kid:'만 1세 재원',text:'시설은 깔끔하고 좋아요. 다만 하원 시간이 조금 빠듯해서 연장보육이 더 늘어나면 좋겠습니다.',instId:'c',scores:[4.0,4.5,4.0,4.0,4.5],helpful:12},
+  {name:'익명의 학부모 A',lv:2,rating:4.6,date:'2026.05',kid:'둘째 재원 2년차',text:'둘째까지 보내고 있어요. 선생님들이 정말 꼼꼼하게 봐주시고 알림장도 매일 사진과 함께 올라와요. 급식 식단도 알레르기 대응이 잘 되어 있어서 안심이에요.',instId:'a',instName:'연남숲어린이집',scores:[5.0,4.5,4.5,5.0,4.5],helpful:38},
+  {name:'익명의 학부모 B',lv:2,rating:4.8,date:'2026.04',kid:'만 3세 재원',text:'적응 기간 2주 동안 매일 전화로 상황을 알려주셔서 정말 안심됐어요. 원장님도 학부모 의견을 적극적으로 반영해 주십니다.',instId:'b',instName:'햇살가득어린이집',scores:[5.0,5.0,4.5,4.5,5.0],helpful:21},
+  {name:'익명의 학부모 C',lv:1,rating:4.2,date:'2026.03',kid:'만 1세 재원',text:'시설은 깔끔하고 좋아요. 다만 하원 시간이 조금 빠듯해서 연장보육이 더 늘어나면 좋겠습니다.',instId:'c',instName:'성미산숲어린이집',scores:[4.0,4.5,4.0,4.0,4.5],helpful:12},
 ];
 const RUBRIC=[
   {key:'교사 친절도',desc:'선생님의 태도와 소통 방식'},
@@ -1250,6 +1273,23 @@ const POSTS=[
    body:'아이가 커서 작아진 90 사이즈 원복 나눔합니다. 상태 깨끗해요. 필요하신 분 댓글 주세요!',
    author:'세아맘', lv:0, instId:'b', createdAt:Date.now()-86400e3,
    views:31, likes:3, liked:false, comments:[]},
+  {id:'p4', cat:'입소 Q&A', title:'1세반 적응기간 어떻게 하셨나요?',
+   body:'이번 달에 1세반 입소 예정인데, 적응 기간 동안 아이가 많이 울면 어떻게 해야 할까요? 선생님께 연락은 얼마나 자주 해도 되는 건지도 궁금해요.',
+   author:'첫맘', lv:0, instId:'a', createdAt:Date.now()-10800e3,
+   views:56, likes:8, liked:false,
+   comments:[{author:'세아맘', lv:2, text:'처음엔 다들 그래요. 1~2주 지나면 적응돼요!', createdAt:Date.now()-7200e3}]},
+  {id:'p5', cat:'생활 정보', title:'특별활동 신청하셨나요? 어떤 거 좋아요?',
+   body:'우리 어린이집 특별활동으로 체육, 영어, 음악 중 하나 고르는데 다들 어떻게 선택하셨는지 궁금해요. 만 3세 남자아이인데 어떤 게 잘 맞을까요?',
+   author:'연남동 학부모', lv:1, instId:null, createdAt:Date.now()-18000e3,
+   views:73, likes:6, liked:false, comments:[]},
+  {id:'p6', cat:'나눔·공지', title:'유아차 에어버기 나눔합니다',
+   body:'에어버기 시티셀렉트 블랙 나눔합니다. 아이가 너무 커서 이제 안 쓰네요. 직거래 가능하신 분 댓글 달아주세요. 연남동 근처입니다.',
+   author:'마포맘', lv:0, instId:null, createdAt:Date.now()-43200e3,
+   views:44, likes:2, liked:false, comments:[]},
+  {id:'p7', cat:'입소 Q&A', title:'어린이집 알림장 앱 어떤 거 쓰시나요?',
+   body:'새로 다니게 된 어린이집에서 쓰는 알림장 앱이 생소해서요. 아이사랑이랑 키즈노트 둘 다 써보신 분 계세요? 비교해주시면 감사해요.',
+   author:'동교동 학부모', lv:0, instId:'c', createdAt:Date.now()-108000e3,
+   views:29, likes:4, liked:false, comments:[]},
 ];
 
 // 홈 DATA_LEN 치환
@@ -1264,9 +1304,9 @@ let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],compa
 let curScreen='home',prevScreen='home',segMode='map',curDetail=null;
 const screenStack=[];
 // ── 위치 상태
-let curLat=37.5600, curLng=126.9240;
-let curSidoCd='11', curSigunguCd='11440';
-let curDongName='연남동';
+let curLat=37.4979, curLng=127.0276;
+let curSidoCd='11', curSigunguCd='11680';
+let curDongName='역삼동';
 let myLocMarker=null;
 let _pendingCenter=null; // 지도 초기화 전에 감지된 좌표를 임시 보관
 let _skipGPS=false; // 지역 선택 후 goExplore 시 GPS 덮어쓰기 방지
@@ -1294,9 +1334,9 @@ function updateLocDisplay(name){
   // 목록 화면 제목 (.list-title)
   const lt=document.querySelector('.list-title');
   if(lt)lt.textContent=name+' 어린이집';
-  // 커뮤니티 화면 동명 (.community-loc span)
-  const cl=document.querySelector('.community-loc span:not([style])');
-  if(cl)cl.textContent=name;
+  // 커뮤니티 화면 동명
+  const cd=document.getElementById('comm-dong-name');
+  if(cd)cd.textContent=name;
 }
 
 // ── 지역 선택 시트
@@ -1645,9 +1685,9 @@ function initMap(){
     return;
   }
   mapInited=true;
-  const c=new naver.maps.LatLng(curLat||37.5600,curLng||126.9240);
+  const c=new naver.maps.LatLng(curLat||37.4979,curLng||127.0276);
   map=new naver.maps.Map('map',{center:c,zoom:15,mapTypeId:naver.maps.MapTypeId.NORMAL,
-    zoomControl:true,zoomControlOptions:{style:naver.maps.ZoomControlStyle.SMALL,position:naver.maps.Position.RIGHT_TOP}});
+    zoomControl:true,zoomControlOptions:{style:naver.maps.ZoomControlStyle.SMALL,position:naver.maps.Position.RIGHT_BOTTOM}});
   naver.maps.Event.addListener(map,'click',()=>{closeCard();clearSel();});
   naver.maps.Event.addListener(map,'zoom_changed',()=>{if(mapReady)renderMarkers();});
   map.addListener('idle',function(){
@@ -1697,7 +1737,7 @@ function initMiniMap(){
   const el=document.getElementById('mini-map');
   if(!el||!naver||!naver.maps)return;
   miniMapInited=true;
-  const c=new naver.maps.LatLng(curLat||37.5600,curLng||126.9240);
+  const c=new naver.maps.LatLng(curLat||37.4979,curLng||127.0276);
   miniMap=new naver.maps.Map('mini-map',{center:c,zoom:14,mapTypeId:naver.maps.MapTypeId.NORMAL,
     zoomControl:false,scrollWheel:false,draggable:false,pinchZoom:false,disableDoubleClickZoom:true});
   _renderMiniMapMarkers();
@@ -1716,7 +1756,7 @@ function _renderMiniMapMarkers(){
 function updateMiniMap(){
   if(!miniMapInited){initMiniMap();return;}
   if(!miniMap)return;
-  miniMap.setCenter(new naver.maps.LatLng(curLat||37.5600,curLng||126.9240));
+  miniMap.setCenter(new naver.maps.LatLng(curLat||37.4979,curLng||127.0276));
   naver.maps.Event.trigger(miniMap,'resize');
   _renderMiniMapMarkers();
 }
@@ -2069,7 +2109,12 @@ function openReviewSheet(r){
   const scores=r.scores||[5.0,4.5,4.5,5.0,4.5];
   const helpful=r.helpful!=null?r.helpful:38;
   const resInfo=`${r.kid||'둘째 재원 2년차'} · ${r.date||'2026.05'}`;
+  const rvInstName=r.instName||(r.instId?(DATA.find(d=>d.id===r.instId)||{}).name:'')||'';
   ct.innerHTML=`
+    ${rvInstName?`<div style="margin-bottom:12px;">
+      <div style="font-size:16px;font-weight:800;color:var(--text);">리뷰 상세</div>
+      <div style="font-size:13px;color:var(--text-alt);margin-top:2px;">${rvInstName}</div>
+    </div>`:''}
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <div style="width:40px;height:40px;border-radius:20px;background:var(--blue);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;flex-shrink:0;">${r.name?r.name[0]:'익'}</div>
       <div style="flex:1;min-width:0">
@@ -2417,6 +2462,7 @@ function closeNudge(){
 
 // ── 커뮤니티
 let curCommCat='all';   // 커뮤니티 카테고리 필터
+let commTab='feed';     // 커뮤니티 탭 (feed | inst)
 let curPostId=null;     // 현재 보는 글
 let writePreset=null;   // 작성 시 기관 프리셋(instId)
 let writeCat=null;      // 작성 카테고리
@@ -2432,7 +2478,21 @@ function relTime(ts){
   return `${Math.floor(diff/2592000)}개월 전`;
 }
 
-function goCommunity(){showScreen('community');renderCommunity();}
+function goCommunity(){
+  commTab='feed';
+  showScreen('community');
+  renderCommunity();
+  renderCommInst();
+}
+
+function switchCommTab(tab){
+  commTab=tab;
+  document.getElementById('pane-feed').className='comm-pane'+(tab==='feed'?' on':'');
+  document.getElementById('pane-inst').className='comm-pane'+(tab==='inst'?' on':'');
+  document.getElementById('seg-feed').className='comm-seg-btn'+(tab==='feed'?' on':'');
+  document.getElementById('seg-inst').className='comm-seg-btn'+(tab==='inst'?' on':'');
+  if(tab==='inst')renderCommInst();
+}
 
 function setCommCat(cat,el){
   curCommCat=cat;
@@ -2470,6 +2530,29 @@ function renderCommunity(){
       </div>
     </div>`;
   }).join('');
+}
+
+function renderCommInst(){
+  const el=document.getElementById('comm-inst-list');
+  if(!el)return;
+  const TCBG={'국공립':'#EAF2FE','민간':'#E3F9EF','가정':'#FEF4E6','직장':'#F1ECFE','유치원':'#FEECEC'};
+  const favHTML=`<div class="comm-sect-hd">즐겨찾기 기관</div><div class="comm-sect-empty">관심 기관을 추가하면 여기에 표시됩니다</div>`;
+  const nearby=[...DATA].sort((a,b)=>(a._m??Infinity)-(b._m??Infinity)).slice(0,5);
+  const nearbyHTML=nearby.map(d=>{
+    const tc=TC[d.type]||'#999';
+    const bg=TCBG[d.type]||'#f5f5f5';
+    const iconFn=HERO_ICONS[d.type]||'heroGongl';
+    const cnt=POSTS.filter(p=>p.instId===d.id).length;
+    return `<div class="comm-inst-item" onclick="goDetail('${d.id}')">
+      <div class="comm-inst-icon" style="background:${bg};color:${tc}">${SVG[iconFn](20)}</div>
+      <div class="comm-inst-info">
+        <div class="comm-inst-name">${d.name}</div>
+        <div class="comm-inst-sub">${d.type} · ${d.dist||'-'}</div>
+      </div>
+      <div class="comm-inst-cnt">${cnt?`게시글 ${cnt}건`:''}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML=favHTML+`<div class="comm-sect-hd">주변 기관</div>`+nearbyHTML;
 }
 
 function goPost(id){
@@ -2701,8 +2784,8 @@ async function fetchChildcareData(arcode='11440') {
     }
 
     // 해시 기반 오프셋 (API la/lo가 비어있을 때 폴백)
-    const baseLat = curLat || 37.5665;
-    const baseLng = curLng || 126.978;
+    const baseLat = curLat || 37.4979;
+    const baseLng = curLng || 127.0276;
     function nameHash(str) {
       let h = 0;
       for (let i = 0; i < str.length; i++) h = ((h << 5) - h + str.charCodeAt(i)) | 0;
