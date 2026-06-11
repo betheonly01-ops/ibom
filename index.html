@@ -1259,7 +1259,7 @@ let rwScores=[5,5,4,4,5,5],rwInstId=null;
 const POSTS=[
   {id:'p1', cat:'입소 Q&A', title:'0세반 지금 신청하면 대기 몇 번이에요?',
    body:'이번 달에 입소 신청했는데 0세반 대기 순번이 어느 정도일지 궁금해요. 비슷한 시기 신청하신 분 계실까요? 보통 몇 달 정도 기다리는지도 알려주시면 감사하겠습니다.',
-   author:'연남동 학부모', lv:1, instId:'a', createdAt:Date.now()-3600e3,
+   author:'연남동 학부모', lv:1, instId:'a', instName:'연남숲어린이집', createdAt:Date.now()-3600e3,
    views:42, likes:5, liked:false,
    comments:[
      {author:'둘째맘', lv:2, text:'저희는 3월 신청해서 4번이었어요! 9월쯤 연락 받았습니다.', createdAt:Date.now()-1800e3},
@@ -1271,11 +1271,11 @@ const POSTS=[
    views:88, likes:12, liked:false, comments:[]},
   {id:'p3', cat:'나눔·공지', title:'90 사이즈 원복 나눔해요 🙌',
    body:'아이가 커서 작아진 90 사이즈 원복 나눔합니다. 상태 깨끗해요. 필요하신 분 댓글 주세요!',
-   author:'세아맘', lv:0, instId:'b', createdAt:Date.now()-86400e3,
+   author:'세아맘', lv:0, instId:'b', instName:'햇살가득어린이집', createdAt:Date.now()-86400e3,
    views:31, likes:3, liked:false, comments:[]},
   {id:'p4', cat:'입소 Q&A', title:'1세반 적응기간 어떻게 하셨나요?',
    body:'이번 달에 1세반 입소 예정인데, 적응 기간 동안 아이가 많이 울면 어떻게 해야 할까요? 선생님께 연락은 얼마나 자주 해도 되는 건지도 궁금해요.',
-   author:'첫맘', lv:0, instId:'a', createdAt:Date.now()-10800e3,
+   author:'첫맘', lv:0, instId:'a', instName:'연남숲어린이집', createdAt:Date.now()-10800e3,
    views:56, likes:8, liked:false,
    comments:[{author:'세아맘', lv:2, text:'처음엔 다들 그래요. 1~2주 지나면 적응돼요!', createdAt:Date.now()-7200e3}]},
   {id:'p5', cat:'생활 정보', title:'특별활동 신청하셨나요? 어떤 거 좋아요?',
@@ -1288,7 +1288,7 @@ const POSTS=[
    views:44, likes:2, liked:false, comments:[]},
   {id:'p7', cat:'입소 Q&A', title:'어린이집 알림장 앱 어떤 거 쓰시나요?',
    body:'새로 다니게 된 어린이집에서 쓰는 알림장 앱이 생소해서요. 아이사랑이랑 키즈노트 둘 다 써보신 분 계세요? 비교해주시면 감사해요.',
-   author:'동교동 학부모', lv:0, instId:'c', createdAt:Date.now()-108000e3,
+   author:'동교동 학부모', lv:0, instId:'c', instName:'성미산숲어린이집', createdAt:Date.now()-108000e3,
    views:29, likes:4, liked:false, comments:[]},
 ];
 
@@ -2406,10 +2406,32 @@ function submitCompose(){
 }
 
 // ── NudgeSheet
-function openNudge(instId,strategy){
+const _nudgedInsts=new Set();   // 세션 내 넛지 중복 방지
+function openNudge(instId,strategy,passedName){
+  if(_nudgedInsts.has(instId))return;
   const inst=DATA.find(d=>d.id===instId)||filtered.find(d=>d.id===instId);
-  const instName=inst?inst.name:'이 기관';
+  const instName=passedName||(inst?inst.name:'이 기관');
   let html='';
+  if(strategy==='comment'){
+    html=`<div class="ns-ico-circle" style="background:linear-gradient(135deg,var(--blue),var(--blue))">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" style="color:#fff"><path d="M12 2 1 7v2h22V7L12 2zm-7 9v7H3v2h18v-2h-2v-7h-2v7h-3v-7h-2v7H8v-7H5z" fill="currentColor"/></svg>
+    </div>
+    <div class="ns-title">혹시 이 어린이집 다니셨나요?</div>
+    <div class="ns-body">경험을 공유하면 다른 학부모에게<br>큰 도움이 돼요.</div>
+    <div class="ns-inst-row">
+      <div style="width:36px;height:36px;border-radius:10px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--text-assist)"><path d="M12 2 1 7v2h22V7L12 2zm-7 9v7H3v2h18v-2h-2v-7h-2v7h-3v-7h-2v7H8v-7H5z" fill="currentColor"/></svg>
+      </div>
+      <span style="font-size:13.5px;font-weight:600;color:var(--text)">${instName}</span>
+    </div>
+    <button class="ns-cta" style="background:var(--blue);" onclick="closeNudge();goReviewWriteById('${instId}')">리뷰 쓰러 가기</button>
+    <button class="ns-skip" onclick="closeNudge()">괜찮아요</button>`;
+    _nudgedInsts.add(instId);
+    document.getElementById('ns-content').innerHTML=html;
+    document.getElementById('nudge-backdrop').style.display='block';
+    setTimeout(()=>document.getElementById('nudge-sheet').classList.add('open'),10);
+    return;
+  }
   if(strategy==='strategy3'){
     html=`<div class="ns-ico-circle" style="background:linear-gradient(135deg,#7A3DF5,#9B5DFA)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="26" height="26" style="color:#fff"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
@@ -2451,9 +2473,14 @@ function openNudge(instId,strategy){
     <button class="ns-cta" style="background:var(--blue);" onclick="closeNudge();goReviewWrite(curDetail)">리뷰 쓰기</button>`;
   }
   html+=`<button class="ns-skip" onclick="closeNudge()">다음에 할게요</button>`;
+  _nudgedInsts.add(instId);
   document.getElementById('ns-content').innerHTML=html;
   document.getElementById('nudge-backdrop').style.display='block';
   setTimeout(()=>document.getElementById('nudge-sheet').classList.add('open'),10);
+}
+function goReviewWriteById(instId){
+  const inst=DATA.find(d=>d.id===instId);
+  if(inst)goReviewWrite(inst);
 }
 function closeNudge(){
   document.getElementById('nudge-sheet').classList.remove('open');
@@ -2629,6 +2656,7 @@ function addComment(){
   renderPost(p);
   const sc=document.getElementById('post-scroll');
   sc.scrollTop=sc.scrollHeight;
+  if(p.instId)setTimeout(()=>{ if(curPostId===p.id)openNudge(p.instId,'comment',p.instName); },1000);
 }
 
 function goWrite(presetInstId){
