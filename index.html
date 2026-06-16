@@ -1598,6 +1598,7 @@ function goHome(){if(curScreen!=='home')showScreen('home');}
 function goExplore(){
   if(curScreen==='explore')return;
   showScreen('explore');
+  closeCard();clearSel(); // 진입 시 직전 선택 카드/핀 강조 잔존 방지 (초기 비노출 보장)
   if(_skipGPS){
     _skipGPS=false;
     const wasInited=mapInited;
