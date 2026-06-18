@@ -567,23 +567,103 @@ html,body{
 .rwd-body{flex:1;overflow-y:auto;padding:16px 16px 24px;display:flex;flex-direction:column;}
 .rwd-footer{padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:var(--bg);flex-shrink:0;}
 .rwd-btn{width:100%;padding:15px;background:var(--bg-alt);color:var(--text);border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;}
+@keyframes ibomRise {
+  from { opacity:0; transform:translateY(18px) scale(0.95); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
 </style>
 </head>
 <body>
 <div class="app-wrap">
 
-  <!-- ══ 로그인 화면 ══ -->
-  <div class="screen hidden" id="scr-login" style="z-index:45;background:#fff;padding:0 16px;">
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
-      <div style="font-size:34px;font-weight:800;color:var(--text);letter-spacing:-0.5px;">아이봄</div>
-      <div style="font-size:14px;color:var(--text-alt);">우리 동네 어린이집, 한눈에</div>
+  <!-- ══ 인트로(시작) 화면 ══ -->
+  <div class="screen hidden" id="scr-intro" style="z-index:46;background:#fff;display:flex;flex-direction:column;">
+    <!-- 브랜드 상단 -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;background:linear-gradient(180deg,#F1F8FF 0%,#fff 78%);">
+      <img src="logo/아이봄 로고.svg" alt="아이봄" style="width:200px;height:auto;animation:ibomRise .7s cubic-bezier(.2,.8,.3,1) both;">
+      <div style="font-size:22px;font-weight:800;color:var(--text);margin-top:26px;text-align:center;line-height:1.4;letter-spacing:-0.02em;">
+        우리 동네 어린이집,<br>부모들의 진짜 이야기
+      </div>
+      <div style="font-size:14.5px;color:var(--text-alt);font-weight:500;margin-top:14px;text-align:center;line-height:1.6;">
+        기관별 커뮤니티와 재원 부모 인증 리뷰로<br>믿을 수 있는 정보를 찾으세요
+      </div>
     </div>
-    <div style="padding-bottom:calc(env(safe-area-inset-bottom,16px) + 16px);">
-      <button onclick="kakaoLogin()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#FEE500;color:rgba(0,0,0,0.85);border:none;border-radius:12px;padding:15px 20px;font-size:16px;font-weight:700;font-family:var(--font);cursor:pointer;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path d="M12 3C6.48 3 2 6.58 2 10.99c0 2.86 1.9 5.37 4.76 6.78-.21.75-.76 2.73-.87 3.15-.14.53.19.52.4.38.17-.11 2.65-1.8 3.72-2.53.65.09 1.32.14 1.99.14 5.52 0 10-3.58 10-7.92S17.52 3 12 3z" fill="rgba(0,0,0,0.85)"/></svg>
-        카카오로 시작하기
+    <!-- 가치 아이콘 3종 -->
+    <div style="display:flex;justify-content:center;gap:18px;padding:4px 24px 22px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;">
+        <span style="width:46px;height:46px;border-radius:14px;background:var(--blue-weak);display:inline-flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 16.8 20.048" width="22" height="22" fill="var(--blue)"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill-rule="evenodd"/></svg>
+        </span>
+        <span style="font-size:11.5px;color:var(--text-alt);font-weight:600;white-space:nowrap;">지도로 탐색</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;">
+        <span style="width:46px;height:46px;border-radius:14px;background:var(--blue-weak);display:inline-flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 19.3 19.3" width="22" height="22" fill="var(--blue)"><path d="M9.65 0C4.32 0 0 4.32 0 9.65c0 5.329 4.32 9.65 9.65 9.65 1.538 0 2.995-.361 4.287-1.003l1.812.495c.411.112.776.211 1.077.265.305.053.691.09 1.076-.057.506-.193.905-.592 1.098-1.098.147-.385.11-.771.056-1.076-.053-.3-.152-.666-.264-1.076l-.495-1.813C19.939 12.645 19.3 11.188 19.3 9.65 19.3 4.32 14.979 0 9.65 0z"/></svg>
+        </span>
+        <span style="font-size:11.5px;color:var(--text-alt);font-weight:600;white-space:nowrap;">기관 커뮤니티</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:7px;">
+        <span style="width:46px;height:46px;border-radius:14px;background:var(--blue-weak);display:inline-flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 19.8 19.8" width="22" height="22" fill="var(--blue)"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill-rule="evenodd"/></svg>
+        </span>
+        <span style="font-size:11.5px;color:var(--text-alt);font-weight:600;white-space:nowrap;">인증 리뷰</span>
+      </div>
+    </div>
+    <!-- CTA -->
+    <div style="padding:0 24px 30px;display:flex;flex-direction:column;gap:10px;">
+      <button onclick="showLogin()" style="width:100%;padding:16px;border-radius:13px;border:none;background:var(--blue);color:#fff;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(0,102,255,0.32);">
+        시작하기
       </button>
-      <button onclick="skipLogin()" style="background:none;border:none;color:var(--text-alt);font-size:14px;font-weight:600;font-family:var(--font);padding:14px;width:100%;cursor:pointer;">로그인 없이 둘러보기</button>
+      <button onclick="enterGuest()" style="width:100%;padding:13px;border-radius:13px;border:none;background:none;color:var(--text-alt);font-family:var(--font);font-size:14.5px;font-weight:600;cursor:pointer;">
+        로그인 없이 둘러볼게요
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ 로그인 화면 ══ -->
+  <div class="screen hidden" id="scr-login" style="z-index:45;background:#fff;display:flex;flex-direction:column;">
+    <!-- 뒤로가기 -->
+    <div style="padding-top:52px;padding-left:8px;flex-shrink:0;">
+      <button onclick="backToIntro()" style="border:none;background:none;padding:8px;cursor:pointer;display:flex;">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor" style="color:var(--text)"/></svg>
+      </button>
+    </div>
+    <!-- 브랜드 -->
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;">
+      <img src="logo/아이봄 로고.svg" alt="아이봄" style="width:188px;height:auto;">
+      <div style="font-size:15px;color:var(--text-alt);font-weight:500;margin-top:20px;text-align:center;line-height:1.65;">
+        우리 동네 어린이집·유치원,<br>부모들의 진짜 이야기로 찾으세요
+      </div>
+    </div>
+    <!-- SNS 로그인 -->
+    <div style="padding:0 24px 18px;display:flex;flex-direction:column;gap:11px;">
+      <!-- 구분선 -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+        <div style="flex:1;height:1px;background:var(--line);"></div>
+        <span style="font-size:12.5px;color:var(--text-assist);font-weight:600;white-space:nowrap;">SNS 계정으로 간편 시작</span>
+        <div style="flex:1;height:1px;background:var(--line);"></div>
+      </div>
+      <!-- 카카오 버튼 -->
+      <div style="position:relative;">
+        <span style="position:absolute;top:-9px;right:14px;font-size:11px;font-weight:700;color:#fff;background:rgba(55,56,60,0.9);padding:3px 9px;border-radius:1000px;white-space:nowrap;z-index:1;">3초 만에 시작</span>
+        <button onclick="kakaoLogin()" style="display:flex;align-items:center;gap:10px;width:100%;background:#FEE500;color:rgba(0,0,0,0.85);border:none;border-radius:12px;padding:15px 18px;font-size:15.5px;font-weight:700;font-family:var(--font);cursor:pointer;position:relative;">
+          <span style="display:flex;align-items:center;justify-content:center;width:22px;">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 4C7 4 3 7.1 3 11c0 2.5 1.7 4.7 4.2 6L6 21.4c-.1.4.3.7.7.5l5-3.3c.1 0 .2 0 .3 0C17 18.6 21 15.5 21 11.6 21 7.5 17 4 12 4Z" fill="rgba(0,0,0,0.85)"/></svg>
+          </span>
+          <span style="flex:1;text-align:center;margin-right:22px;">카카오로 시작하기</span>
+        </button>
+      </div>
+      <!-- 네이버 버튼 -->
+      <button onclick="naverLogin()" style="display:flex;align-items:center;gap:10px;width:100%;background:#03C75A;color:#fff;border:none;border-radius:12px;padding:15px 18px;font-size:15.5px;font-weight:700;font-family:var(--font);cursor:pointer;">
+        <span style="display:flex;align-items:center;justify-content:center;width:22px;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none"><path d="M4 4h5.2l5.4 8V4H20v16h-5.2L9.4 12v8H4V4Z" fill="#fff"/></svg>
+        </span>
+        <span style="flex:1;text-align:center;margin-right:22px;">네이버로 시작하기</span>
+      </button>
+      <!-- 이용약관 -->
+      <div style="font-size:11.5px;color:var(--text-assist);text-align:center;line-height:1.65;margin-top:8px;padding:0 8px;">
+        로그인 시 <span style="color:var(--text-alt);font-weight:600;">이용약관</span> 및 <span style="color:var(--text-alt);font-weight:600;">개인정보처리방침</span>에<br>동의하는 것으로 간주합니다.
+      </div>
     </div>
   </div>
 
@@ -867,6 +947,52 @@ html,body{
       <span class="my-header-ttl">MY</span>
     </div>
     <div class="my-scroll">
+      <!-- 게스트 MY (미로그인) -->
+      <div id="my-guest-area" style="display:none;">
+        <div style="margin:16px;background:#fff;border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:#F0F0F0;display:flex;align-items:center;justify-content:center;margin-bottom:4px;">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z" fill="none" stroke="#BBBCBE" stroke-width="1.7"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" fill="none" stroke="#BBBCBE" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </div>
+          <div style="font-size:15px;font-weight:700;color:var(--text);line-height:1.5;">로그인하면 나만의 아이봄을<br>만들 수 있어요</div>
+          <div style="font-size:13px;color:var(--text-alt);">리뷰 작성, 관심 기관, 재원 인증까지</div>
+        </div>
+        <!-- 로그인 버튼 -->
+        <div style="padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-bottom:4px;">
+          <div style="position:relative;">
+            <span style="position:absolute;top:-9px;right:14px;font-size:11px;font-weight:700;color:#fff;background:rgba(55,56,60,0.9);padding:3px 9px;border-radius:1000px;white-space:nowrap;z-index:1;">3초 만에 시작</span>
+            <button onclick="kakaoLogin()" style="display:flex;align-items:center;gap:10px;width:100%;background:#FEE500;color:rgba(0,0,0,0.85);border:none;border-radius:12px;padding:15px 18px;font-size:15.5px;font-weight:700;font-family:var(--font);cursor:pointer;position:relative;">
+              <span style="display:flex;align-items:center;justify-content:center;width:22px;"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 4C7 4 3 7.1 3 11c0 2.5 1.7 4.7 4.2 6L6 21.4c-.1.4.3.7.7.5l5-3.3c.1 0 .2 0 .3 0C17 18.6 21 15.5 21 11.6 21 7.5 17 4 12 4Z" fill="rgba(0,0,0,0.85)"/></svg></span>
+              <span style="flex:1;text-align:center;margin-right:22px;">카카오로 시작하기</span>
+            </button>
+          </div>
+          <button onclick="naverLogin()" style="display:flex;align-items:center;gap:10px;width:100%;background:#03C75A;color:#fff;border:none;border-radius:12px;padding:15px 18px;font-size:15.5px;font-weight:700;font-family:var(--font);cursor:pointer;">
+            <span style="display:flex;align-items:center;justify-content:center;width:22px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none"><path d="M4 4h5.2l5.4 8V4H20v16h-5.2L9.4 12v8H4V4Z" fill="#fff"/></svg></span>
+            <span style="flex:1;text-align:center;margin-right:22px;">네이버로 시작하기</span>
+          </button>
+        </div>
+        <!-- 하단 메뉴 (공통 접근 가능 항목) -->
+        <div class="my-sec-label" style="margin-top:16px;">설정</div>
+        <div class="my-card">
+          <div class="my-row" onclick="showToast('공지사항은 준비 중이에요')">
+            <div class="my-row-ico" style="background:var(--bg-alt);">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="color:var(--text-alt)"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </div>
+            <span class="my-row-ttl">공지사항</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" style="color:var(--text-assist)"><path d="M8.464 5.536a.9.9 0 0 1 1.272 0l5.9 5.9a.9.9 0 0 1 0 1.272l-5.9 5.9a.9.9 0 0 1-1.272-1.272L13.728 12 8.464 6.808a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg>
+          </div>
+          <div class="my-row" onclick="showToast('고객센터는 준비 중이에요')">
+            <div class="my-row-ico" style="background:var(--bg-alt);">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="color:var(--text-alt)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            </div>
+            <span class="my-row-ttl">고객센터</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" style="color:var(--text-assist)"><path d="M8.464 5.536a.9.9 0 0 1 1.272 0l5.9 5.9a.9.9 0 0 1 0 1.272l-5.9 5.9a.9.9 0 0 1-1.272-1.272L13.728 12 8.464 6.808a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg>
+          </div>
+        </div>
+        <div style="text-align:center;padding:16px 0 8px;font-size:11.5px;color:var(--text-assist);">이용약관 · 개인정보처리방침</div>
+        <div style="height:calc(var(--nav-h) + 16px);"></div>
+      </div>
+      <!-- /게스트 MY -->
+      <div id="my-logged-area">
       <!-- 프로필 카드 -->
       <div class="my-profile-card">
         <div class="my-avatar" id="my-avatar">김</div>
@@ -956,6 +1082,8 @@ html,body{
         </div>
       </div>
       <div style="height:calc(var(--nav-h) + 16px);"></div>
+      </div>
+      <!-- /my-logged-area -->
     </div>
     <div class="bottom-nav">
       <button class="nav-item" onclick="goHome()"><span class="nav-ico" style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M3 10.5L12 3l9 7.5V21H15v-6H9v6H3V10.5z"/></svg></span><span class="nav-lbl">홈</span></button>
@@ -2253,6 +2381,31 @@ function toggleHelpful(btn){
   else{btn.style.background='var(--blue-weak)';btn.style.color='var(--blue)';btn.style.borderColor='var(--blue)';}
 }
 
+function guestLoginWallHTML(title, body){
+  return `
+    <div style="padding:24px 16px 20px;text-align:center;">
+      <div style="width:52px;height:52px;border-radius:16px;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M17 11H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2z" stroke="var(--blue)" stroke-width="1.7" fill="var(--blue-weak)"/><path d="M12 16a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="var(--blue)"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="var(--blue)" stroke-width="1.7" stroke-linecap="round"/></svg>
+      </div>
+      <div style="font-size:17px;font-weight:800;color:var(--text);line-height:1.4;letter-spacing:-0.01em;">${title}</div>
+      <div style="font-size:13px;color:var(--text-alt);line-height:1.6;margin-top:8px;">${body}</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:18px;">
+        <div style="position:relative;">
+          <span style="position:absolute;top:-9px;right:14px;font-size:11px;font-weight:700;color:#fff;background:rgba(55,56,60,0.9);padding:3px 9px;border-radius:1000px;white-space:nowrap;z-index:1;">3초 만에 시작</span>
+          <button onclick="kakaoLogin()" style="display:flex;align-items:center;gap:10px;width:100%;background:#FEE500;color:rgba(0,0,0,0.85);border:none;border-radius:12px;padding:14px 18px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;position:relative;">
+            <span style="display:flex;align-items:center;justify-content:center;width:22px;"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 4C7 4 3 7.1 3 11c0 2.5 1.7 4.7 4.2 6L6 21.4c-.1.4.3.7.7.5l5-3.3c.1 0 .2 0 .3 0C17 18.6 21 15.5 21 11.6 21 7.5 17 4 12 4Z" fill="rgba(0,0,0,0.85)"/></svg></span>
+            <span style="flex:1;text-align:center;margin-right:22px;">카카오로 시작하기</span>
+          </button>
+        </div>
+        <button onclick="naverLogin()" style="display:flex;align-items:center;gap:10px;width:100%;background:#03C75A;color:#fff;border:none;border-radius:12px;padding:14px 18px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;">
+          <span style="display:flex;align-items:center;justify-content:center;width:22px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none"><path d="M4 4h5.2l5.4 8V4H20v16h-5.2L9.4 12v8H4V4Z" fill="#fff"/></svg></span>
+          <span style="flex:1;text-align:center;margin-right:22px;">네이버로 시작하기</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 // ── 상세
 function renderDetail(d){
   const occ=(d.now&&d.cap)?Math.round(d.now/d.cap*100):null;
@@ -2342,7 +2495,9 @@ function renderDetail(d){
         </div>
         <div class="detail-pad" id="dp-review" style="display:none">
           <div class="review-notice"><span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg></span> 리뷰 중 다수가 <b style="color:var(--blue)">재원 인증</b> 부모의 리뷰예요</div>
-          ${REVIEWS.map((r,i)=>`
+          ${(()=>{
+            const isGuest = !localStorage.getItem('aibom_user');
+            const rvHtml = (r,i) => `
             <div class="rv-item" style="cursor:pointer;" onclick='openReviewSheet(${JSON.stringify(r).replace(/'/g,"&#39;")})'>
               <div class="rv-top">
                 <div class="avatar" style="background:${AV_COLORS[i%AV_COLORS.length]}">${r.name[0]}</div>
@@ -2355,8 +2510,21 @@ function renderDetail(d){
               </div>
               <div class="rv-stars">${'★'.repeat(Math.round(r.rating))}${'☆'.repeat(5-Math.round(r.rating))} <span style="font-size:12px;color:var(--text-alt)">${r.kid}</span></div>
               <div class="rv-txt">${r.text}</div>
-            </div>
-          `).join('')}
+            </div>`;
+            if(!isGuest) return REVIEWS.map((r,i)=>rvHtml(r,i)).join('');
+            // 게스트: 첫 번째만 표시 + 나머지 블러 + 로그인 유도
+            const first = rvHtml(REVIEWS[0], 0);
+            const restBlurred = REVIEWS.length > 1 ? `
+              <div style="position:relative;overflow:hidden;border-radius:12px;">
+                <div style="filter:blur(5px);pointer-events:none;user-select:none;max-height:160px;overflow:hidden;">
+                  ${REVIEWS.slice(1).map((r,i)=>rvHtml(r,1+i)).join('')}
+                </div>
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.85) 50%,#fff 75%);"></div>
+              </div>
+              ${guestLoginWallHTML('전체 리뷰를 보려면 로그인하세요', '재원 인증 부모들의 솔직한 리뷰 ' + REVIEWS.length + '개를 모두 볼 수 있어요')}
+            ` : '';
+            return first + restBlurred;
+          })()}
         </div>
         <div id="dp-comm" style="display:none;position:relative;">
           <div style="padding:14px 16px 0;">
@@ -2462,7 +2630,20 @@ function renderSaved(){
   `).join('')+`</div>`;
 }
 
-function goMy(){applyUserToMy();showScreen('my');}
+function goMy(){
+  const u = JSON.parse(localStorage.getItem('aibom_user')||'null');
+  const loggedArea = document.getElementById('my-logged-area');
+  const guestArea = document.getElementById('my-guest-area');
+  if(u && u.nickname){
+    if(loggedArea) loggedArea.style.display='';
+    if(guestArea) guestArea.style.display='none';
+    applyUserToMy(u);
+  } else {
+    if(loggedArea) loggedArea.style.display='none';
+    if(guestArea) guestArea.style.display='';
+  }
+  showScreen('my');
+}
 
 function goMyReviews(){showScreen('my-reviews');renderMyReviews();}
 function renderMyReviews(){
@@ -2546,17 +2727,39 @@ function seedCardHTML(instId,s,instAnswers){
 }
 function renderSeedCards(instId,cat){
   const instAnswers=(SEED_ANSWERS[instId]||{});
+  const isGuest = !localStorage.getItem('aibom_user');
+
+  let allCards;
   if(cat!=='전체'){
-    return SEED_QUESTIONS.filter(s=>s.cat===cat).map(s=>seedCardHTML(instId,s,instAnswers)).join('');
+    allCards = SEED_QUESTIONS.filter(s=>s.cat===cat).map(s=>seedCardHTML(instId,s,instAnswers));
+  } else {
+    const order=['입소 Q&A','생활 정보','나눔·생활'];
+    // 전체 카드를 flat 배열로 구성 (섹션 헤더 포함)
+    allCards = [];
+    order.forEach(c=>{
+      const seeds=SEED_QUESTIONS.filter(s=>s.cat===c);
+      if(!seeds.length)return;
+      allCards.push(`<div style="font-size:13px;font-weight:700;color:var(--text-alt);margin:14px 0 8px;">${c}</div>`);
+      seeds.forEach(s=>allCards.push(seedCardHTML(instId,s,instAnswers)));
+    });
   }
-  // 전체: 카테고리별 섹션 헤더로 묶어서 표시
-  const order=['입소 Q&A','생활 정보','나눔·생활'];
-  return order.map(c=>{
-    const seeds=SEED_QUESTIONS.filter(s=>s.cat===c);
-    if(!seeds.length)return '';
-    return `<div style="font-size:13px;font-weight:700;color:var(--text-alt);margin:14px 0 8px;">${c}</div>
-      ${seeds.map(s=>seedCardHTML(instId,s,instAnswers)).join('')}`;
-  }).join('');
+
+  if(!isGuest || allCards.length <= 1){
+    return allCards.join('');
+  }
+
+  // 게스트: 첫 번째 카드만 표시 + 나머지 블러 + 로그인 유도
+  const first = allCards[0];
+  const rest = allCards.slice(1).join('');
+  return first + `
+    <div style="position:relative;overflow:hidden;border-radius:12px;margin-top:8px;">
+      <div style="filter:blur(5px);pointer-events:none;user-select:none;max-height:160px;overflow:hidden;">
+        ${rest}
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.85) 50%,#fff 75%);"></div>
+    </div>
+    ${guestLoginWallHTML('답변 전체를 보려면 로그인하세요', '재원 인증 부모들의 실제 경험담을 모두 볼 수 있어요')}
+  `;
 }
 function filterSeeds(instId,cat,el){
   document.querySelectorAll(`#seed-cats-${instId} .fchip`).forEach(c=>c.classList.remove('on'));
@@ -3119,10 +3322,22 @@ function kakaoLogin(){
 }
 function onLoginSuccess(user){
   document.getElementById('scr-login').classList.add('hidden');
+  document.getElementById('scr-intro').classList.add('hidden');
   applyUserToMy(user);
 }
-function skipLogin(){
+function showLogin(){
+  document.getElementById('scr-intro').classList.add('hidden');
+  document.getElementById('scr-login').classList.remove('hidden');
+}
+function backToIntro(){
   document.getElementById('scr-login').classList.add('hidden');
+  document.getElementById('scr-intro').classList.remove('hidden');
+}
+function enterGuest(){
+  document.getElementById('scr-intro').classList.add('hidden');
+}
+function naverLogin(){
+  showToast('네이버 로그인은 준비 중이에요');
 }
 function applyUserToMy(user){
   const u = user || JSON.parse(localStorage.getItem('aibom_user')||'null');
@@ -3143,7 +3358,7 @@ async function initApp(){
   if(_u && _u.nickname){
     applyUserToMy(_u);
   } else {
-    document.getElementById('scr-login').classList.remove('hidden');
+    document.getElementById('scr-intro').classList.remove('hidden');
   }
   const apiData = await fetchChildcareData();
   if (apiData && apiData.length) {
