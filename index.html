@@ -7,6 +7,9 @@
 <script src="config.js"></script>
 <script src="suji-static.js"></script>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=3ny7sdsg44&submodules=geocoder"></script>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+  integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+  crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
 :root{
@@ -264,13 +267,13 @@ html,body{
 .grade .grade-badge{
   display:inline-flex;align-items:center;justify-content:center;
   min-width:14px;height:14px;padding:0 2px;border-radius:4px;
-  background:rgb(14,138,79);color:rgb(255,255,255);font-size:10px;font-weight:800;
+  font-size:10px;font-weight:800;
 }
-/* 등급별 뱃지 배경색 (솔리드) — 글자는 항상 흰색 */
-.grade.gA .grade-badge{background:rgb(14,138,79);}
-.grade.gB .grade-badge{background:#0066FF;}
-.grade.gC .grade-badge{background:#FF9200;}
-.grade.gD .grade-badge{background:#FF4242;}
+/* 등급별 뱃지 색상 (연한 배경 + 진한 글자) — 디자인문서 §2-3 */
+.grade.gA .grade-badge{background:#E5FBEC;color:#006E25;}
+.grade.gB .grade-badge{background:#EAF2FE;color:#0066FF;}
+.grade.gC .grade-badge{background:#FEF4E6;color:#9C5800;}
+.grade.gD .grade-badge{background:#FEECEC;color:#B20C0C;}
 
 /* 별점 */
 .stars{display:inline-flex;align-items:center;gap:4px;}
@@ -569,6 +572,21 @@ html,body{
 <body>
 <div class="app-wrap">
 
+  <!-- ══ 로그인 화면 ══ -->
+  <div class="screen hidden" id="scr-login" style="z-index:45;background:#fff;padding:0 16px;">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
+      <div style="font-size:34px;font-weight:800;color:var(--text);letter-spacing:-0.5px;">아이봄</div>
+      <div style="font-size:14px;color:var(--text-alt);">우리 동네 어린이집, 한눈에</div>
+    </div>
+    <div style="padding-bottom:calc(env(safe-area-inset-bottom,16px) + 16px);">
+      <button onclick="kakaoLogin()" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#FEE500;color:rgba(0,0,0,0.85);border:none;border-radius:12px;padding:15px 20px;font-size:16px;font-weight:700;font-family:var(--font);cursor:pointer;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path d="M12 3C6.48 3 2 6.58 2 10.99c0 2.86 1.9 5.37 4.76 6.78-.21.75-.76 2.73-.87 3.15-.14.53.19.52.4.38.17-.11 2.65-1.8 3.72-2.53.65.09 1.32.14 1.99.14 5.52 0 10-3.58 10-7.92S17.52 3 12 3z" fill="rgba(0,0,0,0.85)"/></svg>
+        카카오로 시작하기
+      </button>
+      <button onclick="skipLogin()" style="background:none;border:none;color:var(--text-alt);font-size:14px;font-weight:600;font-family:var(--font);padding:14px;width:100%;cursor:pointer;">로그인 없이 둘러보기</button>
+    </div>
+  </div>
+
   <!-- ══ 홈 화면 ══ -->
   <div class="screen" id="scr-home">
     <div class="home-top">
@@ -851,10 +869,10 @@ html,body{
     <div class="my-scroll">
       <!-- 프로필 카드 -->
       <div class="my-profile-card">
-        <div class="my-avatar">김</div>
+        <div class="my-avatar" id="my-avatar">김</div>
         <div style="flex:1">
           <div class="my-name-row">
-            <span class="my-name">김지수님</span>
+            <span class="my-name" id="my-name">김지수님</span>
             <span class="vbadge-lv lv2">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="11" height="11"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
               카드인증
@@ -929,6 +947,12 @@ html,body{
           </div>
           <span class="my-row-ttl">앱 정보</span>
           <span class="my-row-val">v1.0</span>
+        </div>
+        <div class="my-row" onclick="logout()">
+          <div class="my-row-ico" style="background:var(--bg-alt);">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--red)"><path d="M16 13v-2H7V8l-5 4 5 4v-3h9zM20 3h-9a2 2 0 0 0-2 2v4h2V5h9v14h-9v-4H9v4a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" fill="currentColor"/></svg>
+          </div>
+          <span class="my-row-ttl" style="color:var(--red)">로그아웃</span>
         </div>
       </div>
       <div style="height:calc(var(--nav-h) + 16px);"></div>
@@ -2438,7 +2462,7 @@ function renderSaved(){
   `).join('')+`</div>`;
 }
 
-function goMy(){showScreen('my');}
+function goMy(){applyUserToMy();showScreen('my');}
 
 function goMyReviews(){showScreen('my-reviews');renderMyReviews();}
 function renderMyReviews(){
@@ -3073,8 +3097,54 @@ async function fetchChildcareData(arcode='11440', centerLat, centerLng) {
   }
 }
 
+// ── 카카오 로그인
+Kakao.init('460d9ab81daa78505a5d10b0d5818932');
+
+function kakaoLogin(){
+  Kakao.Auth.login({
+    scope:'profile_nickname, profile_image, account_email',
+    success:function(authObj){
+      Kakao.API.request({
+        url:'/v2/user/me',
+        success:function(res){
+          const user={provider:'kakao',nickname:res.kakao_account&&res.kakao_account.profile&&res.kakao_account.profile.nickname,profileImg:res.kakao_account&&res.kakao_account.profile&&res.kakao_account.profile.profile_image_url,email:res.kakao_account&&res.kakao_account.email};
+          localStorage.setItem('aibom_user',JSON.stringify(user));
+          onLoginSuccess(user);
+        },
+        fail:function(err){console.error('사용자 정보 실패',err);}
+      });
+    },
+    fail:function(err){console.error('로그인 실패',err);}
+  });
+}
+function onLoginSuccess(user){
+  document.getElementById('scr-login').classList.add('hidden');
+  applyUserToMy(user);
+}
+function skipLogin(){
+  document.getElementById('scr-login').classList.add('hidden');
+}
+function applyUserToMy(user){
+  const u = user || JSON.parse(localStorage.getItem('aibom_user')||'null');
+  if(!u || !u.nickname) return;
+  const nameEl=document.querySelector('#scr-my #my-name');
+  const avEl=document.querySelector('#scr-my #my-avatar');
+  if(nameEl) nameEl.textContent=u.nickname+'님';
+  if(avEl) avEl.textContent=u.nickname[0];
+}
+function logout(){
+  localStorage.removeItem('aibom_user');
+  location.reload();
+}
+
 // ── 초기 렌더
 async function initApp(){
+  const _u = JSON.parse(localStorage.getItem('aibom_user')||'null');
+  if(_u && _u.nickname){
+    applyUserToMy(_u);
+  } else {
+    document.getElementById('scr-login').classList.remove('hidden');
+  }
   const apiData = await fetchChildcareData();
   if (apiData && apiData.length) {
     DATA = apiData;
