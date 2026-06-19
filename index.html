@@ -125,16 +125,6 @@ html,body{
 .btn-my-loc.locating{animation:loc-pulse .8s ease-in-out infinite alternate;}
 @keyframes loc-pulse{from{box-shadow:0 2px 10px rgba(0,102,255,.2);}to{box-shadow:0 2px 16px rgba(0,102,255,.5);}}
 
-/* 비교 바 */
-.compare-bar{
-  position:absolute;left:14px;right:14px;bottom:calc(var(--nav-h) + 14px);z-index:21;
-  background:var(--blue);border-radius:12px;padding:15px;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  font-size:15px;font-weight:700;color:#fff;cursor:pointer;
-  box-shadow:0 6px 20px rgba(0,102,255,0.4);
-  transform:translateY(120%);transition:transform .3s .1s cubic-bezier(.4,0,.2,1);
-}
-.compare-bar.show{transform:translateY(0);}
 
 /* 지역 선택 시트 */
 .region-item{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;cursor:pointer;font-size:15px;color:var(--text);transition:background .1s;}
@@ -174,7 +164,6 @@ html,body{
 .list-chips::-webkit-scrollbar{display:none;}
 .sort-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0 8px;}
 .sort-btn{font-size:13px;font-weight:600;color:var(--text-alt);background:none;border:none;cursor:pointer;font-family:var(--font);}
-.compare-cnt{font-size:13px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;font-family:var(--font);}
 .inst-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .inst-list::-webkit-scrollbar{display:none;}
 .inst-row{
@@ -188,21 +177,6 @@ html,body{
 .inst-name{font-size:15px;font-weight:700;color:var(--text);}
 .inst-sub{display:flex;align-items:center;gap:5px;margin-bottom:5px;}
 .inst-foot{font-size:12px;color:var(--text-alt);display:flex;align-items:center;gap:3px;}
-.compare-chk{
-  width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);
-  background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  transition:all .15s;cursor:pointer;
-}
-.compare-chk.on{background:var(--blue);border-color:var(--blue);}
-.compare-bottom{
-  padding:12px 16px;border-top:1px solid var(--line-soft);flex-shrink:0;
-  background:var(--bg);
-}
-.btn-compare{
-  width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;
-  font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;
-  box-shadow:0 4px 16px rgba(0,102,255,0.3);
-}
 
 /* ── 상세 화면 */
 #scr-detail{background:var(--bg);}
@@ -1521,7 +1495,7 @@ function updateHomeMapTxt(){
 updateHomeMapTxt();
 
 // ── 상태
-let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],compare=new Set(),savedList=new Set();
+let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],savedList=new Set();
 let curScreen='home',prevScreen='home',segMode='map',curDetail=null;
 const screenStack=[];
 // ── 위치 상태
@@ -2193,36 +2167,6 @@ function updateSearchBtnPos(){
   }
 }
 
-// ── 비교
-function toggleCompare(id){
-  if(!localStorage.getItem('aibom_user')){
-    showLoginWallSheet('비교 기능은 로그인이 필요해요','로그인하면 최대 3곳을 비교하고 최적의 기관을 찾을 수 있어요');
-    return;
-  }
-  if(compare.has(id)){compare.delete(id);}
-  else{if(compare.size>=3){showToast('비교는 최대 3곳까지 가능해요');return;}compare.add(id);}
-  const btn=document.getElementById('cmp-btn-'+id);
-  if(btn)btn.textContent=compare.has(id)?'✓ 비교 담음':'+ 비교 담기';
-  updateCompareBar();
-  renderList();
-}
-function updateCompareBar(){
-  const bar=document.getElementById('compare-bar');
-  const txt=document.getElementById('compare-txt');
-  const cnt=document.getElementById('compare-cnt');
-  const bottom=document.getElementById('compare-bottom');
-  const btxt=document.getElementById('compare-bottom-txt');
-  if(compare.size>0){
-    bar&&bar.classList.add('show');
-    if(txt)txt.textContent=`${compare.size}곳 나란히 비교하기`;
-    if(cnt)cnt.textContent=compare.size;
-    if(bottom)bottom.style.display='';
-    if(btxt)btxt.textContent=compare.size;
-  } else {
-    bar&&bar.classList.remove('show');
-    if(bottom)bottom.style.display='none';
-  }
-}
 
 // ── 선택
 function selectItem(id){clearSel();curSel=id;renderMarkers();}
