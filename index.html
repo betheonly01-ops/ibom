@@ -624,13 +624,13 @@ html,body{
   <div class="screen hidden" id="scr-login" style="z-index:45;background:#fff;display:flex;flex-direction:column;">
     <!-- 뒤로가기 -->
     <div style="padding-top:52px;padding-left:8px;flex-shrink:0;">
-      <button onclick="backToIntro()" style="border:none;background:none;padding:8px;cursor:pointer;display:flex;">
+      <button onclick="loginGoBack()" style="border:none;background:none;padding:8px;cursor:pointer;display:flex;">
         <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor" style="color:var(--text)"/></svg>
       </button>
     </div>
     <!-- 브랜드 -->
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;">
-      <img src="logo/아이봄 로고.svg" alt="아이봄" style="width:188px;height:auto;">
+      <img src="logo/아이봄 로고.svg" alt="아이봄" style="width:188px;height:auto;" onclick="devLogin()">
       <div style="font-size:15px;color:var(--text-alt);font-weight:500;margin-top:20px;text-align:center;line-height:1.65;">
         우리 동네 어린이집·유치원,<br>부모들의 진짜 이야기로 찾으세요
       </div>
@@ -670,7 +670,7 @@ html,body{
   <!-- ══ 홈 화면 ══ -->
   <div class="screen" id="scr-home">
     <div class="home-top">
-      <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;margin-bottom:12px;">아이봄</div>
+      <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;margin-bottom:12px;cursor:pointer;" onclick="goIntroReset()">아이봄</div>
       <button class="home-search" onclick="goExploreKeepRegion()">
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
         <span style="font-size:14.5px;color:var(--text-assist)">어린이집 검색</span>
@@ -678,6 +678,14 @@ html,body{
     </div>
 
     <div class="home-scroll">
+      <!-- 게스트 로그인 유도 배너 -->
+      <div id="home-guest-banner" style="display:none;margin:12px 16px 4px;padding:14px 16px;background:var(--blue-weak);border-radius:12px;align-items:center;gap:12px;">
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:3px;">로그인하면 더 많이 볼 수 있어요</div>
+          <div style="font-size:12px;color:var(--text-alt);">재원 부모 리뷰, 관심 기관 저장까지</div>
+        </div>
+        <button onclick="showLogin('home')" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--font);">로그인</button>
+      </div>
       <!-- 지도 미리보기 -->
       <div class="home-map-preview" onclick="goExploreKeepRegion()">
         <div id="mini-map"></div>
@@ -811,7 +819,7 @@ html,body{
   <!-- ══ 커뮤니티 목록 화면 ══ -->
   <div class="screen hidden" id="scr-community">
     <div class="community-header">
-      <div class="community-loc" onclick="openRegionSheet()">
+      <div class="community-loc" onclick="openCommRegionSheet()">
         <span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="13" height="13"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/></svg></span>
         <span id="comm-dong-name">연남동</span>
         <span style="display:inline-flex;color:var(--text-alt)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg></span>
@@ -1173,6 +1181,29 @@ html,body{
     <div id="sort-options"></div>
   </div>
 
+  <!-- 커뮤니티 지역 설정 시트 -->
+  <div id="comm-region-backdrop" onclick="closeCommRegionSheet()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:40;"></div>
+  <div id="comm-region-sheet" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:20px 20px 0 0;z-index:41;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:75%;display:flex;flex-direction:column;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 20px 0;">
+      <span style="font-size:17px;font-weight:700;color:var(--text)">동네 설정</span>
+      <button onclick="closeCommRegionSheet()" style="background:none;border:none;padding:4px;cursor:pointer;color:var(--text-alt)">✕</button>
+    </div>
+    <div style="padding:8px 16px 4px;font-size:12.5px;color:var(--text-alt);">최대 2개 지역을 선택할 수 있어요</div>
+    <div id="comm-region-chips" style="display:flex;gap:8px;padding:4px 16px 10px;flex-wrap:wrap;min-height:32px;"></div>
+    <div id="comm-region-breadcrumb" style="padding:0 20px 6px;font-size:13px;color:var(--text-alt);min-height:22px;"></div>
+    <div id="comm-region-list" style="overflow-y:auto;flex:1;padding:4px 0;"></div>
+    <div style="padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 16px);">
+      <button onclick="confirmCommRegion()" style="width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);">완료</button>
+    </div>
+  </div>
+
+  <!-- 로그인 월 바텀시트 -->
+  <div id="login-wall-backdrop" onclick="closeLoginWallSheet()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:50;"></div>
+  <div id="login-wall-sheet" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;z-index:51;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);">
+    <div style="width:36px;height:4px;background:var(--line);border-radius:2px;margin:12px auto 0;"></div>
+    <div id="login-wall-content"></div>
+  </div>
+
   <!-- 지역 선택 시트 -->
   <div id="region-backdrop" onclick="closeRegionSheet()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:40;"></div>
   <div id="region-sheet" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg);border-radius:20px 20px 0 0;z-index:41;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:70%;display:flex;flex-direction:column;">
@@ -1530,6 +1561,81 @@ function updateLocDisplay(name){
 }
 
 // ── 지역 선택 시트
+// ── 커뮤니티 지역 설정
+let commRegionStep=0,commRegionSelSido='';
+let commRegions=JSON.parse(localStorage.getItem('aibom_comm_regions')||'[]');
+function openCommRegionSheet(){
+  commRegionStep=0;commRegionSelSido='';
+  renderCommRegionList();
+  renderCommRegionChips();
+  document.getElementById('comm-region-backdrop').style.display='block';
+  requestAnimationFrame(()=>{document.getElementById('comm-region-sheet').style.transform='translateY(0)';});
+}
+function closeCommRegionSheet(){
+  document.getElementById('comm-region-sheet').style.transform='translateY(100%)';
+  setTimeout(()=>{document.getElementById('comm-region-backdrop').style.display='none';},300);
+}
+function renderCommRegionList(){
+  const bc=document.getElementById('comm-region-breadcrumb');
+  const list=document.getElementById('comm-region-list');
+  if(commRegionStep===0){
+    bc.textContent='';
+    list.innerHTML=Object.keys(REGION_DATA).map(s=>
+      `<div class="region-item" onclick="selectCommSido('${s}')" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>${s}</span><span style="color:var(--text-assist);">›</span>
+      </div>`
+    ).join('');
+  } else {
+    bc.innerHTML=`<span onclick="commRegionGoBack()" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:var(--blue);">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M15 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>${commRegionSelSido}
+    </span>`;
+    const sggs=Object.keys(REGION_DATA[commRegionSelSido].sgg);
+    list.innerHTML=sggs.map(g=>{
+      const sel=commRegions.some(r=>r.sido===commRegionSelSido&&r.sgg===g);
+      return `<div class="region-item" onclick="toggleCommSgg('${commRegionSelSido}','${g}')" style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="${sel?'color:var(--blue);font-weight:600':''}">${g}</span>
+        ${sel?`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" style="color:var(--blue)"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M7 12l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:`<span style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);display:inline-block;"></span>`}
+      </div>`;
+    }).join('');
+  }
+}
+function selectCommSido(s){commRegionSelSido=s;commRegionStep=1;renderCommRegionList();}
+function commRegionGoBack(){commRegionStep=0;commRegionSelSido='';renderCommRegionList();}
+function toggleCommSgg(sido,sgg){
+  const idx=commRegions.findIndex(r=>r.sido===sido&&r.sgg===sgg);
+  if(idx>=0){commRegions.splice(idx,1);}
+  else{
+    if(commRegions.length>=2){showToast('지역은 최대 2개까지 선택할 수 있어요');return;}
+    commRegions.push({sido,sgg});
+  }
+  renderCommRegionList();renderCommRegionChips();
+}
+function renderCommRegionChips(){
+  const chips=document.getElementById('comm-region-chips');
+  if(!chips)return;
+  chips.innerHTML=commRegions.length
+    ?commRegions.map(r=>`<div style="display:inline-flex;align-items:center;gap:4px;background:var(--blue-weak);color:var(--blue);border-radius:100px;padding:5px 10px;font-size:12.5px;font-weight:600;">${r.sgg}<span onclick="event.stopPropagation();removeCommRegion('${r.sido}','${r.sgg}')" style="cursor:pointer;font-size:15px;line-height:1;">×</span></div>`).join('')
+    :`<span style="font-size:12.5px;color:var(--text-assist);">선택된 지역 없음</span>`;
+}
+function removeCommRegion(sido,sgg){
+  const idx=commRegions.findIndex(r=>r.sido===sido&&r.sgg===sgg);
+  if(idx>=0)commRegions.splice(idx,1);
+  renderCommRegionList();renderCommRegionChips();
+}
+function confirmCommRegion(){
+  localStorage.setItem('aibom_comm_regions',JSON.stringify(commRegions));
+  updateCommDongDisplay();
+  closeCommRegionSheet();
+  renderCommunity();
+}
+function updateCommDongDisplay(){
+  const cd=document.getElementById('comm-dong-name');
+  if(!cd)return;
+  if(commRegions.length===0)cd.textContent='동네 설정';
+  else if(commRegions.length===1)cd.textContent=commRegions[0].sgg;
+  else cd.textContent=commRegions[0].sgg+' 외 '+(commRegions.length-1);
+}
+
 let regionStep=0; // 0=시도, 1=시군구, 2=읍면동
 let selSido='',selSgg='';
 
@@ -1746,7 +1852,7 @@ function goMyLocation(){
     showToast('위치를 가져올 수 없어요. 위치 권한을 확인해주세요.');
   },{timeout:8000});
 }
-function goHome(){if(curScreen!=='home')showScreen('home');}
+function goHome(){if(curScreen!=='home')showScreen('home');updateHomeGuestBanner();}
 function goExplore(){
   if(curScreen==='explore')return;
   showScreen('explore');
@@ -2089,6 +2195,10 @@ function updateSearchBtnPos(){
 
 // ── 비교
 function toggleCompare(id){
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('비교 기능은 로그인이 필요해요','로그인하면 최대 3곳을 비교하고 최적의 기관을 찾을 수 있어요');
+    return;
+  }
   if(compare.has(id)){compare.delete(id);}
   else{if(compare.size>=3){showToast('비교는 최대 3곳까지 가능해요');return;}compare.add(id);}
   const btn=document.getElementById('cmp-btn-'+id);
@@ -2373,6 +2483,10 @@ function closeReviewSheet(){
   document.getElementById('review-sheet').style.transform='translateY(100%)';
 }
 function toggleHelpful(btn){
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('도움돼요는 로그인이 필요해요','로그인하면 유용한 리뷰에 공감을 남길 수 있어요');
+    return;
+  }
   const base=+btn.dataset.base, on=btn.dataset.on==='1';
   btn.dataset.on=on?'0':'1';
   const cnt=document.getElementById('rv-helpful-cnt');
@@ -2573,6 +2687,10 @@ function switchDTab(t){
 // ── MY 화면
 function toggleFav(id){
   if(!id)return;
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('관심 기관 저장은 로그인이 필요해요','로그인하면 관심 기관을 저장하고 한눈에 확인할 수 있어요');
+    return;
+  }
   if(savedList.has(id)){
     savedList.delete(id);
     showToast('관심 기관에서 제거했어요');
@@ -2606,6 +2724,15 @@ function goSaved(){showScreen('saved');renderSaved();}
 function renderSaved(){
   const el=document.getElementById('saved-list');
   if(!el)return;
+  if(!localStorage.getItem('aibom_user')){
+    el.innerHTML=`<div style="text-align:center;padding:80px 20px;">
+      <div style="display:flex;justify-content:center;margin-bottom:14px;color:var(--text-assist)">${SVG.heartOutline(40)}</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">로그인이 필요해요</div>
+      <div style="font-size:13.5px;line-height:1.6;color:var(--text-alt);margin-bottom:24px;">회원가입하고 관심 기관을<br>관리해보세요</div>
+      <button onclick="showLogin('saved')" style="background:var(--blue);color:#fff;border:none;border-radius:12px;padding:13px 36px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);">로그인하기</button>
+    </div>`;
+    return;
+  }
   const items=[...savedList].map(id=>DATA.find(d=>d.id===id)).filter(Boolean);
   if(items.length===0){
     el.innerHTML=`<div style="text-align:center;padding:80px 20px;color:var(--text-assist)">
@@ -2802,6 +2929,10 @@ function renderBadgeBanner(d){
 // ── ComposeSheet
 let _csInstId=null,_csSeedId=null;
 function openCompose(instId,seedId){
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('답변을 작성하려면 로그인이 필요해요','재원 인증 부모만 답변을 작성할 수 있어요');
+    return;
+  }
   const seed=SEED_QUESTIONS.find(s=>s.id===seedId);
   const inst=DATA.find(d=>d.id===instId)||filtered.find(d=>d.id===instId);
   _csInstId=instId;_csSeedId=seedId;
@@ -2938,6 +3069,7 @@ function relTime(ts){
 function goCommunity(){
   commTab='feed';
   showScreen('community');
+  updateCommDongDisplay();
   renderCommunity();
   renderCommInst();
 }
@@ -2961,17 +3093,28 @@ function setCommCat(cat,el){
 function renderCommunity(){
   const el=document.getElementById('community-list');
   if(!el)return;
+  const regions=JSON.parse(localStorage.getItem('aibom_comm_regions')||'[]');
   const list=POSTS
     .filter(p=>curCommCat==='all'||p.cat===curCommCat)
     .sort((a,b)=>b.createdAt-a.createdAt);
-  if(!list.length){
-    el.innerHTML=`<div class="empty"><div class="empty-ico" style="display:flex;justify-content:center;color:var(--text-assist)">${SVG.chat(32)}</div><div class="empty-txt">아직 글이 없어요.<br>첫 글을 남겨보세요.</div></div>`;
-    return;
+  let html='';
+  if(regions.length===0){
+    html+=`<div style="margin:12px 16px 4px;padding:14px 16px;background:var(--blue-weak);border-radius:12px;display:flex;align-items:center;gap:10px;">
+      <div style="flex:1;">
+        <div style="font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:2px;">우리 동네를 설정해보세요</div>
+        <div style="font-size:12px;color:var(--text-alt);">내 동네 이야기만 모아볼 수 있어요</div>
+      </div>
+      <button onclick="openCommRegionSheet()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--font);">설정하기</button>
+    </div>`;
   }
-  el.innerHTML=list.map(p=>{
+  if(!list.length){
+    html+=`<div class="empty"><div class="empty-ico" style="display:flex;justify-content:center;color:var(--text-assist)">${SVG.chat(32)}</div><div class="empty-txt">아직 글이 없어요.<br>첫 글을 남겨보세요.</div></div>`;
+    el.innerHTML=html;return;
+  }
+  const isGuest=!localStorage.getItem('aibom_user');
+  const postCard=p=>{
     const inst=p.instId?DATA.find(x=>x.id===p.instId):null;
-    return `
-    <div class="post-card" onclick="goPost('${p.id}')">
+    return `<div class="post-card" onclick="goPost('${p.id}')">
       <div class="post-card-top">
         <span class="cat-badge ${CAT_BADGE[p.cat]}">${p.cat}</span>
         ${inst?`<span class="inst-tag-chip">${svgSpan('pin','var(--text-alt)',11)} ${inst.name}</span>`:''}
@@ -2979,50 +3122,122 @@ function renderCommunity(){
       <div class="post-card-title">${p.title}</div>
       <div class="post-card-body">${p.body}</div>
       <div class="post-card-meta">
-        <span>${p.author}</span>
-        <span>·</span>
+        <span>${p.author}</span><span>·</span>
         <span>${relTime(p.createdAt)}</span>
         <span class="pm-ico">${svgSpan('chat','var(--text-assist)',13)} ${p.comments.length}</span>
         <span class="pm-ico">${svgSpan('heart','var(--text-assist)',13)} ${p.likes}</span>
       </div>
     </div>`;
-  }).join('');
+  };
+  if(isGuest && list.length>3){
+    html+=list.slice(0,3).map(postCard).join('');
+    html+=`<div style="position:relative;overflow:hidden;">
+      <div style="filter:blur(5px);pointer-events:none;max-height:180px;overflow:hidden;user-select:none;">
+        ${list.slice(3,6).map(postCard).join('')}
+      </div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.88) 45%,#fff 70%);"></div>
+    </div>
+    ${guestLoginWallHTML('더 많은 글을 보려면 로그인하세요','로그인하면 우리 동네 커뮤니티 전체 글을 볼 수 있어요')}`;
+  } else {
+    html+=list.map(postCard).join('');
+  }
+  el.innerHTML=html;
 }
 
 function renderCommInst(){
   const el=document.getElementById('comm-inst-list');
   if(!el)return;
   const TCBG={'국공립':'#EAF2FE','민간':'#E3F9EF','가정':'#FEF4E6','직장':'#F1ECFE','유치원':'#FEECEC'};
-  const favItems=[...savedList].map(id=>DATA.find(d=>d.id===id)).filter(Boolean);
-  const favHTML=favItems.length?
-    `<div class="comm-sect-hd">즐겨찾기 기관</div>`+favItems.map(d=>{
-      const tc=TC[d.type]||'#999';
-      const bg=TCBG[d.type]||'#f5f5f5';
+  // 비회원: 즐겨찾기 섹션 숨기고 주변 기관만 표시
+  if(!localStorage.getItem('aibom_user')){
+    const nearby=[...DATA].sort((a,b)=>(a._m??Infinity)-(b._m??Infinity)).slice(0,5);
+    el.innerHTML=`<div class="comm-sect-hd">주변 기관</div>`+nearby.map(d=>{
+      const tc=TC[d.type]||'#999';const bg=TCBG[d.type]||'#f5f5f5';
       const iconFn=HERO_ICONS[d.type]||'heroGongl';
       const cnt=POSTS.filter(p=>p.instId===d.id).length;
       return `<div class="comm-inst-item" onclick="goDetail('${d.id}')">
         <div class="comm-inst-icon" style="background:${bg};color:${tc}">${SVG[iconFn](20)}</div>
-        <div class="comm-inst-info"><div class="comm-inst-name">${d.name}</div><div class="comm-inst-sub">${d.type} \u00b7 ${d.dist||'-'}</div></div>
-        <div class="comm-inst-cnt">${cnt?`\uac8c\uc2dc\uae00 ${cnt}\uac74`:''}</div>
+        <div class="comm-inst-info"><div class="comm-inst-name">${d.name}</div><div class="comm-inst-sub">${d.type} · ${d.dist||'-'}</div></div>
+        <div class="comm-inst-cnt">${cnt?`게시글 ${cnt}건`:''}</div>
       </div>`;
-    }).join('')
-    :`<div class="comm-sect-hd">즐겨찾기 기관</div><div class="comm-sect-empty">관심 기관을 추가하면 여기에 표시됩니다</div>`;
-  const nearby=[...DATA].sort((a,b)=>(a._m??Infinity)-(b._m??Infinity)).slice(0,5);
-  const nearbyHTML=nearby.map(d=>{
-    const tc=TC[d.type]||'#999';
-    const bg=TCBG[d.type]||'#f5f5f5';
-    const iconFn=HERO_ICONS[d.type]||'heroGongl';
-    const cnt=POSTS.filter(p=>p.instId===d.id).length;
-    return `<div class="comm-inst-item" onclick="goDetail('${d.id}')">
-      <div class="comm-inst-icon" style="background:${bg};color:${tc}">${SVG[iconFn](20)}</div>
-      <div class="comm-inst-info">
-        <div class="comm-inst-name">${d.name}</div>
-        <div class="comm-inst-sub">${d.type} · ${d.dist||'-'}</div>
-      </div>
-      <div class="comm-inst-cnt">${cnt?`게시글 ${cnt}건`:''}</div>
-    </div>`;
-  }).join('');
-  el.innerHTML=favHTML+`<div class="comm-sect-hd">주변 기관</div>`+nearbyHTML;
+    }).join('');
+    return;
+  }
+  const favItems=[...savedList].map(id=>DATA.find(d=>d.id===id)).filter(Boolean);
+  const now=Date.now();
+  let favSection='';
+  if(favItems.length===0){
+    const nearby=[...DATA].sort((a,b)=>(a._m??Infinity)-(b._m??Infinity)).slice(0,5);
+    favSection=`<div class="comm-sect-hd">즐겨찾기 기관</div>
+    <div class="comm-sect-empty">관심 기관을 추가하면 이곳에서 빠르게 확인할 수 있어요</div>
+    <div class="comm-sect-hd">주변 기관</div>`+nearby.map(d=>{
+      const tc=TC[d.type]||'#999';const bg=TCBG[d.type]||'#f5f5f5';
+      const iconFn=HERO_ICONS[d.type]||'heroGongl';
+      const cnt=POSTS.filter(p=>p.instId===d.id).length;
+      return `<div class="comm-inst-item" onclick="goDetail('${d.id}')">
+        <div class="comm-inst-icon" style="background:${bg};color:${tc}">${SVG[iconFn](20)}</div>
+        <div class="comm-inst-info"><div class="comm-inst-name">${d.name}</div><div class="comm-inst-sub">${d.type} · ${d.dist||'-'}</div></div>
+        <div class="comm-inst-cnt">${cnt?`게시글 ${cnt}건`:''}</div>
+      </div>`;
+    }).join('');
+  } else if(favItems.length<=3){
+    const totalSlots=4;const slots=[];
+    for(let i=0;i<totalSlots;i++){
+      if(i<favItems.length){
+        const d=favItems[i];
+        const tc=TC[d.type]||'#999';const bg=TCBG[d.type]||'#f5f5f5';
+        const iconFn=HERO_ICONS[d.type]||'heroGongl';
+        const newPosts=POSTS.filter(p=>p.instId===d.id&&(now-p.createdAt)<86400000).length;
+        slots.push(`<div onclick="goDetail('${d.id}')" style="flex:0 0 calc(50% - 5px);background:#fff;border-radius:14px;border:1px solid var(--line);padding:14px 12px;cursor:pointer;position:relative;box-sizing:border-box;">
+          ${newPosts?`<div style="position:absolute;top:10px;right:10px;width:8px;height:8px;background:var(--red);border-radius:50%;"></div>`:''}
+          <div style="width:40px;height:40px;border-radius:12px;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;margin-bottom:8px;">${SVG[iconFn](22)}</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.name}</div>
+          <div style="font-size:11.5px;color:var(--text-alt);margin-top:2px;">${d.type}</div>
+        </div>`);
+      } else {
+        slots.push(`<div onclick="goExplore()" style="flex:0 0 calc(50% - 5px);background:var(--bg-alt);border-radius:14px;border:1px dashed var(--line);padding:14px 12px;cursor:pointer;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:96px;">
+          <div style="font-size:24px;color:var(--text-assist);">+</div>
+          <div style="font-size:12px;color:var(--text-assist);">기관 추가</div>
+        </div>`);
+      }
+    }
+    favSection=`<div class="comm-sect-hd">즐겨찾기 기관</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;padding:0 16px 8px;">${slots.join('')}</div>`;
+  } else {
+    const cards=favItems.map(d=>{
+      const tc=TC[d.type]||'#999';const bg=TCBG[d.type]||'#f5f5f5';
+      const iconFn=HERO_ICONS[d.type]||'heroGongl';
+      const newPosts=POSTS.filter(p=>p.instId===d.id&&(now-p.createdAt)<86400000).length;
+      return `<div onclick="goDetail('${d.id}')" style="flex-shrink:0;width:110px;background:#fff;border-radius:14px;border:1px solid var(--line);padding:12px;cursor:pointer;position:relative;">
+        ${newPosts?`<div style="position:absolute;top:8px;right:8px;width:8px;height:8px;background:var(--red);border-radius:50%;"></div>`:''}
+        <div style="width:38px;height:38px;border-radius:12px;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;margin-bottom:8px;">${SVG[iconFn](20)}</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.name}</div>
+        <div style="font-size:11px;color:var(--text-alt);margin-top:2px;">${d.type}</div>
+      </div>`;
+    }).join('');
+    favSection=`<div class="comm-sect-hd">즐겨찾기 기관</div>
+    <div style="display:flex;gap:10px;padding:0 16px 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;">${cards}</div>`;
+  }
+  let latestSection='';
+  if(favItems.length>0){
+    const favIds=new Set(favItems.map(d=>d.id));
+    const latestPosts=POSTS.filter(p=>p.instId&&favIds.has(p.instId)).sort((a,b)=>b.createdAt-a.createdAt).slice(0,10);
+    latestSection=`<div class="comm-sect-hd">즐겨찾기 기관 최신 글</div>`+(latestPosts.length
+      ?latestPosts.map(p=>{
+          const inst=DATA.find(x=>x.id===p.instId);
+          return `<div class="post-card" onclick="goPost('${p.id}')">
+            <div class="post-card-top"><span class="cat-badge ${CAT_BADGE[p.cat]}">${p.cat}</span>${inst?`<span class="inst-tag-chip">${svgSpan('pin','var(--text-alt)',11)} ${inst.name}</span>`:''}</div>
+            <div class="post-card-title">${p.title}</div>
+            <div class="post-card-body">${p.body}</div>
+            <div class="post-card-meta"><span>${p.author}</span><span>·</span><span>${relTime(p.createdAt)}</span>
+              <span class="pm-ico">${svgSpan('chat','var(--text-assist)',13)} ${p.comments.length}</span>
+              <span class="pm-ico">${svgSpan('heart','var(--text-assist)',13)} ${p.likes}</span>
+            </div>
+          </div>`;
+        }).join('')
+      :`<div class="comm-sect-empty">즐겨찾기 기관의 새 글이 없어요</div>`);
+  }
+  el.innerHTML=favSection+latestSection;
 }
 
 function goPost(id){
@@ -3072,9 +3287,25 @@ function renderPost(p){
       `).join(''):`<div class="empty" style="padding:28px 20px"><div class="empty-txt">첫 댓글을 남겨보세요</div></div>`}
     </div>
   `;
+  // 게스트: 댓글 입력창 비활성화
+  const isGuest=!localStorage.getItem('aibom_user');
+  const bar=document.getElementById('comment-bar');
+  if(bar){
+    bar.innerHTML=isGuest
+      ?`<input class="comment-input" placeholder="로그인하고 댓글을 남겨보세요" disabled style="cursor:pointer;color:var(--text-assist);" onclick="showLoginWallSheet('댓글을 작성하려면 로그인이 필요해요','로그인하면 커뮤니티에 댓글을 남길 수 있어요')">
+         <button onclick="showLoginWallSheet('댓글을 작성하려면 로그인이 필요해요','로그인하면 커뮤니티에 댓글을 남길 수 있어요')" style="width:44px;height:44px;background:var(--blue);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+           <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#fff" stroke-width="1.7"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg>
+         </button>`
+      :`<input class="comment-input" id="comment-input" placeholder="댓글을 입력하세요" onkeydown="if(event.key==='Enter')addComment()">
+         <button class="comment-send" onclick="addComment()">등록</button>`;
+  }
 }
 
 function toggleLike(id){
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('좋아요는 로그인이 필요해요','로그인하면 공감하는 글에 좋아요를 누를 수 있어요');
+    return;
+  }
   const p=POSTS.find(x=>x.id===id);
   if(!p)return;
   p.liked=!p.liked;
@@ -3103,6 +3334,10 @@ function addComment(){
 }
 
 function goWrite(presetInstId){
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('글을 작성하려면 로그인이 필요해요','커뮤니티 글쓰기는 로그인 후 이용할 수 있어요');
+    return;
+  }
   writePreset=presetInstId||null;
   writeCat=null;
   document.getElementById('title-input').value='';
@@ -3167,6 +3402,10 @@ function submitPost(){
 // ── 평가 작성 (C5)
 function goReviewWrite(d){
   if(!d)return;
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('리뷰를 작성하려면 로그인이 필요해요','재원 인증 부모만 리뷰를 작성할 수 있어요');
+    return;
+  }
   rwInstId=d.id;
   rwScores=[5,5,4,4,5,5];
   document.getElementById('rw-inst-name').textContent=d.name;
@@ -3327,11 +3566,45 @@ function kakaoLogin(){
 function onLoginSuccess(user){
   document.getElementById('scr-login').classList.add('hidden');
   document.getElementById('scr-intro').classList.add('hidden');
+  closeLoginWallSheet();
   applyUserToMy(user);
+  updateHomeGuestBanner();
+  if(curDetail) renderDetail(curDetail);
+  if(curScreen==='saved') renderSaved();
 }
-function showLogin(){
+function updateHomeGuestBanner(){
+  const b=document.getElementById('home-guest-banner');
+  if(b) b.style.display=localStorage.getItem('aibom_user')?'none':'flex';
+}
+function showLoginWallSheet(title,body){
+  document.getElementById('login-wall-content').innerHTML=guestLoginWallHTML(title,body);
+  document.getElementById('login-wall-backdrop').style.display='block';
+  requestAnimationFrame(()=>{document.getElementById('login-wall-sheet').style.transform='translateY(0)';});
+}
+function closeLoginWallSheet(){
+  const s=document.getElementById('login-wall-sheet');
+  const b=document.getElementById('login-wall-backdrop');
+  if(s) s.style.transform='translateY(100%)';
+  if(b) setTimeout(()=>{b.style.display='none';},320);
+}
+let _loginFrom=null;
+function showLogin(from){
+  _loginFrom=from||null;
   document.getElementById('scr-intro').classList.add('hidden');
   document.getElementById('scr-login').classList.remove('hidden');
+}
+function loginGoBack(){
+  document.getElementById('scr-login').classList.add('hidden');
+  if(_loginFrom){
+    const s=_loginFrom;_loginFrom=null;
+    if(s==='saved') goSaved();
+    else if(s==='home') goHome();
+    else if(s==='community') goCommunity();
+    else if(s==='my') goMy();
+    else showScreen(s);
+  } else {
+    document.getElementById('scr-intro').classList.remove('hidden');
+  }
 }
 function backToIntro(){
   document.getElementById('scr-login').classList.add('hidden');
@@ -3342,6 +3615,16 @@ function enterGuest(){
 }
 function naverLogin(){
   showToast('네이버 로그인은 준비 중이에요');
+}
+function devLogin(){
+  const u={provider:'kakao',nickname:'혜실맘',profileImg:'',email:'test@test.com'};
+  localStorage.setItem('aibom_user',JSON.stringify(u));
+  onLoginSuccess(u);
+}
+function goIntroReset(){
+  localStorage.removeItem('aibom_user');
+  document.getElementById('scr-intro').classList.remove('hidden');
+  document.getElementById('scr-login').classList.add('hidden');
 }
 function applyUserToMy(user){
   const u = user || JSON.parse(localStorage.getItem('aibom_user')||'null');
@@ -3373,6 +3656,8 @@ async function initApp(){
   recomputeDist();
   renderHomeRows();
   renderHomeRecentReview();
+  updateHomeGuestBanner();
+  updateCommDongDisplay();
   detectLocation();
   setTimeout(initMiniMap, 600);
 }
