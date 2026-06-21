@@ -550,6 +550,9 @@ html,body{
   from { opacity:0; transform:translateY(18px) scale(0.95); }
   to   { opacity:1; transform:translateY(0) scale(1); }
 }
+@keyframes ccPulse{0%{transform:scale(1);opacity:.8;}100%{transform:scale(2.4);opacity:0;}}
+@keyframes ccPop{from{transform:translateY(20px) scale(0.95);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+.cc-pop{animation:ccPop .22s cubic-bezier(.4,0,.2,1) both;}
 </style>
 </head>
 <body>
@@ -649,7 +652,10 @@ html,body{
   <!-- ══ 홈 화면 ══ -->
   <div class="screen" id="scr-home">
     <div class="home-top">
-      <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;margin-bottom:12px;cursor:pointer;" onclick="goIntroReset()">아이봄</div>
+      <div id="home-dong-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <span style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;cursor:pointer;" onclick="goIntroReset()">아이봄</span>
+      </div>
+      <div id="home-drift-banner" style="display:none;margin:-4px -16px 12px;"></div>
       <button class="home-search" onclick="goExploreKeepRegion()">
         <span style="color:var(--text-assist);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="18" height="18"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg></span>
         <span style="font-size:14.5px;color:var(--text-assist)">어린이집 검색</span>
@@ -665,24 +671,38 @@ html,body{
         </div>
         <button onclick="showLogin('home')" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--font);">로그인</button>
       </div>
-      <!-- 지도 미리보기 -->
-      <div class="home-map-preview" onclick="goExploreKeepRegion()">
-        <div id="mini-map"></div>
-        <div class="home-map-label">
-          <span class="home-map-txt">내 주변 어린이집 ${DATA_LEN}곳</span>
+
+      <!-- 동네 미설정 빈 상태 -->
+      <div id="home-dong-empty" style="display:none;flex-direction:column;align-items:center;justify-content:center;padding:60px 32px;text-align:center;">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+          <svg viewBox="0 0 24 24" width="34" height="34" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="rgba(55,56,60,0.28)"/></svg>
         </div>
+        <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.4;">동네를 설정하면<br>주변 어린이집을 볼 수 있어요</div>
+        <div style="font-size:13.5px;color:var(--text-alt);margin-bottom:28px;line-height:1.6;">동네 부모들의 리뷰와<br>재원 현황을 확인해보세요</div>
+        <button onclick="ensureLocation(null)" style="padding:14px 28px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;box-shadow:0 6px 18px rgba(0,102,255,.32);">동네 설정하기</button>
       </div>
 
-      <div class="home-sec">내 주변 인기 기관</div>
-      <div class="home-card">
-        <div class="home-card-inner" id="home-rows"></div>
-      </div>
+      <!-- 동네 설정 후 메인 컨텐츠 -->
+      <div id="home-map-area">
+        <!-- 지도 미리보기 -->
+        <div class="home-map-preview" onclick="goExploreKeepRegion()">
+          <div id="mini-map"></div>
+          <div class="home-map-label">
+            <span class="home-map-txt">내 주변 어린이집 ${DATA_LEN}곳</span>
+          </div>
+        </div>
 
-      <div class="home-sec">최근 올라온 리뷰</div>
-      <div id="home-recent-review"></div>
+        <div class="home-sec">내 주변 인기 기관</div>
+        <div class="home-card">
+          <div class="home-card-inner" id="home-rows"></div>
+        </div>
+
+        <div class="home-sec">최근 올라온 리뷰</div>
+        <div id="home-recent-review"></div>
+      </div>
     </div>
 
-    <div class="bottom-nav"><button class="nav-item" onclick="goHome()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:var(--blue)">홈</span></button><button class="nav-item" onclick="goExploreKeepRegion()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">탐색</span></button><button class="nav-item" onclick="goCommunity()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 3C7 3 3 6.8 3 11.5c0 2.5 1.1 4.8 2.9 6.4L5 21l3.3-1.4C9.4 19.9 10.7 20 12 20c5 0 9-3.8 9-8.5S17 3 12 3z"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">커뮤니티</span></button><button class="nav-item" onclick="goSaved()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">관심</span></button><button class="nav-item" onclick="goMy()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">MY</span></button></div>
+    <div class="bottom-nav"><button class="nav-item" onclick="goHome()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:var(--blue);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.8 19.171" width="24" height="24"><path d="M9.039.047C9.275-.016 9.525-.016 9.762.047c.28.075.513.257.636.353l.035.027 6.833 5.226c.387.295.713.544.956.868.213.285.372.607.469.949.11.39.11.8.109 1.287V15.106c0 .53 0 .981-.03 1.351-.032.39-.102.768-.286 1.13-.278.546-.722.989-1.267 1.267-.362.185-.741.255-1.13.286-.37.031-.822.031-1.351.031H10.3V11.771c0-.497-.403-.9-.9-.9s-.9.403-.9.9V19.171H4.065c-.53 0-.981 0-1.352-.031-.39-.031-.768-.101-1.13-.286-.545-.278-.988-.721-1.267-1.267-.184-.362-.254-.74-.286-1.13C0 16.087 0 15.636 0 15.106V8.757C0 8.27-.001 7.86.109 7.47c.097-.342.256-.664.469-.949.243-.324.569-.573.956-.868L8.367.427l.035-.027C8.525.304 8.758.122 9.039.047z" fill="currentColor"/></svg></span><span style="font-size:10px;font-weight:600;color:var(--blue)">홈</span></button><button class="nav-item" onclick="navToExplore()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="24" height="24"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/><path d="M8.4 4.75C6.384 4.75 4.75 6.384 4.75 8.4c0 2.016 1.634 3.65 3.65 3.65 2.016 0 3.65-1.634 3.65-3.65 0-2.016-1.634-3.65-3.65-3.65zM6.55 8.4c0-1.022.828-1.85 1.85-1.85s1.85.828 1.85 1.85-.828 1.85-1.85 1.85-1.85-.828-1.85-1.85z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">탐색</span></button><button class="nav-item" onclick="goCommunity()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 3C7 3 3 6.8 3 11.5c0 2.5 1.1 4.8 2.9 6.4L5 21l3.3-1.4C9.4 19.9 10.7 20 12 20c5 0 9-3.8 9-8.5S17 3 12 3z"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">커뮤니티</span></button><button class="nav-item" onclick="goSaved()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0h7.67c.53 0 .981 0 1.352.03.39.032.768.102 1.13.286.545.278.989.722 1.267 1.267.184.362.254.741.286 1.13.03.371.03.822.03 1.352V18.9c0 .325-.175.625-.459.784-.283.16-.63.154-.908-.015L7.9 15.703l-6.533 3.966c-.278.169-.625.175-.908.015C.175 19.525 0 19.225 0 18.9V4.065c0-.53 0-.981.03-1.352.032-.39.102-.768.286-1.13C.594 1.038 1.038.594 1.583.316 1.945.132 2.324.062 2.713.03 3.084 0 3.535 0 4.065 0zM3.7 1.8c-.815 0-1.008.011-1.14.054-.335.109-.597.371-.706.706-.043.132-.054.326-.054 1.14V17.301l5.633-3.42c.287-.174.647-.174.934 0L14 17.301V3.7c0-.814-.011-1.008-.054-1.14C13.837 2.225 13.575 1.963 13.24 1.854 13.108 1.811 12.915 1.8 12.1 1.8H3.7z" fill="currentColor" fill-rule="evenodd"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">관심</span></button><button class="nav-item" onclick="goMy()" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;cursor:pointer;background:none;border:none;font-family:var(--font);padding-top:10px;"><span style="color:rgba(55,56,60,0.28);display:flex;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span><span style="font-size:11px;font-weight:500;color:rgba(55,56,60,0.61)">MY</span></button></div>
   </div>
 
   <!-- ══ 탐색(지도) 화면 ══ -->
@@ -844,6 +864,24 @@ html,body{
       <input class="comment-input" id="comment-input" placeholder="댓글을 입력하세요" onkeydown="if(event.key==='Enter')addComment()">
       <button class="comment-send" onclick="addComment()">등록</button>
     </div>
+  </div>
+
+  <!-- ══ 동네 확인 화면 (GPS 추정) ══ -->
+  <div class="screen hidden" id="scr-dong-confirm" style="background:#fff;display:flex;flex-direction:column;">
+    <div class="post-header">
+      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="detail-htitle" style="font-size:16px">내 동네 확인</span>
+    </div>
+    <div style="flex:1;overflow-y:auto;" id="dong-confirm-content"></div>
+  </div>
+
+  <!-- ══ 동네 설정 화면 ══ -->
+  <div class="screen hidden" id="scr-dong-setting" style="background:#fff;display:flex;flex-direction:column;">
+    <div class="post-header">
+      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="detail-htitle" style="font-size:16px">동네 설정</span>
+    </div>
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;" id="dong-setting-content"></div>
   </div>
 
   <!-- ══ 씨앗질문 상세 화면 ══ -->
@@ -1020,6 +1058,8 @@ html,body{
         </div>
         <button onclick="goReviewWrite(DATA[0])" style="width:100%;padding:11px;background:#FF7A00;color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:700;font-family:var(--font);cursor:pointer;">리뷰 작성하기</button>
       </div>
+      <!-- 내 동네 동적 섹션 -->
+      <div id="my-dong-section"></div>
       <!-- 자녀 관리 동적 섹션 -->
       <div id="my-children-section"></div>
       <!-- 내 활동 -->
@@ -1177,6 +1217,29 @@ html,body{
   <div id="verify-nudge-backdrop" onclick="closeVerifyNudge()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:52;"></div>
   <div id="verify-nudge-sheet" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;z-index:53;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);padding:0 20px calc(20px + env(safe-area-inset-bottom,0px));">
     <div id="verify-nudge-content"></div>
+  </div>
+
+  <!-- ══ 위치 게이트 (소프트 애스크) ══ -->
+  <div id="loc-gate-backdrop" onclick="closeLocGate()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:60;"></div>
+  <div id="loc-gate-sheet" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;z-index:61;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);padding-bottom:env(safe-area-inset-bottom,0px);">
+    <div id="loc-gate-content"></div>
+  </div>
+
+  <!-- ══ OS 네이티브 권한 팝업 모사 ══ -->
+  <div id="native-popup" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.55);z-index:62;align-items:center;justify-content:center;">
+    <div class="cc-pop" style="background:#fff;border-radius:18px;width:calc(100% - 48px);max-width:320px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+      <div style="padding:22px 20px 14px;text-align:center;">
+        <div style="width:48px;height:48px;background:var(--blue-weak);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="var(--blue)"/></svg>
+        </div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">"아이봄"에서 위치에<br>접근하려고 합니다</div>
+        <div style="font-size:13px;color:var(--text-alt);line-height:1.5;">내 주변 어린이집을 보여드리기 위해 현재 위치가 필요해요.</div>
+      </div>
+      <div style="border-top:1px solid var(--line);display:flex;">
+        <button onclick="onNativeDeny()" style="flex:1;padding:14px;background:none;border:none;border-right:1px solid var(--line);font-size:15px;font-weight:500;color:var(--text-alt);cursor:pointer;font-family:var(--font);">허용 안 함</button>
+        <button onclick="onNativeAllow()" style="flex:1;padding:14px;background:none;border:none;font-size:15px;font-weight:700;color:var(--blue);cursor:pointer;font-family:var(--font);">허용</button>
+      </div>
+    </div>
   </div>
 
   <!-- 로그인 월 바텀시트 -->
@@ -1458,6 +1521,21 @@ const SEED_QUESTIONS=[
 ];
 
 const SEED_ANSWERS={}; // instId → sqId → answer text (in-memory)
+
+// ── 동네 데이터
+const DONGS=[
+  {id:'d1',name:'연남동',gu:'마포구',city:'서울',count:127},
+  {id:'d2',name:'성산동',gu:'마포구',city:'서울',count:98},
+  {id:'d3',name:'망원동',gu:'마포구',city:'서울',count:84},
+  {id:'d4',name:'합정동',gu:'마포구',city:'서울',count:76},
+  {id:'d5',name:'서교동',gu:'마포구',city:'서울',count:112},
+  {id:'d6',name:'홍제동',gu:'서대문구',city:'서울',count:63},
+  {id:'d7',name:'연희동',gu:'서대문구',city:'서울',count:55},
+  {id:'d8',name:'은평뉴타운',gu:'은평구',city:'서울',count:142},
+  {id:'d9',name:'신사동',gu:'강남구',city:'서울',count:89},
+  {id:'d10',name:'잠실동',gu:'송파구',city:'서울',count:203},
+];
+const GPS_GUESS=DONGS[0]; // 연남동 — GPS 추정 기본값
 const SEED_ANSWER_DATA={
   sq1:[{author:'연남맘',lv:2,text:'저희는 6개월 대기했어요. 지역마다 다르고 연령별 차이도 있더라고요.',createdAt:Date.now()-86400e3*30},{author:'두아이아빠',lv:1,text:'첫째 때 3개월, 둘째 때 8개월 기다렸어요. 신청 시기가 정말 중요해요.',createdAt:Date.now()-86400e3*15}],
   sq2:[{author:'라온맘',lv:2,text:'2주 적응 기간이었는데 처음엔 울다가 끝날 때쯤 씩씩하게 들어가더라고요.',createdAt:Date.now()-86400e3*20}],
@@ -1525,6 +1603,15 @@ let myLocMarker=null;
 let _pendingCenter=null; // 지도 초기화 전에 감지된 좌표를 임시 보관
 let _skipGPS=false; // 지역 선택 후 goExplore 시 GPS 덮어쓰기 방지
 let _manualRegionSelected=false; // 사용자가 직접 지역 선택했을 때 true
+
+// ── 동네 위치 상태
+const MAX_DONGS=2;
+let savedDongs=[]; // 확정 동네 배열 (첫 항목이 대표)
+let permState='unasked'; // unasked/granted/denied
+let activeDong=null;
+let locGate=null; // null/soft/native
+let _locOnReady=null;
+let _driftVisible=false;
 
 async function geocodeDong(sidoName, sggName, dongName){
   return new Promise(resolve=>{
@@ -2720,7 +2807,7 @@ function renderSaved(){
   `).join('')+`</div>`;
 }
 
-function goMy(){renderMyChildren();
+function goMy(){renderMyDong();renderMyChildren();
   const u = JSON.parse(localStorage.getItem('aibom_user')||'null');
   const loggedArea = document.getElementById('my-logged-area');
   const guestArea = document.getElementById('my-guest-area');
@@ -4007,6 +4094,315 @@ function closeVerifyNudge(){
   if(s)s.style.transform='translateY(100%)';
   if(b)setTimeout(()=>{b.style.display='none';},320);
 }
+
+
+// ═══════════════════════════════════════
+// 위치·동네 플로우 (LocationGate / DongConfirm / DongSetting)
+// ═══════════════════════════════════════
+
+// ── 동네 확정 액션
+function confirmDong(dong){
+  if(savedDongs.find(function(d){return d.id===dong.id;}))return;
+  savedDongs=[dong].concat(savedDongs).slice(0,MAX_DONGS);
+  permState='granted';
+  renderHomeDongHeader();
+  renderHomeContent();
+}
+function removeDong(id){
+  savedDongs=savedDongs.filter(function(d){return d.id!==id;});
+  renderHomeDongHeader();
+  renderHomeContent();
+  renderMyDong();
+}
+function makePrimary(id){
+  var idx=savedDongs.findIndex(function(d){return d.id===id;});
+  if(idx>0){var a=savedDongs.splice(idx,1);savedDongs.unshift(a[0]);}
+  renderHomeDongHeader();
+  renderMyDong();
+}
+
+// ── 위치 게이트
+function ensureLocation(onReady){
+  if(savedDongs.length>0){if(onReady)onReady();return;}
+  if(permState==='denied'){if(onReady)onReady();return;}
+  _locOnReady=onReady;
+  openLocGate('soft');
+}
+function openLocGate(mode){
+  locGate=mode;
+  var bd=document.getElementById('loc-gate-backdrop');
+  var sh=document.getElementById('loc-gate-sheet');
+  if(!bd||!sh)return;
+  bd.style.display='block';
+  renderLocGateContent();
+  setTimeout(function(){sh.style.transform='translateY(0)';},10);
+}
+function closeLocGate(){
+  locGate=null;
+  var sh=document.getElementById('loc-gate-sheet');
+  var bd=document.getElementById('loc-gate-backdrop');
+  if(sh)sh.style.transform='translateY(100%)';
+  setTimeout(function(){if(bd)bd.style.display='none';},320);
+  var np=document.getElementById('native-popup');
+  if(np)np.style.display='none';
+}
+function renderLocGateContent(){
+  var el=document.getElementById('loc-gate-content');
+  if(!el)return;
+  el.innerHTML=
+    '<div style="width:40px;height:4px;border-radius:2px;background:var(--line);margin:12px auto 20px;"></div>'
+    +'<div style="padding:0 20px;">'
+    +'<div style="width:64px;height:64px;border-radius:50%;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative;">'
+    +'<svg viewBox="0 0 24 24" width="28" height="28" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="var(--blue)"/></svg>'
+    +'<div style="position:absolute;inset:0;border-radius:50%;border:2px solid var(--blue);animation:ccPulse 1.6s ease-out infinite;"></div>'
+    +'</div>'
+    +'<div style="font-size:19px;font-weight:800;color:var(--text);text-align:center;margin-bottom:10px;line-height:1.3;">내 동네 어린이집을<br>찾아볼게요</div>'
+    +'<div style="font-size:14px;color:var(--text-alt);text-align:center;margin-bottom:24px;line-height:1.6;">위치를 허용하면 주변 어린이집 정보와<br>동네 부모들의 리뷰를 볼 수 있어요</div>'
+    +'<button onclick="onLocAllow()" style="width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:var(--font);cursor:pointer;margin-bottom:10px;box-shadow:0 6px 18px rgba(0,102,255,.32);">위치 허용하고 시작하기</button>'
+    +'<button onclick="onLocSkip()" style="width:100%;padding:14px;background:none;color:var(--text-alt);border:none;font-size:14.5px;font-weight:600;font-family:var(--font);cursor:pointer;margin-bottom:calc(16px + env(safe-area-inset-bottom,0px));">직접 동네 설정할게요</button>'
+    +'</div>';
+}
+function onLocAllow(){
+  var np=document.getElementById('native-popup');
+  if(np){np.style.display='flex';np.classList.remove('cc-pop');void np.offsetWidth;np.classList.add('cc-pop');}
+}
+function onNativeAllow(){
+  var np=document.getElementById('native-popup');
+  if(np)np.style.display='none';
+  permState='granted';
+  closeLocGate();
+  setTimeout(openDongConfirm,350);
+}
+function onNativeDeny(){
+  var np=document.getElementById('native-popup');
+  if(np)np.style.display='none';
+  permState='denied';
+  closeLocGate();
+  var cb=_locOnReady;_locOnReady=null;
+  if(cb)cb();
+}
+function onLocSkip(){
+  closeLocGate();
+  setTimeout(openDongSetting,350);
+}
+
+// ── 동네 확인 (2-A GPS 추정)
+function openDongConfirm(){
+  renderDongConfirm();
+  showScreen('dong-confirm');
+}
+function renderDongConfirm(){
+  var el=document.getElementById('dong-confirm-content');
+  if(!el)return;
+  var d=GPS_GUESS;
+  el.innerHTML=
+    '<div style="padding:32px 20px 0;text-align:center;">'
+    +'<div style="width:72px;height:72px;border-radius:50%;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">'
+    +'<svg viewBox="0 0 24 24" width="32" height="32" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="var(--blue)"/></svg>'
+    +'</div>'
+    +'<div style="font-size:12px;color:var(--blue);font-weight:600;margin-bottom:8px;">GPS 추정 동네</div>'
+    +'<div style="font-size:24px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.2;">'+d.city+' '+d.gu+'<br>'+d.name+'</div>'
+    +'<div style="font-size:14px;color:var(--text-alt);margin-bottom:20px;">이 동네가 맞나요?</div>'
+    +'<div style="display:inline-block;font-size:12px;color:var(--text-assist);background:var(--bg-alt);border-radius:10px;padding:8px 16px;margin-bottom:32px;">어린이집 '+d.count+'곳 정보 제공</div>'
+    +'</div>'
+    +'<div style="padding:0 20px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;">'
+    +'<button onclick="onDongConfirmYes()" style="width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;font-family:var(--font);cursor:pointer;box-shadow:0 6px 18px rgba(0,102,255,.32);">이 동네로 설정</button>'
+    +'<button onclick="openDongSetting()" style="width:100%;padding:14px;background:none;color:var(--text-alt);border:none;font-size:14.5px;font-weight:600;font-family:var(--font);cursor:pointer;">직접 검색할게요</button>'
+    +'</div>';
+}
+function onDongConfirmYes(){
+  confirmDong(GPS_GUESS);
+  while(screenStack.length>0&&screenStack[screenStack.length-1]==='dong-confirm')screenStack.pop();
+  showScreen('home');
+  var cb=_locOnReady;_locOnReady=null;
+  if(cb)setTimeout(cb,300);
+  renderMyDong();
+  showToast(GPS_GUESS.name+' 동네가 설정됐어요!');
+}
+
+// ── 동네 설정 (2-B 직접 검색)
+var _dongSearchResults=[];
+function openDongSetting(){
+  _dongSearchResults=DONGS.slice();
+  renderDongSetting();
+  showScreen('dong-setting');
+}
+function renderDongSetting(){
+  var el=document.getElementById('dong-setting-content');
+  if(!el)return;
+  var tagsHTML='';
+  if(savedDongs.length>0){
+    tagsHTML='<div style="margin-bottom:12px;">'
+      +'<div style="font-size:12px;color:var(--text-alt);margin-bottom:6px;">설정된 동네 ('+savedDongs.length+'/'+MAX_DONGS+')</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+      +savedDongs.map(function(d){
+        return '<div style="display:flex;align-items:center;gap:4px;background:var(--blue-weak);color:var(--blue);border-radius:1000px;padding:6px 12px;font-size:13px;font-weight:700;">'
+          +d.name
+          +'<button onclick="removeDong(\''+d.id+'\');renderDongSetting();" style="background:none;border:none;cursor:pointer;padding:0 0 0 2px;color:var(--blue);display:flex;align-items:center;line-height:1;">'
+          +'<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>'
+          +'</button></div>';
+      }).join('')
+      +'</div></div>';
+  }
+  el.innerHTML=
+    '<div style="padding:16px 16px 0;">'
+    +tagsHTML
+    +'<div class="home-search" style="margin-bottom:12px;">'
+    +'<span style="color:var(--text-assist);display:flex;"><svg viewBox="0 0 19.3 19.3" width="16" height="16"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor"/></svg></span>'
+    +'<input id="dong-search-input" placeholder="동네 이름으로 검색" style="flex:1;border:none;background:none;font-size:14.5px;font-family:var(--font);outline:none;color:var(--text);" oninput="onDongSearch(this.value)" />'
+    +'</div>'
+    +'<div id="dong-list"></div>'
+    +'</div>';
+  renderDongList(_dongSearchResults);
+}
+function onDongSearch(q){
+  var trimmed=q.trim();
+  var r=trimmed
+    ?DONGS.filter(function(d){return d.name.indexOf(trimmed)>=0||d.gu.indexOf(trimmed)>=0;})
+    :DONGS.slice();
+  _dongSearchResults=r;
+  renderDongList(r);
+}
+function renderDongList(dongs){
+  var el=document.getElementById('dong-list');
+  if(!el)return;
+  var savedIds=savedDongs.map(function(d){return d.id;});
+  var canAdd=savedDongs.length<MAX_DONGS;
+  if(dongs.length===0){
+    el.innerHTML='<div class="empty" style="padding:28px 0;"><div class="empty-txt">검색 결과가 없어요</div></div>';
+    return;
+  }
+  el.innerHTML=dongs.map(function(d){
+    var isSaved=savedIds.indexOf(d.id)>=0;
+    var action=isSaved
+      ?'removeDong(\''+d.id+'\');renderDongSetting();'
+      :canAdd
+        ?'onSelectDong(\''+d.id+'\')'
+        :'showToast(\'최대 2개 동네까지 설정할 수 있어요\')';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer;" onclick="'+action+'">'
+      +'<div style="width:36px;height:36px;border-radius:10px;background:'+(isSaved?'var(--blue)':'var(--bg-alt)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+      +'<svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="'+(isSaved?'#fff':'var(--text-alt)')+'"/></svg>'
+      +'</div>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:15px;font-weight:'+(isSaved?'700':'500')+';color:'+(isSaved?'var(--blue)':'var(--text)')+';">'+d.name+'</div>'
+      +'<div style="font-size:12px;color:var(--text-alt);margin-top:2px;">'+d.city+' '+d.gu+' · 어린이집 '+d.count+'곳</div>'
+      +'</div>'
+      +(isSaved?'<svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 12l2 2 4-4" stroke="var(--blue)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="var(--blue)" stroke-width="1.7"/></svg>':'')
+      +'</div>';
+  }).join('');
+}
+function onSelectDong(id){
+  var d=DONGS.find(function(x){return x.id===id;});
+  if(!d)return;
+  confirmDong(d);
+  renderDongSetting();
+  var cb=_locOnReady;_locOnReady=null;
+  if(cb)setTimeout(cb,300);
+  showToast(d.name+' 동네가 추가됐어요!');
+}
+
+// ── 홈 동네 헤더 렌더링
+function renderHomeDongHeader(){
+  var el=document.getElementById('home-dong-header');
+  if(!el)return;
+  if(savedDongs.length>0){
+    var d=savedDongs[0];
+    el.innerHTML='<button onclick="openDongSetting()" style="display:flex;align-items:center;gap:4px;background:none;border:none;cursor:pointer;padding:0;font-family:var(--font);">'
+      +'<span style="font-size:20px;font-weight:800;color:var(--text);">'+d.name+'</span>'
+      +'<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="color:var(--text-alt);margin-top:1px;"><path d="M7 10l5 5 5-5z"/></svg>'
+      +'</button>'
+      +'<button onclick="toggleDriftBanner()" style="background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;color:var(--text-alt);">'
+      +'<svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="currentColor"/></svg>'
+      +'</button>';
+  } else {
+    el.innerHTML='<span style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;cursor:pointer;" onclick="goIntroReset()">아이봄</span>';
+  }
+}
+function renderHomeContent(){
+  var mapArea=document.getElementById('home-map-area');
+  var emptyArea=document.getElementById('home-dong-empty');
+  if(savedDongs.length===0){
+    if(mapArea)mapArea.style.display='none';
+    if(emptyArea)emptyArea.style.display='flex';
+  } else {
+    if(mapArea)mapArea.style.display='block';
+    if(emptyArea)emptyArea.style.display='none';
+  }
+}
+
+// ── DriftBanner
+function toggleDriftBanner(){
+  _driftVisible=!_driftVisible;
+  var b=document.getElementById('home-drift-banner');
+  if(!b)return;
+  if(_driftVisible){
+    b.style.display='block';
+    b.innerHTML='<div style="padding:10px 16px;background:#FFF9E6;border-bottom:1px solid rgba(255,172,0,.3);display:flex;align-items:center;gap:10px;">'
+      +'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" style="flex-shrink:0;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="#FF9900"/></svg>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--text);">현재 '+GPS_GUESS.name+' 근처에 계시네요</div>'
+      +'<div style="font-size:12px;color:var(--text-alt);">동네를 변경할까요?</div>'
+      +'</div>'
+      +'<button onclick="openDongSetting();toggleDriftBanner();" style="font-size:12.5px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;white-space:nowrap;font-family:var(--font);padding:4px 6px;">변경</button>'
+      +'<button onclick="toggleDriftBanner()" style="font-size:12.5px;color:var(--text-alt);background:none;border:none;cursor:pointer;white-space:nowrap;font-family:var(--font);padding:4px 6px;">유지</button>'
+      +'</div>';
+  } else {
+    b.style.display='none';
+    b.innerHTML='';
+  }
+}
+
+// ── MY 내 동네
+function renderMyDong(){
+  var el=document.getElementById('my-dong-section');
+  if(!el)return;
+  var dongRows='';
+  if(savedDongs.length>0){
+    dongRows=savedDongs.map(function(d,i){
+      return '<div class="my-row">'
+        +'<div class="my-row-ico" style="background:var(--blue-weak);">'
+        +'<svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="var(--blue)"/></svg>'
+        +'</div>'
+        +'<div style="flex:1;">'
+        +'<div class="my-row-ttl">'+d.name+(i===0?' <span style="font-size:11px;color:var(--blue);font-weight:600;margin-left:4px;">대표</span>':'')+'</div>'
+        +'<div style="font-size:12px;color:var(--text-alt);margin-top:1px;">'+d.city+' '+d.gu+' · '+d.count+'곳</div>'
+        +'</div>'
+        +(i>0?'<button onclick="makePrimary(\''+d.id+'\');renderMyDong();" style="font-size:11px;color:var(--text-alt);background:none;border:none;cursor:pointer;font-family:var(--font);padding:4px;">대표설정</button>':'')
+        +'<button onclick="removeDong(\''+d.id+'\');renderMyDong();" style="font-size:11px;color:var(--text-alt);background:none;border:none;cursor:pointer;font-family:var(--font);padding:4px;">삭제</button>'
+        +'</div>';
+    }).join('');
+  } else {
+    dongRows='<div class="my-row" onclick="openDongSetting()">'
+      +'<div class="my-row-ico" style="background:var(--bg-alt);">'
+      +'<svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="var(--text-alt)"/></svg>'
+      +'</div>'
+      +'<div style="flex:1;">'
+      +'<div class="my-row-ttl">동네 설정하기</div>'
+      +'<div style="font-size:12px;color:var(--text-alt);margin-top:1px;">내 동네를 설정하면 주변 어린이집을 볼 수 있어요</div>'
+      +'</div>'
+      +'<svg viewBox="0 0 24 24" width="16" height="16" style="color:var(--text-assist)"><path d="M8.464 5.536a.9.9 0 0 1 1.272 0l5.9 5.9a.9.9 0 0 1 0 1.272l-5.9 5.9a.9.9 0 0 1-1.272-1.272L13.728 12 8.464 6.808a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg>'
+      +'</div>';
+  }
+  var addRow='';
+  if(savedDongs.length>0&&savedDongs.length<MAX_DONGS){
+    addRow='<div class="my-card" style="margin-top:8px;">'
+      +'<div class="my-row" onclick="openDongSetting()">'
+      +'<div class="my-row-ico" style="background:var(--bg-alt);"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="color:var(--text-alt)"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg></div>'
+      +'<span class="my-row-ttl">동네 추가 ('+savedDongs.length+'/'+MAX_DONGS+')</span>'
+      +'<svg viewBox="0 0 24 24" width="16" height="16" style="color:var(--text-assist)"><path d="M8.464 5.536a.9.9 0 0 1 1.272 0l5.9 5.9a.9.9 0 0 1 0 1.272l-5.9 5.9a.9.9 0 0 1-1.272-1.272L13.728 12 8.464 6.808a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg>'
+      +'</div></div>';
+  }
+  el.innerHTML='<div class="my-sec-label">내 동네</div><div class="my-card">'+dongRows+'</div>'+addRow;
+}
+
+// ── 탐색 탭 게이트
+function navToExplore(){
+  ensureLocation(goExploreKeepRegion);
+}
+
+// ── goMy 확장: 내 동네 섹션 렌더
+var _origGoMy=typeof goMy==='function'?goMy:null;
+// renderMyDong은 goMy 진입 시 자동 호출 (goMy 함수 내 renderMyChildren() 옆에 추가됨)
 
 </script>
 </body>
