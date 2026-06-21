@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>아이봄</title>
-<script src="config.js"></script>
+<script src="config.js">
+</script>
 <script src="suji-static.js"></script>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=3ny7sdsg44&submodules=geocoder"></script>
 <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
@@ -284,7 +285,7 @@ html,body{
 .cat-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;letter-spacing:.02em;}
 .badge-qa{color:var(--blue);background:var(--blue-weak);}
 .badge-info{color:var(--green-text);background:var(--green-bg);}
-.badge-share{color:var(--orange);background:var(--orange-bg);}
+.badge-share{color:var(--orange-text);background:var(--orange-bg);}
 
 /* 커뮤니티 목록 화면 */
 #scr-community{background:var(--bg);}
@@ -845,6 +846,19 @@ html,body{
     </div>
   </div>
 
+  <!-- ══ 씨앗질문 상세 화면 ══ -->
+  <div class="screen hidden" id="scr-seed-detail">
+    <div class="post-header">
+      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
+      <span class="detail-htitle" style="font-size:16px">씨앗질문</span>
+    </div>
+    <div class="post-scroll" id="seed-detail-scroll"></div>
+    <div class="comment-bar" id="seed-answer-bar">
+      <input class="comment-input" id="seed-answer-input" placeholder="답변을 입력하세요" onkeydown="if(event.key==='Enter')submitSeedAnswer()">
+      <button class="comment-send" onclick="submitSeedAnswer()">등록</button>
+    </div>
+  </div>
+
   <!-- ══ 글 작성 화면 ══ -->
   <div class="screen hidden" id="scr-write">
     <div class="write-header">
@@ -1006,30 +1020,8 @@ html,body{
         </div>
         <button onclick="goReviewWrite(DATA[0])" style="width:100%;padding:11px;background:#FF7A00;color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:700;font-family:var(--font);cursor:pointer;">리뷰 작성하기</button>
       </div>
-      <!-- 재원인증 카드 -->
-      <div class="my-sec-label">재원 인증</div>
-      <div class="my-card">
-        <div class="my-row" onclick="showToast('재원 인증 관리 기능은 v1.1에서 오픈 예정이에요!')">
-          <div class="my-row-ico" style="background:var(--blue-weak);">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="18" height="18" style="color:var(--blue)"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
-          </div>
-          <div style="flex:1">
-            <div class="my-row-ttl">현재 인증 단계</div>
-            <div style="font-size:12px;color:var(--text-alt);margin-top:2px;">연남숲어린이집 · Lv.2 카드인증</div>
-          </div>
-          <span class="vbadge-lv lv2">Lv.2</span>
-        </div>
-        <div class="my-row" onclick="showToast('아이사랑 OAuth 인증은 v1.1에서 오픈 예정이에요!')">
-          <div class="my-row-ico" style="background:var(--blue-weak);">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--blue)"><path d="M12 1a11 11 0 1 0 0 22A11 11 0 0 0 12 1zm-1 6v5.586l-3.707 3.707 1.414 1.414L12.414 14H17v-2h-3.586L13 8H11z" fill="currentColor"/></svg>
-          </div>
-          <div style="flex:1">
-            <div class="my-row-ttl">Lv.3으로 업그레이드</div>
-            <div style="font-size:12px;color:var(--text-alt);margin-top:2px;">아이사랑 앱 연동으로 최고 등급 인증</div>
-          </div>
-          <span style="font-size:12px;color:var(--text-assist)">준비 중</span>
-        </div>
-      </div>
+      <!-- 자녀 관리 동적 섹션 -->
+      <div id="my-children-section"></div>
       <!-- 내 활동 -->
       <div class="my-sec-label">내 활동</div>
       <div class="my-card">
@@ -1173,6 +1165,18 @@ html,body{
     <div style="padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 16px);">
       <button onclick="confirmCommRegion()" style="width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);">완료</button>
     </div>
+  </div>
+
+  <!-- ══ 자기선언 온보딩 시트 ══ -->
+  <div id="child-onboard-backdrop" onclick="closeChildOnboard()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:52;"></div>
+  <div id="child-onboard-sheet" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;z-index:53;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);max-height:92%;display:flex;flex-direction:column;overflow:hidden;">
+    <div id="child-onboard-content" style="overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
+  </div>
+
+  <!-- ══ 재원 인증 넛지 시트 ══ -->
+  <div id="verify-nudge-backdrop" onclick="closeVerifyNudge()" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:52;"></div>
+  <div id="verify-nudge-sheet" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;z-index:53;transform:translateY(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);padding:0 20px calc(20px + env(safe-area-inset-bottom,0px));">
+    <div id="verify-nudge-content"></div>
   </div>
 
   <!-- 로그인 월 바텀시트 -->
@@ -1454,6 +1458,17 @@ const SEED_QUESTIONS=[
 ];
 
 const SEED_ANSWERS={}; // instId → sqId → answer text (in-memory)
+const SEED_ANSWER_DATA={
+  sq1:[{author:'연남맘',lv:2,text:'저희는 6개월 대기했어요. 지역마다 다르고 연령별 차이도 있더라고요.',createdAt:Date.now()-86400e3*30},{author:'두아이아빠',lv:1,text:'첫째 때 3개월, 둘째 때 8개월 기다렸어요. 신청 시기가 정말 중요해요.',createdAt:Date.now()-86400e3*15}],
+  sq2:[{author:'라온맘',lv:2,text:'2주 적응 기간이었는데 처음엔 울다가 끝날 때쯤 씩씩하게 들어가더라고요.',createdAt:Date.now()-86400e3*20}],
+  sq3:[{author:'세아맘',lv:2,text:'원복은 원에서 지정한 곳에서 단체 구매했어요. 여벌 옷 3~4벌은 꼭 준비하세요.',createdAt:Date.now()-86400e3*10},{author:'햇살맘',lv:1,text:'가방은 아이가 혼자 열 수 있는 걸로, 신발도 벨크로 추천해요. 이름표 필수!',createdAt:Date.now()-86400e3*5},{author:'다은이아빠',lv:2,text:'첫날 일찍 데리러 갈 수 있도록 일정 조정했어요. 선생님이 적응 사진 보내줘서 안심됐어요.',createdAt:Date.now()-86400e3*3}],
+  sq5:[{author:'민준맘',lv:2,text:'급식이 정말 다양해요. 편식 있던 아이가 여기 다니면서 많이 나아졌어요.',createdAt:Date.now()-86400e3*25},{author:'서윤맘',lv:1,text:'식단표가 앱으로 매주 올라와요. 알레르기 대체도 잘 해줘요.',createdAt:Date.now()-86400e3*12}],
+  sq6:[{author:'라온맘',lv:2,text:'알림장 앱 쓰는데 하루 일과 사진이랑 메시지 매일 와서 정말 좋아요.',createdAt:Date.now()-86400e3*18}],
+  sq7:[{author:'햇살맘',lv:2,text:'월 1회 요리 수업, 분기별 생일 파티, 계절 행사 꽤 다양해요. 참관 수업도 있어요.',createdAt:Date.now()-86400e3*22},{author:'세아맘',lv:1,text:'체육 수업도 주 2회 있어요. 아이가 무척 즐거워해요.',createdAt:Date.now()-86400e3*8},{author:'두아이아빠',lv:2,text:'현장학습이 분기에 한 번씩 있는데 항상 안전하게 진행돼요.',createdAt:Date.now()-86400e3*4},{author:'다은이아빠',lv:1,text:'영어 특별 수업도 있어요. 원비에 포함이라 따로 비용 없이 이용해요.',createdAt:Date.now()-86400e3*2}],
+  sq8:[{author:'연남맘',lv:2,text:'연장보육 신청해서 6시까지 이용했어요. 담당 선생님이 별도로 계세요.',createdAt:Date.now()-86400e3*35}],
+  sq9:[{author:'민준맘',lv:2,text:'길 건너 소아과 강추해요. 원 소식지에 단골 병원 목록도 있어요.',createdAt:Date.now()-86400e3*40},{author:'서윤맘',lv:1,text:'근처 약국이 두 군데인데 원 옆 약국이 소아약 재고가 항상 있어서 편해요.',createdAt:Date.now()-86400e3*20},{author:'라온맘',lv:2,text:'파란하늘 소아과가 대기가 짧아서 자주 이용했어요.',createdAt:Date.now()-86400e3*10}],
+  sq10:[{author:'세아맘',lv:2,text:'선생님들의 세심한 케어요. 아이 하루하루 변화를 놓치지 않고 공유해줘요.',createdAt:Date.now()-86400e3*15},{author:'햇살맘',lv:1,text:'안전 관리가 철저한 거요. CCTV 확인도 항상 가능하고 외부인 출입도 꼼꼼해요.',createdAt:Date.now()-86400e3*7}],
+};
 let rwScores=[5,5,4,4,5,5],rwInstId=null;
 const POSTS=[
   {id:'p1', cat:'입소 Q&A', title:'0세반 지금 신청하면 대기 몇 번이에요?',
@@ -2705,7 +2720,7 @@ function renderSaved(){
   `).join('')+`</div>`;
 }
 
-function goMy(){
+function goMy(){renderMyChildren();
   const u = JSON.parse(localStorage.getItem('aibom_user')||'null');
   const loggedArea = document.getElementById('my-logged-area');
   const guestArea = document.getElementById('my-guest-area');
@@ -2791,10 +2806,10 @@ function getCatClass(cat){
 function seedCardHTML(instId,s,instAnswers){
   const myAns=instAnswers[s.id];
   const totalAns=s.answers+(myAns?1:0);
-  return `<div class="seed-card" onclick="openCompose('${instId}','${s.id}')">
+  return `<div class="seed-card" onclick="openSeedDetail('${instId}','${s.id}')">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
       <span class="seed-card-cat ${getCatClass(s.cat)}">${s.cat}</span>
-      <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#92400E;background:#FEF3C7;padding:3px 9px;border-radius:20px;letter-spacing:-0.2px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="11" height="11" fill="#F59E0B"><path d="M12 2l1.8 7.2L22 12l-8.2 2.8L12 22l-1.8-7.2L2 12l8.2-2.8z"/></svg>씨앗질문</span>
+      <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--text-alt);background:transparent;padding:3px 0;letter-spacing:-0.2px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="11" height="11" fill="#6BBF59"><path d="M12 2l1.8 7.2L22 12l-8.2 2.8L12 22l-1.8-7.2L2 12l8.2-2.8z"/></svg>씨앗질문</span>
     </div>
     <div class="seed-card-q">${s.q}</div>
     <div class="seed-card-ans${myAns?' has-ans':''}">${myAns?'내 답변: '+myAns.substring(0,30)+'…':(totalAns>0?`답변 ${totalAns}개`:'아직 답변이 없어요. 첫 답변을 남겨보세요.')}</div>
@@ -2876,6 +2891,83 @@ function renderBadgeBanner(d){
 
 // ── ComposeSheet
 let _csInstId=null,_csSeedId=null;
+// ── 씨앗질문 상세
+let _sdInstId=null,_sdSeedId=null;
+
+function openSeedDetail(instId,seedId){
+  _sdInstId=instId;_sdSeedId=seedId;
+  renderSeedDetail();
+  showScreen('seed-detail');
+}
+
+function renderSeedDetail(){
+  const el=document.getElementById('seed-detail-scroll');
+  if(!el)return;
+  const seed=SEED_QUESTIONS.find(s=>s.id===_sdSeedId);
+  if(!seed)return;
+  const instAnswers=SEED_ANSWERS[_sdInstId]||{};
+  const myAns=instAnswers[_sdSeedId];
+  const sampleAnswers=SEED_ANSWER_DATA[_sdSeedId]||[];
+  const u=JSON.parse(localStorage.getItem('aibom_user')||'null');
+  const allAnswers=[...sampleAnswers,...(myAns?[{author:u?.nickname||'나',lv:1,text:myAns,createdAt:Date.now()-1000,isMe:true}]:[])];
+
+  el.innerHTML=
+    '<div style="padding:16px 16px 12px;">'
+    +'<span class="seed-card-cat '+getCatClass(seed.cat)+'">'+seed.cat+'</span>'
+    +'<div style="font-size:16px;font-weight:700;color:var(--text);margin:10px 0 8px;line-height:1.45;">'+seed.q+'</div>'
+    +'<div style="font-size:12px;color:var(--text-assist);">답변 '+allAnswers.length+'개</div>'
+    +'</div>'
+    +'<div style="border-top:4px solid var(--bg-alt);">'
+    +'<div class="comment-head" style="padding:14px 16px 4px;border-top:none;">답변 '+allAnswers.length+'</div>'
+    +'<div class="comment-list" style="padding:0 16px 100px;">'
+    +(allAnswers.length
+      ? allAnswers.map(a=>
+          '<div class="comment-item">'
+          +'<div class="comment-top">'
+          +'<div class="avatar" style="width:24px;height:24px;font-size:11px;background:'+AV_COLORS[a.author.charCodeAt(0)%AV_COLORS.length]+'">'+a.author[0]+'</div>'
+          +'<span class="comment-name">'+a.author+'</span>'
+          +(a.lv?'<span class="vbadge '+(a.lv===2?'v2':'v1')+'">'+(a.lv===2?'카드인증':'재원확인')+'</span>':'')
+          +(a.isMe?'<span style="font-size:11px;color:var(--blue);margin-left:2px;font-weight:700;">내 답변</span>':'')
+          +'<span class="comment-time">'+relTime(a.createdAt)+'</span>'
+          +'</div>'
+          +'<div class="comment-text">'+a.text+'</div>'
+          +'</div>'
+        ).join('')
+      :'<div class="empty" style="padding:28px 20px"><div class="empty-txt">아직 답변이 없어요. 첫 답변을 남겨보세요!</div></div>')
+    +'</div></div>';
+
+  const bar=document.getElementById('seed-answer-bar');
+  const isGuest=!localStorage.getItem('aibom_user');
+  if(bar){
+    if(isGuest){
+      bar.innerHTML=
+        '<input class="comment-input" placeholder="로그인하고 답변을 남겨보세요" disabled style="cursor:pointer;" onclick="showLoginWallSheet(\'답변을 작성하려면 로그인이 필요해요\',\'로그인하면 씨앗질문에 답변할 수 있어요\')">'
+        +'<button onclick="showLoginWallSheet(\'답변을 작성하려면 로그인이 필요해요\',\'로그인하면 씨앗질문에 답변할 수 있어요\')" style="width:44px;height:44px;background:var(--blue);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+        +'<svg viewBox="0 0 24 24" width="20" height="20" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#fff" stroke-width="1.7"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></button>';
+    } else if(myAns){
+      bar.innerHTML='<span style="flex:1;font-size:13px;color:var(--text-alt);padding:10px 14px;background:var(--bg-alt);border-radius:12px;text-align:center;">내 답변이 등록됐어요</span>';
+    } else {
+      bar.innerHTML=
+        '<input class="comment-input" id="seed-answer-input" placeholder="재원 경험을 바탕으로 답해주세요" onkeydown="if(event.key===\'Enter\')submitSeedAnswer()">'
+        +'<button class="comment-send" onclick="submitSeedAnswer()">등록</button>';
+    }
+  }
+}
+
+function submitSeedAnswer(){
+  const input=document.getElementById('seed-answer-input');
+  if(!input)return;
+  const text=input.value.trim();
+  if(text.length<5){showToast('5자 이상 입력해주세요');return;}
+  if(!SEED_ANSWERS[_sdInstId])SEED_ANSWERS[_sdInstId]={};
+  SEED_ANSWERS[_sdInstId][_sdSeedId]=text;
+  showToast('답변이 등록됐어요!');
+  renderSeedDetail();
+  const activeChip=document.querySelector('#seed-cats-'+_sdInstId+' .fchip.on');
+  const cat=activeChip?.textContent||'전체';
+  filterSeeds(_sdInstId,cat,activeChip||document.querySelector('#seed-cats-'+_sdInstId+' .fchip'));
+}
+
 function openCompose(instId,seedId){
   if(!localStorage.getItem('aibom_user')){
     showLoginWallSheet('답변을 작성하려면 로그인이 필요해요','재원 인증 부모만 답변을 작성할 수 있어요');
@@ -3286,6 +3378,10 @@ function goWrite(presetInstId){
     showLoginWallSheet('글을 작성하려면 로그인이 필요해요','커뮤니티 글쓰기는 로그인 후 이용할 수 있어요');
     return;
   }
+  if(presetInstId && !getMyVerifyLv(presetInstId) && !_skipVerifyNudge){
+    showVerifyNudge(presetInstId,()=>{_skipVerifyNudge=true;goWrite(presetInstId);setTimeout(()=>{_skipVerifyNudge=false;},300);});
+    return;
+  }
   writePreset=presetInstId||null;
   writeCat=null;
   document.getElementById('title-input').value='';
@@ -3394,7 +3490,16 @@ function submitReview(){
   }
   showScreen('review-done');
 }
-function goReviewDone(){if(curDetail)renderDetail(curDetail);showScreen('detail');}
+function goReviewDone(){
+  // review-write, detail을 스택에서 제거해 기관 상세 뒤로가기가 진입 이전 화면으로 이동하도록
+  const rscreens=new Set(['review-write','review-done','detail']);
+  while(screenStack.length>0&&rscreens.has(screenStack[screenStack.length-1])){screenStack.pop();}
+  if(curDetail)renderDetail(curDetail);
+  showScreen('detail');
+  // showScreen이 review-done을 스택에 추가했으므로 제거
+  const i=screenStack.lastIndexOf('review-done');
+  if(i!==-1)screenStack.splice(i,1);
+}
 
 function showToast(msg){
   const el=document.getElementById('toast-el');
@@ -3519,6 +3624,10 @@ function onLoginSuccess(user){
   updateHomeGuestBanner();
   if(curDetail) renderDetail(curDetail);
   if(curScreen==='saved') renderSaved();
+  setTimeout(()=>{
+    const kids=JSON.parse(localStorage.getItem('aibom_children')||'[]');
+    if(!kids.length) showOnboardSuggestion();
+  },600);
 }
 function updateHomeGuestBanner(){
   const b=document.getElementById('home-guest-banner');
@@ -3610,6 +3719,295 @@ async function initApp(){
   setTimeout(initMiniMap, 600);
 }
 initApp();
+
+
+// ══ 자기선언 (Lv.1) ══
+
+let childrenData=JSON.parse(localStorage.getItem('aibom_children')||'[]');
+let _onboardStep=0,_onboardChildren=[],_onboardEnrollment={};
+let _onboardForChildId=null,_onboardTargetInst=null;
+let _verifyNudgeContinue=null,_skipVerifyNudge=false;
+
+function saveChildrenData(){localStorage.setItem('aibom_children',JSON.stringify(childrenData));}
+
+function getMyVerifyLv(instId){
+  for(const c of childrenData)for(const e of(c.enrollments||[]))if(e.instId===instId)return e.lv||1;
+  return 0;
+}
+
+// ── 온보딩 시트
+function openChildOnboard(targetInstId,forChildId){
+  _onboardTargetInst=targetInstId||null;
+  _onboardForChildId=forChildId||null;
+  _onboardChildren=[{name:'',nickname:'',birthYM:''}];
+  _onboardEnrollment={instId:'',instName:'',instAddr:'',sinceYM:''};
+  if(_onboardTargetInst){
+    const d=DATA.find(x=>x.id===_onboardTargetInst);
+    if(d){_onboardEnrollment.instId=d.id;_onboardEnrollment.instName=d.name;_onboardEnrollment.instAddr=d.addr;}
+  }
+  _onboardStep=_onboardForChildId?2:1;
+  renderOnboardStep();
+  document.getElementById('child-onboard-backdrop').style.display='block';
+  requestAnimationFrame(()=>{document.getElementById('child-onboard-sheet').style.transform='translateY(0)';});
+}
+
+function closeChildOnboard(){
+  document.getElementById('child-onboard-sheet').style.transform='translateY(100%)';
+  setTimeout(()=>{document.getElementById('child-onboard-backdrop').style.display='none';},320);
+}
+
+function renderOnboardStep(){
+  const el=document.getElementById('child-onboard-content');
+  if(!el)return;
+  const step=_onboardStep;
+  const totalSteps=_onboardForChildId?3:4;
+  const stepNum=_onboardForChildId?step-1:step;
+
+  const hdr=(title,sub)=>
+    '<div style="padding:20px 20px 0;">'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">'
+    +'<div style="flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden;">'
+    +'<div style="width:'+((stepNum/totalSteps)*100)+'%;height:100%;background:var(--blue);transition:width .3s;border-radius:2px;"></div></div>'
+    +'<span style="font-size:12px;color:var(--text-assist);white-space:nowrap;">'+stepNum+'/'+totalSteps+'</span>'
+    +'<button onclick="closeChildOnboard()" style="background:none;border:none;padding:4px;cursor:pointer;display:flex;">'
+    +'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--text-alt)" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>'
+    +'</button></div>'
+    +'<div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.3;">'+title+'</div>'
+    +'<div style="font-size:13.5px;color:var(--text-alt);margin-bottom:22px;line-height:1.5;">'+sub+'</div>'
+    +'</div>';
+
+  if(step===1){
+    const forms=_onboardChildren.map((ch,i)=>
+      '<div style="background:var(--bg-alt);border-radius:14px;padding:14px;margin-bottom:10px;">'
+      +(_onboardChildren.length>1?'<div style="font-size:11.5px;font-weight:700;color:var(--text-assist);margin-bottom:10px;">자녀 '+(i+1)+'</div>':'')
+      +'<input placeholder="이름 (비공개, 저장용)" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:var(--font);color:var(--text);margin-bottom:8px;box-sizing:border-box;outline:none;background:#fff;" oninput="_onboardChildren['+i+'].name=this.value" value="'+ch.name+'">'
+      +'<input placeholder="별명 (표시용, 예: 첫째)" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:var(--font);color:var(--text);margin-bottom:8px;box-sizing:border-box;outline:none;background:#fff;" oninput="_onboardChildren['+i+'].nickname=this.value" value="'+ch.nickname+'">'
+      +'<input placeholder="출생연월 (예: 2023.03)" maxlength="7" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:var(--font);color:var(--text);box-sizing:border-box;outline:none;background:#fff;" oninput="_onboardChildren['+i+'].birthYM=this.value;_fmtYM(this)" value="'+ch.birthYM+'">'
+      +'</div>'
+    ).join('');
+    el.innerHTML=hdr('우리 아이 정보를 입력해주세요','이름은 내부 저장용이며 외부에 공개되지 않아요')
+      +'<div style="padding:0 20px;">'+forms
+      +(_onboardChildren.length<3?'<button onclick="_onboardChildren.push({name:\'\',nickname:\'\',birthYM:\'\'\});renderOnboardStep();" style="width:100%;padding:12px;background:none;border:1.5px dashed var(--line);border-radius:12px;font-size:13.5px;font-weight:600;color:var(--text-alt);font-family:var(--font);cursor:pointer;margin-bottom:10px;">+ 자녀 추가</button>':'')
+      +'<button onclick="_obNext(1)" style="width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));">다음</button>'
+      +'</div>';
+  }
+  else if(step===2){
+    const pre=_onboardEnrollment.instId;
+    const preBox=pre
+      ?'<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--blue-weak);border-radius:12px;margin-bottom:12px;">'
+        +'<svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="var(--blue)"/></svg>'
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-size:14px;font-weight:700;color:var(--blue);">'+_onboardEnrollment.instName+'</div>'
+        +'<div style="font-size:12px;color:var(--text-alt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+(_onboardEnrollment.instAddr||'')+'</div>'
+        +'</div>'
+        +'<button onclick="_onboardEnrollment={instId:\'\',instName:\'\',instAddr:\'\',sinceYM:\'\'};renderOnboardStep();" style="background:none;border:none;padding:4px;cursor:pointer;color:var(--text-alt);font-size:16px;">✕</button>'
+        +'</div>'
+      :'';
+    el.innerHTML=hdr('어느 기관에 다니고 있나요?','기관명 또는 주소로 검색해주세요')
+      +'<div style="padding:0 20px;">'
+      +preBox
+      +'<div style="position:relative;margin-bottom:8px;">'
+      +'<input id="ob-search" placeholder="기관 이름 검색" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px 11px 38px;font-size:14px;font-family:var(--font);color:var(--text);box-sizing:border-box;outline:none;" oninput="_obInstResults(this.value)">'
+      +'<svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none;" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--text-alt)" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.35-4.35"/></svg>'
+      +'</div>'
+      +'<div id="ob-results" style="max-height:200px;overflow-y:auto;margin-bottom:12px;border-radius:10px;border:1px solid var(--line-soft);display:none;"></div>'
+      +'<button onclick="_obNext(2)" style="width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;opacity:'+(pre?1:.4)+';margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));"'+(pre?'':' disabled')+'>다음</button>'
+      +'</div>';
+    setTimeout(()=>{const i=document.getElementById('ob-search');if(i)i.focus();},100);
+  }
+  else if(step===3){
+    el.innerHTML=hdr('언제부터 다니고 있나요?','정확하지 않아도 괜찮아요')
+      +'<div style="padding:0 20px;">'
+      +'<div style="font-size:13px;font-weight:600;color:var(--text-alt);margin-bottom:8px;">'+_onboardEnrollment.instName+'</div>'
+      +'<input id="ob-sinceym" placeholder="입소 연월 (예: 2024.09)" maxlength="7" value="'+(_onboardEnrollment.sinceYM||'')+'" style="width:100%;border:1.5px solid var(--line);border-radius:12px;padding:16px;font-size:18px;font-family:var(--font);color:var(--text);box-sizing:border-box;outline:none;text-align:center;letter-spacing:.05em;margin-bottom:8px;" oninput="_onboardEnrollment.sinceYM=this.value;_fmtYM(this)">'
+      +'<div style="font-size:12px;color:var(--text-assist);text-align:center;margin-bottom:24px;">YYYY.MM 형식으로 입력해주세요</div>'
+      +'<button onclick="_obNext(3)" style="width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;margin-bottom:calc(20px + env(safe-area-inset-bottom,0px));">완료</button>'
+      +'</div>';
+    setTimeout(()=>{const i=document.getElementById('ob-sinceym');if(i)i.focus();},100);
+  }
+  else if(step===4){
+    const childList=_onboardChildren.filter(ch=>ch.nickname||ch.name).map(ch=>
+      '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-soft);">'
+      +'<div style="width:28px;height:28px;border-radius:50%;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue);">'+(ch.nickname||ch.name)[0]+'</div>'
+      +'<div style="flex:1;"><span style="font-size:13.5px;font-weight:600;color:var(--text);">'+(ch.nickname||ch.name)+'</span>'
+      +'<span style="font-size:12px;color:var(--text-alt);margin-left:6px;">→ '+_onboardEnrollment.instName+'</span></div>'
+      +'<span class="vbadge-lv lv1" style="font-size:11px;">Lv.1</span>'
+      +'</div>'
+    ).join('');
+    el.innerHTML=
+      '<div style="padding:40px 20px calc(32px + env(safe-area-inset-bottom,0px));text-align:center;">'
+      +'<div style="width:72px;height:72px;border-radius:50%;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">'
+      +'<svg viewBox="0 0 24 24" width="38" height="38" fill="none"><circle cx="12" cy="12" r="10" fill="var(--blue)"/><path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      +'</div>'
+      +'<div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;">재원확인 배지 획득!</div>'
+      +'<div style="font-size:13.5px;color:var(--text-alt);line-height:1.6;margin-bottom:24px;">앞으로 작성하는 리뷰와 글에<br>재원확인 배지가 표시돼요</div>'
+      +'<div style="background:var(--bg-alt);border-radius:14px;padding:14px;margin-bottom:28px;text-align:left;">'+childList+'</div>'
+      +'<button onclick="closeChildOnboard();childrenData=JSON.parse(localStorage.getItem(\'aibom_children\')||\'[]\');renderMyChildren();" style="width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;">확인</button>'
+      +'</div>';
+  }
+}
+
+function _obNext(from){
+  if(from===1){
+    if(!_onboardChildren.some(c=>c.nickname.trim())){showToast('별명을 입력해주세요');return;}
+    _onboardStep=2;renderOnboardStep();
+  }else if(from===2){
+    if(!_onboardEnrollment.instId){showToast('기관을 선택해주세요');return;}
+    _onboardStep=3;renderOnboardStep();
+  }else if(from===3){
+    const ym=document.getElementById('ob-sinceym')?.value||'';
+    _onboardEnrollment.sinceYM=ym;
+    _doSaveOnboard();
+    _onboardStep=4;renderOnboardStep();
+  }
+}
+
+function _doSaveOnboard(){
+  childrenData=JSON.parse(localStorage.getItem('aibom_children')||'[]');
+  const enrollment={instId:_onboardEnrollment.instId,instName:_onboardEnrollment.instName,instAddr:_onboardEnrollment.instAddr,sinceYM:_onboardEnrollment.sinceYM,lv:1};
+  if(_onboardForChildId){
+    const ex=childrenData.find(c=>c.id===_onboardForChildId);
+    if(ex&&(ex.enrollments||[]).length<2&&!ex.enrollments.find(e=>e.instId===enrollment.instId)){ex.enrollments.push(enrollment);}
+  }else{
+    _onboardChildren.filter(c=>c.nickname||c.name).forEach((ch,i)=>{
+      childrenData.push({id:'child_'+Date.now()+'_'+i,name:ch.name,nickname:ch.nickname||ch.name,birthYM:ch.birthYM,enrollments:[Object.assign({},enrollment)]});
+    });
+  }
+  saveChildrenData();
+}
+
+function _obInstResults(q){
+  const el=document.getElementById('ob-results');
+  if(!el)return;
+  if(!q.trim()){el.style.display='none';el.innerHTML='';return;}
+  const m=DATA.filter(d=>d.name.includes(q)||(d.addr||'').includes(q)).slice(0,8);
+  el.style.display='block';
+  if(!m.length){el.innerHTML='<div style="padding:12px;font-size:13px;color:var(--text-alt);text-align:center;">검색 결과가 없어요</div>';return;}
+  el.innerHTML=m.map(d=>
+    '<div onclick="_obSelectInst(\''+d.id+'\',\''+d.name.replace(/'/g,"\\'")+'\',' +
+    '\''+((d.addr||'').replace(/'/g,"\\'"))+'\')" '+
+    'style="display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line-soft);cursor:pointer;background:#fff;">'
+    +'<svg viewBox="0 0 24 24" width="14" height="14" style="margin-top:2px;flex-shrink:0;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="var(--text-alt)"/></svg>'
+    +'<div><div style="font-size:14px;font-weight:600;color:var(--text);">'+d.name+'</div><div style="font-size:12px;color:var(--text-alt);margin-top:1px;">'+(d.addr||'')+'</div></div>'
+    +'</div>'
+  ).join('');
+}
+
+function _obSelectInst(id,name,addr){
+  _onboardEnrollment={instId:id,instName:name,instAddr:addr,sinceYM:_onboardEnrollment.sinceYM||''};
+  renderOnboardStep();
+}
+
+function _fmtYM(input){
+  let v=input.value.replace(/[^0-9]/g,'');
+  if(v.length>=5)v=v.slice(0,4)+'.'+v.slice(4,6);
+  input.value=v;
+}
+
+// ── MY 자녀 관리 섹션
+function renderMyChildren(){
+  const el=document.getElementById('my-children-section');
+  if(!el)return;
+  childrenData=JSON.parse(localStorage.getItem('aibom_children')||'[]');
+  if(!childrenData.length){
+    el.innerHTML=
+      '<div class="my-sec-label">자녀 관리 · 재원 기관 이력</div>'
+      +'<div class="my-card"><div style="padding:20px 16px;text-align:center;">'
+      +'<div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:4px;">아직 등록된 자녀가 없어요</div>'
+      +'<div style="font-size:12.5px;color:var(--text-alt);line-height:1.5;margin-bottom:16px;">자녀와 재원 기관을 등록하면<br>재원확인 배지를 받을 수 있어요</div>'
+      +'<button onclick="openChildOnboard()" style="padding:10px 24px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:700;font-family:var(--font);cursor:pointer;">등록하기</button>'
+      +'</div></div>';
+    return;
+  }
+  const childCards=childrenData.map(c=>{
+    const canAdd=(c.enrollments||[]).length<2;
+    const enrollHtml=(c.enrollments||[]).map(e=>
+      '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line-soft);">'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="font-size:13.5px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+e.instName+'</div>'
+      +'<div style="font-size:12px;color:var(--text-alt);margin-top:1px;">'+(e.sinceYM||'')+'~</div>'
+      +'</div>'
+      +'<span class="vbadge-lv lv'+(e.lv||1)+'" style="flex-shrink:0;">Lv.'+(e.lv||1)+' 재원확인</span>'
+      +'</div>'
+    ).join('');
+    return '<div style="padding:14px 16px;">'
+      +'<div style="display:flex;align-items:center;gap:10px;">'
+      +'<div style="width:32px;height:32px;border-radius:50%;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--blue);flex-shrink:0;">'+(c.nickname||c.name||'?')[0]+'</div>'
+      +'<div style="flex:1;">'
+      +'<span style="font-size:14.5px;font-weight:700;color:var(--text);">'+(c.nickname||c.name)+'</span>'
+      +(c.birthYM?'<span style="font-size:12px;color:var(--text-alt);margin-left:6px;">'+c.birthYM+'</span>':'')
+      +'</div>'
+      +(canAdd
+        ?'<button onclick="openChildOnboard(\'\',\''+c.id+'\')" style="font-size:12px;color:var(--blue);background:none;border:1px solid var(--blue);border-radius:6px;padding:4px 9px;cursor:pointer;font-family:var(--font);font-weight:600;">+ 기관 추가</button>'
+        :'<span style="font-size:11.5px;color:var(--text-assist);">최대 2개</span>')
+      +'</div>'
+      +enrollHtml
+      +'<div style="padding-top:8px;">'
+      +'<button onclick="showToast(\'Lv.2 아이행복카드 인증은 v1.1에서 오픈 예정이에요\')" style="font-size:12.5px;color:var(--blue);background:none;border:none;padding:0;cursor:pointer;font-family:var(--font);font-weight:600;">Lv.2로 업그레이드 → <span style="color:var(--text-assist);font-weight:400;">준비 중</span></button>'
+      +'</div>'
+      +'</div>';
+  }).join('<div style="border-top:4px solid var(--bg-alt);"></div>');
+  el.innerHTML=
+    '<div class="my-sec-label">자녀 관리 · 재원 기관 이력</div>'
+    +'<div class="my-card">'+childCards
+    +'<div style="padding:12px 16px;border-top:1px solid var(--line-soft);">'
+    +'<button onclick="openChildOnboard()" style="width:100%;padding:10px;background:none;border:1.5px dashed var(--line);border-radius:10px;font-size:13.5px;font-weight:600;color:var(--text-alt);font-family:var(--font);cursor:pointer;">+ 자녀 추가</button>'
+    +'</div></div>';
+}
+
+// ── 로그인 후 온보딩 제안
+function showOnboardSuggestion(){
+  const bd=document.getElementById('login-wall-backdrop');
+  const cont=document.getElementById('login-wall-content');
+  if(!bd||!cont)return;
+  bd.style.display='block';
+  const sheet=document.getElementById('login-wall-sheet');
+  if(sheet)requestAnimationFrame(()=>{sheet.style.transform='translateY(0)';});
+  cont.innerHTML=
+    '<div style="padding:32px 20px calc(20px + env(safe-area-inset-bottom,0px));text-align:center;">'
+    +'<div style="width:60px;height:60px;border-radius:50%;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">'
+    +'<svg viewBox="0 0 24 24" width="30" height="30"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="var(--blue)"/></svg>'
+    +'</div>'
+    +'<div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.4;">우리 아이 다니는 기관을<br>등록해보세요</div>'
+    +'<div style="font-size:13.5px;color:var(--text-alt);line-height:1.6;margin-bottom:28px;">재원확인 배지로 더 신뢰받는<br>리뷰와 글을 남길 수 있어요</div>'
+    +'<button onclick="closeLoginWallSheet();openChildOnboard();" style="width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;margin-bottom:10px;">지금 등록하기</button>'
+    +'<button onclick="closeLoginWallSheet();" style="width:100%;padding:12px;background:none;border:none;font-size:14px;color:var(--text-alt);font-family:var(--font);cursor:pointer;">나중에 할게요</button>'
+    +'</div>';
+}
+
+// ── 글쓰기 인증 넛지
+function showVerifyNudge(instId,onContinue){
+  _verifyNudgeContinue=onContinue;
+  const d=DATA.find(x=>x.id===instId);
+  const instName=d?d.name:'이 기관';
+  const sheet=document.getElementById('verify-nudge-sheet');
+  const bd=document.getElementById('verify-nudge-backdrop');
+  const cont=document.getElementById('verify-nudge-content');
+  if(cont)cont.innerHTML=
+    '<div style="padding:8px 0 0;">'
+    +'<div style="width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 20px;"></div>'
+    +'<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;">'
+    +'<div style="width:44px;height:44px;border-radius:12px;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+    +'<svg viewBox="0 0 24 24" width="24" height="24" fill="none"><circle cx="12" cy="12" r="10" fill="var(--blue)"/><path d="M7 12.5l3.5 3.5 6-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    +'</div>'
+    +'<div>'
+    +'<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">재원 인증하면 배지가 표시돼요</div>'
+    +'<div style="font-size:13px;color:var(--text-alt);line-height:1.5;">'+instName+'에 자녀를 등록하면<br>재원확인 배지를 받을 수 있어요</div>'
+    +'</div></div>'
+    +'<button onclick="closeVerifyNudge();if(_verifyNudgeContinue)_verifyNudgeContinue();" style="width:100%;padding:13px;background:none;border:1.5px solid var(--line);border-radius:12px;font-size:14px;color:var(--text-alt);font-family:var(--font);cursor:pointer;margin-bottom:8px;font-weight:600;">건너뛰고 작성하기</button>'
+    +'<button onclick="closeVerifyNudge();openChildOnboard(\''+instId+'\');" style="width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:14.5px;font-weight:700;font-family:var(--font);cursor:pointer;">지금 인증하기</button>'
+    +'</div>';
+  bd.style.display='block';
+  requestAnimationFrame(()=>{if(sheet)sheet.style.transform='translateY(0)';});
+}
+
+function closeVerifyNudge(){
+  const s=document.getElementById('verify-nudge-sheet');
+  const b=document.getElementById('verify-nudge-backdrop');
+  if(s)s.style.transform='translateY(100%)';
+  if(b)setTimeout(()=>{b.style.display='none';},320);
+}
+
 </script>
 </body>
 </html>
