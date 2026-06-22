@@ -827,10 +827,6 @@ html,body{
         <span style="display:inline-flex;color:var(--text-alt)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg></span>
       </div>
       <div class="community-title">우리동네 커뮤니티</div>
-      <div class="comm-seg">
-        <button class="comm-seg-btn on" id="seg-feed" onclick="switchCommTab('feed')">동네 피드</button>
-        <button class="comm-seg-btn" id="seg-inst" onclick="switchCommTab('inst')">기관별</button>
-      </div>
     </div>
     <div class="comm-pane on" id="pane-feed">
       <div class="community-chips" id="community-chips">
@@ -840,9 +836,6 @@ html,body{
         <div class="fchip" onclick="setCommCat('나눔·공지',this)">나눔·공지</div>
       </div>
       <div class="community-list" id="community-list"></div>
-    </div>
-    <div class="comm-pane" id="pane-inst">
-      <div class="community-list" id="comm-inst-list"></div>
     </div>
     <button class="fab-write" onclick="goWrite(null)" aria-label="글쓰기">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
@@ -6203,7 +6196,6 @@ function renderDetail(d){
           </div>
         </div>
         <div class="detail-pad" id="dp-review" style="display:none">
-          <div class="review-notice"><span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="15" height="15"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg></span> 리뷰 중 다수가 <b style="color:var(--blue)">재원 인증</b> 부모의 리뷰예요</div>
           ${(()=>{
             const isGuest = !localStorage.getItem('aibom_user');
             const rvHtml = (r,i) => `
@@ -6249,23 +6241,27 @@ function renderDetail(d){
               <div class="fchip" onclick="filterSeeds('${d.id}','생활 정보',this)">생활 정보</div>
               <div class="fchip" onclick="filterSeeds('${d.id}','나눔·생활',this)">나눔·생활</div>
             </div>
+            ${localStorage.getItem('aibom_user')?`<button onclick="goWrite('${d.id}')"
+              style="width:100%;padding:11px 0;margin-bottom:4px;background:transparent;color:var(--blue);
+                border:1.5px solid var(--blue);border-radius:10px;font-size:14px;font-weight:700;
+                font-family:var(--font);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="15" height="15"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg>
+              질문하기
+            </button>`:''}
           </div>
           <div id="seed-list-${d.id}" style="padding:0 16px 90px;">
             ${renderSeedCards(d.id,'전체')}
           </div>
-          ${localStorage.getItem('aibom_user')?`<button onclick="goWrite('${d.id}')" style="position:sticky;bottom:16px;left:calc(100% - 72px);display:block;width:52px;height:52px;border-radius:50%;background:var(--blue);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,102,255,.35);font-size:22px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-right:16px;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="20" height="20"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg>
-          </button>`:''}
         </div>
       </div>
-      ${localStorage.getItem('aibom_user')?`<button onclick="goReviewWrite(curDetail)"
+      ${localStorage.getItem('aibom_user')?`<button id="detail-review-fab" onclick="goReviewWrite(curDetail)"
         style="position:absolute;right:18px;bottom:22px;z-index:20;
-          display:flex;align-items:center;gap:7px;
+          display:none;align-items:center;gap:7px;
           background:var(--blue);color:#fff;border:none;border-radius:100px;
           padding:14px 20px;font-size:15px;font-weight:700;font-family:var(--font);
           box-shadow:0 6px 20px rgba(0,102,255,0.35);cursor:pointer;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="17" height="17"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill="currentColor" fill-rule="evenodd"/></svg>
-        평가하기
+        리뷰 작성하기
       </button>`:''}
     </div>
   `;
@@ -6277,6 +6273,8 @@ function switchDTab(t){
     const p=document.getElementById('dp-'+k);
     if(p)p.style.display=k===t?'':'none';
   });
+  const fab=document.getElementById('detail-review-fab');
+  if(fab)fab.style.display=t==='review'?'flex':'none';
 }
 
 // ── MY 화면
@@ -6303,7 +6301,6 @@ function toggleFav(id){
   const cnt=document.getElementById('my-fav-count');
   if(cnt)cnt.textContent=savedList.size+'개';
   if(curScreen==='saved')renderSaved();
-  if(curScreen==='community')renderCommInst();
 }
 
 function updateDetailFavBtn(){
@@ -6337,7 +6334,7 @@ function renderSaved(){
     </div>`;
     return;
   }
-  el.innerHTML=`<div class="my-card" style="margin:12px 16px 0;">`+items.map((d,i,a)=>`
+  let html=`<div class="my-card" style="margin:12px 16px 0;">`+items.map((d,i,a)=>`
     <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;${i<a.length-1?'border-bottom:1px solid var(--line-soft)':''}">
       <div onclick="goDetail('${d.id}')" style="display:flex;flex:1;gap:12px;align-items:center;cursor:pointer;min-width:0;">
         <div class="inst-thumb" style="background:linear-gradient(135deg,hsl(${HUES[d.type]} 52% 72%),hsl(${HUES[d.type]} 48% 60%));color:#fff;flex-shrink:0;">${SVG[HERO_ICONS[d.type]||'heroGongl'](28)}</div>
@@ -6350,6 +6347,41 @@ function renderSaved(){
       <button onclick="toggleFav('${d.id}')" style="width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--red);flex-shrink:0;">${SVG.heart(20)}</button>
     </div>
   `).join('')+`</div>`;
+  // 관심 기관 소식 (커뮤니티 글 + 씨앗 질문)
+  const savedPosts=POSTS.filter(p=>p.instId&&savedList.has(p.instId)).sort((a,b)=>b.createdAt-a.createdAt);
+  const answeredSeeds=SEED_QUESTIONS.filter(q=>q.answers>0);
+  if(savedPosts.length||answeredSeeds.length){
+    html+=`<div style="padding:16px 16px 8px;"><div style="font-size:13px;font-weight:700;color:var(--text-alt);letter-spacing:-.2px;">관심 기관 소식</div></div>`;
+    savedPosts.forEach(p=>{
+      const inst=DATA.find(d=>d.id===p.instId);
+      html+=`<div class="post-card" style="margin:0 16px 10px;cursor:pointer" onclick="goPost('${p.id}')">
+        <div class="post-card-top">
+          <span class="cat-badge ${CAT_BADGE[p.cat]||''}">${p.cat}</span>
+          ${inst?`<span class="inst-tag-chip">${svgSpan('pin','var(--text-alt)',11)} ${inst.name}</span>`:''}
+        </div>
+        <div class="post-card-title">${p.title}</div>
+        <div class="post-card-body">${p.body}</div>
+        <div class="post-card-meta">
+          <span>${p.author}</span><span>·</span>
+          <span>${relTime(p.createdAt)}</span>
+          <span class="pm-ico">${svgSpan('chat','var(--text-assist)',13)} ${p.comments.length}</span>
+        </div>
+      </div>`;
+    });
+    if(answeredSeeds.length){
+      items.forEach(d=>{
+        html+=`<div style="padding:4px 16px 6px;"><span style="font-size:12px;font-weight:700;color:var(--text-alt);">${d.name} 씨앗 질문</span></div>`;
+        answeredSeeds.forEach(q=>{
+          html+=`<div onclick="openSeedDetail('${d.id}','${q.id}')" style="margin:0 16px 8px;padding:12px 14px;background:#fff;border-radius:12px;border:1px solid var(--line-soft);cursor:pointer;">
+            <div style="font-size:11px;color:var(--text-alt);margin-bottom:4px;">${q.cat}</div>
+            <div style="font-size:13.5px;font-weight:600;color:var(--text);line-height:1.4;">${q.q}</div>
+            <div style="margin-top:8px;font-size:12px;color:var(--blue);font-weight:600;">답변 ${q.answers}개</div>
+          </div>`;
+        });
+      });
+    }
+  }
+  el.innerHTML=html;
 }
 
 function goMy(){renderMyDong();renderMyChildren();
@@ -6722,7 +6754,6 @@ function closeNudge(){
 
 // ── 커뮤니티
 let curCommCat='all';   // 커뮤니티 카테고리 필터
-let commTab='feed';     // 커뮤니티 탭 (feed | inst)
 let curPostId=null;     // 현재 보는 글
 let writePreset=null;   // 작성 시 기관 프리셋(instId)
 let writeCat=null;      // 작성 카테고리
@@ -6739,21 +6770,11 @@ function relTime(ts){
 }
 
 function goCommunity(){
-  commTab='feed';
   showScreen('community');
   updateCommDongDisplay();
   renderCommunity();
-  renderCommInst();
 }
 
-function switchCommTab(tab){
-  commTab=tab;
-  document.getElementById('pane-feed').className='comm-pane'+(tab==='feed'?' on':'');
-  document.getElementById('pane-inst').className='comm-pane'+(tab==='inst'?' on':'');
-  document.getElementById('seg-feed').className='comm-seg-btn'+(tab==='feed'?' on':'');
-  document.getElementById('seg-inst').className='comm-seg-btn'+(tab==='inst'?' on':'');
-  if(tab==='inst')renderCommInst();
-}
 
 function setCommCat(cat,el){
   curCommCat=cat;
