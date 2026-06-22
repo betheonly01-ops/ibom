@@ -820,22 +820,31 @@ html,body{
 
   <!-- ══ 커뮤니티 목록 화면 ══ -->
   <div class="screen hidden" id="scr-community">
-    <div class="community-header">
-      <div class="community-loc" onclick="openCommRegionSheet()">
-        <span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="13" height="13"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/></svg></span>
-        <span id="comm-dong-name">연남동</span>
-        <span style="display:inline-flex;color:var(--text-alt)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg></span>
+    <!-- 커뮤니티 헤더 -->
+    <div style="padding:env(safe-area-inset-top,16px) 16px 0;background:#fff;flex-shrink:0;border-bottom:1px solid var(--line-soft);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:6px;margin-bottom:14px;">
+        <div>
+          <div style="font-size:20px;font-weight:800;color:var(--text);">커뮤니티</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:3px;cursor:pointer;" onclick="openCommRegionSheet()">
+            <span style="display:inline-flex;color:var(--blue)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.8 20.048" width="13" height="13"><path d="M12.803 16.53C11.83 17.555 10.86 18.393 10.134 18.974c-.399.32-.806.634-1.23.922-.3.203-.71.202-1.01-.001-.423-.287-.829-.602-1.228-.921C5.94 18.393 4.97 17.555 3.997 16.53 2.091 14.521 0 11.613 0 8.4 0 3.761 3.761 0 8.4 0c4.639 0 8.4 3.761 8.4 8.4 0 3.213-2.091 6.121-3.997 8.13zM8.4 1.8C4.755 1.8 1.8 4.755 1.8 8.4c0 2.481 1.659 4.948 3.503 6.891C6.514 16.567 7.736 17.544 8.4 18.041c.664-.497 1.886-1.474 3.097-2.75C13.341 13.348 15 10.881 15 8.4 15 4.755 12.045 1.8 8.4 1.8z" fill="currentColor" fill-rule="evenodd"/></svg></span>
+            <span id="comm-dong-name" style="font-size:12.5px;color:var(--text-alt);font-weight:600;">연남동</span>
+            <span style="font-size:12.5px;color:var(--text-alt);">· 이웃 학부모</span>
+          </div>
+        </div>
+        <button onclick="showToast('검색은 준비 중이에요')" style="border:none;background:none;padding:6px;cursor:pointer;color:var(--text);">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="23" height="23"><path d="M7.9 0C3.537 0 0 3.537 0 7.9c0 4.363 3.537 7.9 7.9 7.9 1.857 0 3.565-.641 4.914-1.714l4.95 4.95c.351.352.921.352 1.272 0 .352-.351.352-.921 0-1.272l-4.95-4.951C15.159 11.465 15.8 9.757 15.8 7.9 15.8 3.537 12.263 0 7.9 0zM1.8 7.9C1.8 4.531 4.531 1.8 7.9 1.8c3.369 0 6.1 2.731 6.1 6.1 0 3.369-2.731 6.1-6.1 6.1C4.531 14 1.8 11.269 1.8 7.9z" fill="currentColor" fill-rule="evenodd"/></svg>
+        </button>
       </div>
-      <div class="community-title">우리동네 커뮤니티</div>
+      <div id="community-chips" style="display:flex;gap:7px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+        <button class="fchip on" onclick="setCommCat('all',this)">전체</button>
+        <button class="fchip" onclick="setCommCat('입소 Q&amp;A',this)">입소 Q&amp;A</button>
+        <button class="fchip" onclick="setCommCat('생활 정보',this)">생활 정보</button>
+        <button class="fchip" onclick="setCommCat('나눔·공지',this)">나눔·공지</button>
+      </div>
     </div>
-    <div class="comm-pane on" id="pane-feed">
-      <div class="community-chips" id="community-chips">
-        <div class="fchip on" onclick="setCommCat('all',this)">전체</div>
-        <div class="fchip" onclick="setCommCat('입소 Q&amp;A',this)">입소 Q&amp;A</div>
-        <div class="fchip" onclick="setCommCat('생활 정보',this)">생활 정보</div>
-        <div class="fchip" onclick="setCommCat('나눔·공지',this)">나눔·공지</div>
-      </div>
-      <div class="community-list" id="community-list"></div>
+    <!-- 스크롤 영역 -->
+    <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff;">
+      <div id="community-list" style="padding:0 16px calc(var(--nav-h)+80px);"></div>
     </div>
     <button class="fab-write" onclick="goWrite(null)" aria-label="글쓰기">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
@@ -1131,6 +1140,7 @@ html,body{
   <div class="screen hidden" id="scr-saved" style="background:var(--bg-alt);">
     <div class="my-header">
       <span class="my-header-ttl">관심 기관</span>
+      <button onclick="showToast('알림 설정은 준비 중이에요')" style="border:none;background:none;padding:6px;cursor:pointer;color:var(--text);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="currentColor"/></svg></button>
     </div>
     <div id="saved-list" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 calc(var(--nav-h) + 16px);background:var(--bg-alt);"></div>
     <div class="bottom-nav">
@@ -6318,7 +6328,7 @@ function renderSaved(){
   if(!el)return;
   if(!localStorage.getItem('aibom_user')){
     el.innerHTML=`<div style="text-align:center;padding:80px 20px;">
-      <div style="display:flex;justify-content:center;margin-bottom:14px;color:var(--text-assist)">${SVG.heartOutline(40)}</div>
+      <div style="width:64px;height:64px;border-radius:32px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--text-assist)">${SVG.heartOutline(28)}</div>
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">로그인이 필요해요</div>
       <div style="font-size:13.5px;line-height:1.6;color:var(--text-alt);margin-bottom:24px;">회원가입하고 관심 기관을<br>관리해보세요</div>
       <button onclick="showLogin('saved')" style="background:var(--blue);color:#fff;border:none;border-radius:12px;padding:13px 36px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);">로그인하기</button>
@@ -6327,60 +6337,64 @@ function renderSaved(){
   }
   const items=[...savedList].map(id=>DATA.find(d=>d.id===id)).filter(Boolean);
   if(items.length===0){
-    el.innerHTML=`<div style="text-align:center;padding:80px 20px;color:var(--text-assist)">
-      <div style="display:flex;justify-content:center;margin-bottom:14px;color:var(--text-assist)">${SVG.heartOutline(40)}</div>
+    el.innerHTML=`<div style="text-align:center;padding:80px 20px;">
+      <div style="width:64px;height:64px;border-radius:32px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--text-assist)">${SVG.heartOutline(28)}</div>
       <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;">관심 기관이 없어요</div>
-      <div style="font-size:13.5px;line-height:1.6;">마음에 드는 기관 상세에서<br>하트를 눌러 추가해보세요</div>
+      <div style="font-size:13.5px;line-height:1.6;color:var(--text-alt);">마음에 드는 기관 상세에서<br>하트를 눌러 추가해보세요</div>
     </div>`;
     return;
   }
-  let html=`<div class="my-card" style="margin:12px 16px 0;">`+items.map((d,i,a)=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;${i<a.length-1?'border-bottom:1px solid var(--line-soft)':''}">
-      <div onclick="goDetail('${d.id}')" style="display:flex;flex:1;gap:12px;align-items:center;cursor:pointer;min-width:0;">
-        <div class="inst-thumb" style="background:linear-gradient(135deg,hsl(${HUES[d.type]} 52% 72%),hsl(${HUES[d.type]} 48% 60%));color:#fff;flex-shrink:0;">${SVG[HERO_ICONS[d.type]||'heroGongl'](28)}</div>
-        <div class="inst-info">
-          <div class="inst-title"><span class="inst-name">${d.name}</span><span class="grade g${d.grade}"><span class="grade-label">평가</span><span class="grade-badge">${d.grade}</span></span></div>
-          <div class="inst-sub"><span class="badge b-${d.type}" style="font-size:11px;padding:2px 6px;">${d.type}</span></div>
-          <div class="inst-foot">${d.dist||'-'} · ★ ${d.rating} · 리뷰 ${d.reviews}개</div>
+  let html='<div style="padding:12px 16px calc(var(--nav-h)+24px);">';
+  // 새 소식
+  const savedPosts=POSTS.filter(p=>p.instId&&savedList.has(p.instId)).sort((a,b)=>b.createdAt-a.createdAt);
+  if(savedPosts.length){
+    const catColor=c=>({'입소 Q&A':'#0066FF','생활 정보':'#00A36B','나눔·공지':'#FF9200'}[c]||'#0066FF');
+    html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin:2px 0 10px;">새 소식</div>`;
+    html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px;margin-bottom:18px;">`;
+    savedPosts.forEach((p,i)=>{
+      const inst=DATA.find(d=>d.id===p.instId);
+      if(!inst)return;
+      const hue=HUES[inst.type]||210;
+      const cc=catColor(p.cat);
+      html+=`<button onclick="goPost('${p.id}')" style="width:100%;display:flex;align-items:center;gap:11px;padding:12px;background:none;border:none;${i<savedPosts.length-1?'border-bottom:1px solid var(--line-soft);':''}cursor:pointer;font-family:var(--font);text-align:left;">
+        <div style="position:relative;flex-shrink:0;">
+          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:flex;align-items:center;justify-content:center;color:#fff;">${SVG[HERO_ICONS[inst.type]||'heroGongl'](17)}</div>
+          <div style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.18);"><span style="color:${cc};display:inline-flex;">${SVG.chat(11)}</span></div>
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:12px;color:var(--text-alt);">${inst.name}</div>
+          <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-top:2px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;">${p.title}</div>
+        </div>
+        <span style="font-size:11px;color:var(--text-assist);flex-shrink:0;white-space:nowrap;">${relTime(p.createdAt)}</span>
+      </button>`;
+    });
+    html+=`</div>`;
+  }
+  // 관심 기관 목록
+  html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:10px;">관심 기관 <span style="color:var(--blue);">${items.length}</span></div>`;
+  html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px 16px;">`;
+  items.forEach((d,i)=>{
+    const hue=HUES[d.type]||210;
+    const tc=TC[d.type]||'#999';
+    html+=`<div style="display:flex;gap:12px;padding:14px 0;${i<items.length-1?'border-bottom:1px solid var(--line-soft);':''}">
+      <div onclick="goDetail('${d.id}')" style="display:flex;gap:12px;flex:1;cursor:pointer;align-items:center;min-width:0;">
+        <div style="width:62px;height:62px;border-radius:12px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;">${SVG[HERO_ICONS[d.type]||'heroGongl'](26)}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
+            <span style="font-size:15.5px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.name}</span>
+            <span class="grade g${d.grade}" style="flex-shrink:0;"><span class="grade-label">평가</span><span class="grade-badge">${d.grade}</span></span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px;margin-top:5px;flex-wrap:wrap;">
+            <span style="font-size:11px;font-weight:700;color:${tc};background:${tc}22;padding:2px 7px;border-radius:5px;">${d.type}</span>
+            <span style="font-size:13px;color:var(--star);font-weight:700;">★</span><span style="font-size:13px;font-weight:700;color:var(--text);">${d.rating}</span><span style="font-size:12px;color:var(--text-alt);">· 리뷰 ${d.reviews}개</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:6px;color:var(--text-alt);font-size:12.5px;">${svgSpan('pin','var(--text-assist)',13)} ${d.dist||'-'} · 정원 ${d.cap}/${d.now}명</div>
         </div>
       </div>
-      <button onclick="toggleFav('${d.id}')" style="width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--red);flex-shrink:0;">${SVG.heart(20)}</button>
-    </div>
-  `).join('')+`</div>`;
-  // 관심 기관 소식 (커뮤니티 글 + 씨앗 질문)
-  const savedPosts=POSTS.filter(p=>p.instId&&savedList.has(p.instId)).sort((a,b)=>b.createdAt-a.createdAt);
-  const answeredSeeds=SEED_QUESTIONS.filter(q=>q.answers>0);
-  if(savedPosts.length||answeredSeeds.length){
-    html+=`<div style="padding:16px 16px 8px;"><div style="font-size:13px;font-weight:700;color:var(--text-alt);letter-spacing:-.2px;">관심 기관 소식</div></div>`;
-    savedPosts.forEach(p=>{
-      const inst=DATA.find(d=>d.id===p.instId);
-      html+=`<div class="post-card" style="margin:0 16px 10px;cursor:pointer" onclick="goPost('${p.id}')">
-        <div class="post-card-top">
-          <span class="cat-badge ${CAT_BADGE[p.cat]||''}">${p.cat}</span>
-          ${inst?`<span class="inst-tag-chip">${svgSpan('pin','var(--text-alt)',11)} ${inst.name}</span>`:''}
-        </div>
-        <div class="post-card-title">${p.title}</div>
-        <div class="post-card-body">${p.body}</div>
-        <div class="post-card-meta">
-          <span>${p.author}</span><span>·</span>
-          <span>${relTime(p.createdAt)}</span>
-          <span class="pm-ico">${svgSpan('chat','var(--text-assist)',13)} ${p.comments.length}</span>
-        </div>
-      </div>`;
-    });
-    if(answeredSeeds.length){
-      items.forEach(d=>{
-        html+=`<div style="padding:4px 16px 6px;"><span style="font-size:12px;font-weight:700;color:var(--text-alt);">${d.name} 씨앗 질문</span></div>`;
-        answeredSeeds.forEach(q=>{
-          html+=`<div onclick="openSeedDetail('${d.id}','${q.id}')" style="margin:0 16px 8px;padding:12px 14px;background:#fff;border-radius:12px;border:1px solid var(--line-soft);cursor:pointer;">
-            <div style="font-size:11px;color:var(--text-alt);margin-bottom:4px;">${q.cat}</div>
-            <div style="font-size:13.5px;font-weight:600;color:var(--text);line-height:1.4;">${q.q}</div>
-            <div style="margin-top:8px;font-size:12px;color:var(--blue);font-weight:600;">답변 ${q.answers}개</div>
-          </div>`;
-        });
-      });
-    }
-  }
+      <button onclick="toggleFav('${d.id}')" style="width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--red);flex-shrink:0;align-self:center;">${SVG.heart(24)}</button>
+    </div>`;
+  });
+  html+=`</div></div>`;
   el.innerHTML=html;
 }
 
@@ -6754,6 +6768,7 @@ function closeNudge(){
 
 // ── 커뮤니티
 let curCommCat='all';   // 커뮤니티 카테고리 필터
+let curCommSort='latest'; // 커뮤니티 정렬 (latest|popular)
 let curPostId=null;     // 현재 보는 글
 let writePreset=null;   // 작성 시 기관 프리셋(instId)
 let writeCat=null;      // 작성 카테고리
@@ -6783,16 +6798,25 @@ function setCommCat(cat,el){
   renderCommunity();
 }
 
+function toggleCommSort(){
+  curCommSort=curCommSort==='latest'?'popular':'latest';
+  renderCommunity();
+}
+
 function renderCommunity(){
   const el=document.getElementById('community-list');
   if(!el)return;
   const regions=JSON.parse(localStorage.getItem('aibom_comm_regions')||'[]');
-  const list=POSTS
-    .filter(p=>curCommCat==='all'||p.cat===curCommCat)
-    .sort((a,b)=>b.createdAt-a.createdAt);
+  let list=POSTS.filter(p=>curCommCat==='all'||p.cat===curCommCat);
+  if(curCommSort==='popular'){
+    list=[...list].sort((a,b)=>(b.likes+b.comments.length)-(a.likes+a.comments.length));
+  } else {
+    list=[...list].sort((a,b)=>b.createdAt-a.createdAt);
+  }
+  const catColor=c=>({'입소 Q&A':'#0066FF','생활 정보':'#00A36B','나눔·공지':'#FF9200'}[c]||'var(--text-alt)');
   let html='';
   if(regions.length===0){
-    html+=`<div style="margin:12px 16px 4px;padding:14px 16px;background:var(--blue-weak);border-radius:12px;display:flex;align-items:center;gap:10px;">
+    html+=`<div style="margin:12px 0 4px;padding:14px 16px;background:var(--blue-weak);border-radius:12px;display:flex;align-items:center;gap:10px;">
       <div style="flex:1;">
         <div style="font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:2px;">우리 동네를 설정해보세요</div>
         <div style="font-size:12px;color:var(--text-alt);">내 동네 이야기만 모아볼 수 있어요</div>
@@ -6800,25 +6824,73 @@ function renderCommunity(){
       <button onclick="openCommRegionSheet()" style="background:var(--blue);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:var(--font);">설정하기</button>
     </div>`;
   }
+  // 지금 뜨는 글 (전체 탭만)
+  if(curCommCat==='all'){
+    const hotList=[...POSTS].sort((a,b)=>(b.likes+b.comments.length)-(a.likes+a.comments.length)).slice(0,3);
+    if(hotList.length){
+      html+=`<div style="margin-top:14px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:10px;">
+          <span style="color:#E5484D;font-size:15px;line-height:1;">✦</span>
+          <span style="font-size:14px;font-weight:800;color:var(--text);">지금 뜨는 글</span>
+        </div>
+        <div style="display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+          ${hotList.map(p=>{
+            const cc=catColor(p.cat);
+            return `<button onclick="goPost('${p.id}')" style="flex:0 0 200px;text-align:left;background:var(--bg-alt);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;font-family:var(--font);">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px;">
+                <span style="font-size:11px;font-weight:700;color:${cc};background:${cc}22;padding:2px 8px;border-radius:6px;">${p.cat}</span>
+                <span style="font-size:10.5px;font-weight:800;color:#E5484D;background:#FEECEC;padding:2px 7px;border-radius:1000px;">HOT</span>
+              </div>
+              <div style="font-size:14px;font-weight:700;color:var(--text);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:39px;">${p.title}</div>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+                <span style="display:inline-flex;align-items:center;gap:3px;font-size:12.5px;color:var(--text-assist);font-weight:600;">${svgSpan('heart','var(--text-assist)',14)} ${p.likes}</span>
+                <span style="display:inline-flex;align-items:center;gap:3px;font-size:12.5px;color:var(--text-assist);font-weight:600;">${svgSpan('chat','var(--text-assist)',14)} ${p.comments.length}</span>
+              </div>
+            </button>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+  }
+  // 정렬 + 카운트
+  const listLabel=curCommCat==='all'?'전체 글':curCommCat;
+  html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 2px;">
+    <span style="font-size:13px;font-weight:700;color:var(--text);">${listLabel} ${list.length}</span>
+    <button onclick="toggleCommSort()" style="border:none;background:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:var(--text-alt);display:inline-flex;align-items:center;gap:3px;">
+      ${curCommSort==='latest'?'최신순':'인기순'}
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" fill="currentColor"/></svg>
+    </button>
+  </div>`;
   if(!list.length){
     html+=`<div class="empty"><div class="empty-ico" style="display:flex;justify-content:center;color:var(--text-assist)">${SVG.chat(32)}</div><div class="empty-txt">아직 글이 없어요.<br>첫 글을 남겨보세요.</div></div>`;
     el.innerHTML=html;return;
   }
   const isGuest=!localStorage.getItem('aibom_user');
+  const miniInst=inst=>{
+    const hue=HUES[inst.type]||210;
+    return `<span style="display:inline-flex;align-items:center;gap:5px;">
+      <span style="width:18px;height:18px;border-radius:5px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:inline-flex;align-items:center;justify-content:center;color:#fff;">${SVG[HERO_ICONS[inst.type]||'heroGongl'](11)}</span>
+      <span style="font-size:12px;font-weight:600;color:var(--text-alt);">${inst.name}</span>
+    </span>`;
+  };
   const postCard=p=>{
     const inst=p.instId?DATA.find(x=>x.id===p.instId):null;
-    return `<div class="post-card" onclick="goPost('${p.id}')">
-      <div class="post-card-top">
-        <span class="cat-badge ${CAT_BADGE[p.cat]}">${p.cat}</span>
-        ${inst?`<span class="inst-tag-chip">${svgSpan('pin','var(--text-alt)',11)} ${inst.name}</span>`:''}
+    const cc=catColor(p.cat);
+    const isHot=p.likes>=5||p.comments.length>=2;
+    return `<div onclick="goPost('${p.id}')" style="padding:15px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;">
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:700;color:${cc};background:${cc}22;padding:2px 8px;border-radius:6px;">${p.cat}</span>
+        ${isHot?`<span style="font-size:10.5px;font-weight:800;color:#E5484D;background:#FEECEC;padding:2px 7px;border-radius:1000px;">HOT</span>`:''}
+        <span style="margin-left:auto;font-size:11.5px;color:var(--text-assist);">${relTime(p.createdAt)}</span>
       </div>
-      <div class="post-card-title">${p.title}</div>
-      <div class="post-card-body">${p.body}</div>
-      <div class="post-card-meta">
-        <span>${p.author}</span><span>·</span>
-        <span>${relTime(p.createdAt)}</span>
-        <span class="pm-ico">${svgSpan('chat','var(--text-assist)',13)} ${p.comments.length}</span>
-        <span class="pm-ico">${svgSpan('heart','var(--text-assist)',13)} ${p.likes}</span>
+      <div style="font-size:15.5px;font-weight:700;color:var(--text);line-height:1.4;">${p.title}</div>
+      <div style="font-size:13.5px;color:var(--text-alt);line-height:1.55;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.body}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:11px;">
+        ${inst?miniInst(inst):''}
+        <span style="margin-left:auto;display:flex;align-items:center;gap:12px;">
+          <span style="display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--text-assist);font-weight:600;">${svgSpan('heart','var(--text-assist)',15)} ${p.likes}</span>
+          <span style="display:inline-flex;align-items:center;gap:4px;font-size:12.5px;color:var(--text-assist);font-weight:600;">${svgSpan('chat','var(--text-assist)',15)} ${p.comments.length}</span>
+        </span>
       </div>
     </div>`;
   };
