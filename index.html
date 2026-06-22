@@ -7671,12 +7671,41 @@ function onLocAllow(){
   var np=document.getElementById('native-popup');
   if(np){np.style.display='flex';np.classList.remove('cc-pop');void np.offsetWidth;np.classList.add('cc-pop');}
 }
+function findNearestDongByCoords(lat,lng){
+  var nearestCity='서울',minDist=Infinity;
+  for(var city in CITY_LATLNG){
+    var c=CITY_LATLNG[city];
+    var d=(lat-c[0])*(lat-c[0])+(lng-c[1])*(lng-c[1]);
+    if(d<minDist){minDist=d;nearestCity=city;}
+  }
+  var pool=DONGS.filter(function(d){return d.city===nearestCity;});
+  return pool.length?pool[0]:DONGS[0];
+}
+let _gpsGuessedDong=GPS_GUESS;
 function onNativeAllow(){
   var np=document.getElementById('native-popup');
   if(np)np.style.display='none';
   permState='granted';
   closeLocGate();
-  setTimeout(openDongConfirm,350);
+  if(!navigator.geolocation){
+    _gpsGuessedDong=GPS_GUESS;
+    setTimeout(openDongConfirm,350);
+    return;
+  }
+  showToast('위치 확인 중...');
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      curLat=pos.coords.latitude;
+      curLng=pos.coords.longitude;
+      _gpsGuessedDong=findNearestDongByCoords(curLat,curLng);
+      openDongConfirm();
+    },
+    function(){
+      _gpsGuessedDong=GPS_GUESS;
+      openDongConfirm();
+    },
+    {timeout:8000,maximumAge:60000}
+  );
 }
 function onNativeDeny(){
   var np=document.getElementById('native-popup');
@@ -7699,7 +7728,7 @@ function openDongConfirm(){
 function renderDongConfirm(){
   var el=document.getElementById('dong-confirm-content');
   if(!el)return;
-  var d=GPS_GUESS;
+  var d=_gpsGuessedDong;
   el.innerHTML=
     '<div style="padding:32px 20px 0;text-align:center;">'
     +'<div style="width:72px;height:72px;border-radius:50%;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">'
@@ -7716,13 +7745,13 @@ function renderDongConfirm(){
     +'</div>';
 }
 function onDongConfirmYes(){
-  confirmDong(GPS_GUESS);
+  confirmDong(_gpsGuessedDong);
   while(screenStack.length>0&&screenStack[screenStack.length-1]==='dong-confirm')screenStack.pop();
   showScreen('home');
   var cb=_locOnReady;_locOnReady=null;
   if(cb)setTimeout(cb,300);
   renderMyDong();
-  showToast(GPS_GUESS.name+' 동네가 설정됐어요!');
+  showToast(_gpsGuessedDong.name+' 동네가 설정됐어요!');
 }
 
 // ── 동네 설정 (2-B 직접 검색)
