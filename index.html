@@ -686,7 +686,7 @@ html,body{
       </div>
 
       <!-- 동네 설정 후 메인 컨텐츠 -->
-      <div id="home-map-area">
+      <div id="home-map-area" style="display:none;">
         <!-- 지도 미리보기 -->
         <div class="home-map-preview" onclick="goExploreKeepRegion()">
           <div id="mini-map"></div>
@@ -7304,8 +7304,8 @@ async function initApp(){
     updateHomeMapTxt();
   }
   recomputeDist();
-  renderHomeRows();
-  renderHomeRecentReview();
+  renderHomeDongHeader();
+  renderHomeContent();
   updateHomeGuestBanner();
   updateCommDongDisplay();
   detectLocation();
