@@ -695,7 +695,7 @@ html,body{
           </div>
         </div>
 
-        <div class="home-sec">내 주변 인기 기관</div>
+        <div class="home-sec" id="home-popular-title">내 주변 인기 기관</div>
         <div class="home-card">
           <div class="home-card-inner" id="home-rows"></div>
         </div>
@@ -5035,10 +5035,39 @@ const POSTS=[
    views:29, likes:4, liked:false, comments:[]},
 ];
 
+// 동네별 관심(즐겨찾기) 등록 시뮬레이션 수 (인기순 정렬용)
+const INST_SAVES={a:43,b:28,c:35,d:12,e:38,f:22,g:17,h:41};
+const INST_VIEWS={a:892,b:564,c:712,d:234,e:688,f:445,g:389,h:756};
+
+// 도시별 대표 좌표 (미니맵 + 탐색 중심)
+const CITY_LATLNG={
+  '서울':[37.5665,126.9780],'부산':[35.1796,129.0756],'대구':[35.8714,128.6014],
+  '인천':[37.4563,126.7052],'광주':[35.1595,126.8526],'대전':[36.3504,127.3845],
+  '울산':[35.5384,129.3114],'세종':[36.4800,127.2890],'경기':[37.4138,127.5183],
+  '강원':[37.8228,128.1555],'충북':[36.6357,127.4912],'충남':[36.5184,126.8000],
+  '전북':[35.7175,127.1530],'전남':[34.8161,126.4630],'경북':[36.4919,128.8889],
+  '경남':[35.4606,128.2132],'제주':[33.4996,126.5312]
+};
+function getDongCenter(){
+  if(!savedDongs.length)return null;
+  var c=CITY_LATLNG[savedDongs[0].city];
+  return c?{lat:c[0],lng:c[1]}:null;
+}
+
 // 홈 DATA_LEN 치환
 function updateHomeMapTxt(){
   const el=document.querySelector('.home-map-txt');
-  if(el)el.textContent=`내 주변 어린이집 ${DATA.length}곳`;
+  if(!el)return;
+  if(savedDongs.length){
+    el.textContent=savedDongs[0].name+' 어린이집 '+savedDongs[0].count+'곳';
+  } else {
+    el.textContent='내 주변 어린이집 '+DATA.length+'곳';
+  }
+}
+function updateHomePopularTitle(){
+  var el=document.getElementById('home-popular-title');
+  if(!el)return;
+  el.textContent=savedDongs.length?savedDongs[0].name+' 인기 기관':'내 주변 인기 기관';
 }
 updateHomeMapTxt();
 
@@ -5414,9 +5443,15 @@ function goExplore(){
 }
 async function goExploreKeepRegion(){
   _skipGPS=true;
-  // SGG 중심 좌표로 맞춰 데이터 핀과 지도 센터를 일치시킴
-  const sggCoords=SGG_COORDS[curSigunguCd];
-  if(sggCoords){curLat=sggCoords[0];curLng=sggCoords[1];}
+  if(savedDongs.length){
+    // 동네 설정 시 해당 도시 좌표로 탐색 중심 이동
+    const dc=getDongCenter();
+    if(dc){curLat=dc.lat;curLng=dc.lng;}
+  } else {
+    // SGG 중심 좌표로 맞춰 데이터 핀과 지도 센터를 일치시킴
+    const sggCoords=SGG_COORDS[curSigunguCd];
+    if(sggCoords){curLat=sggCoords[0];curLng=sggCoords[1];}
+  }
   const apiData=await fetchChildcareData(curSigunguCd);
   if(apiData&&apiData.length){DATA=apiData;filtered=[...DATA];recomputeDist();}
   goExplore();
@@ -5567,7 +5602,10 @@ function initMiniMap(){
   const el=document.getElementById('mini-map');
   if(!el||!naver||!naver.maps)return;
   miniMapInited=true;
-  const c=new naver.maps.LatLng(curLat||37.4979,curLng||127.0276);
+  const dc=getDongCenter();
+  const lat=dc?dc.lat:(curLat||37.4979);
+  const lng=dc?dc.lng:(curLng||127.0276);
+  const c=new naver.maps.LatLng(lat,lng);
   miniMap=new naver.maps.Map('mini-map',{center:c,zoom:14,mapTypeId:naver.maps.MapTypeId.NORMAL,
     zoomControl:false,scrollWheel:false,draggable:false,pinchZoom:false,disableDoubleClickZoom:true});
   _renderMiniMapMarkers();
@@ -5586,7 +5624,10 @@ function _renderMiniMapMarkers(){
 function updateMiniMap(){
   if(!miniMapInited){initMiniMap();return;}
   if(!miniMap)return;
-  miniMap.setCenter(new naver.maps.LatLng(curLat||37.4979,curLng||127.0276));
+  const dc=getDongCenter();
+  const lat=dc?dc.lat:(curLat||37.4979);
+  const lng=dc?dc.lng:(curLng||127.0276);
+  miniMap.setCenter(new naver.maps.LatLng(lat,lng));
   naver.maps.Event.trigger(miniMap,'resize');
   _renderMiniMapMarkers();
 }
@@ -5816,12 +5857,20 @@ function homeRowHTML(d,i,arr){
 function renderHomeRows(){
   const el=document.getElementById('home-rows');
   if(!el)return;
-  let rows=DATA;
-  if(gpsAvailable()&&rows.length){
-    const withDist=rows.map(d=>({...d,_m:(d._m!=null?d._m:haversine(curLat,curLng,d.lat,d.lng))}));
+  let rows;
+  if(savedDongs.length){
+    // 동네 설정된 경우: 관심 등록수 → 리뷰수 순 인기 기관
+    const dongName=savedDongs[0].name;
+    const matched=DATA.filter(d=>d.addr&&d.addr.indexOf(dongName)>=0);
+    const pool=matched.length?matched:DATA.slice();
+    rows=pool.sort((a,b)=>(INST_SAVES[b.id]||0)-(INST_SAVES[a.id]||0)||b.reviews-a.reviews);
+  } else if(gpsAvailable()){
+    const withDist=DATA.map(d=>({...d,_m:(d._m!=null?d._m:haversine(curLat,curLng,d.lat,d.lng))}));
     let nearby=withDist.filter(d=>d._m<=1000).sort((a,b)=>a._m-b._m);
     if(!nearby.length)nearby=withDist.filter(d=>d._m<=3000).sort((a,b)=>a._m-b._m);
     rows=nearby.length?nearby:withDist.sort((a,b)=>a._m-b._m);
+  } else {
+    rows=DATA;
   }
   el.innerHTML=rows.slice(0,3).map((d,i,arr)=>homeRowHTML(d,i,arr)).join('');
 }
@@ -5831,7 +5880,13 @@ function renderHomeRecentReview(){
   const el=document.getElementById('home-recent-review');
   if(!el)return;
   let review=REVIEWS[0];
-  if(gpsAvailable()){
+  if(savedDongs.length){
+    const dongName=savedDongs[0].name;
+    const dongIds=new Set(DATA.filter(d=>d.addr&&d.addr.indexOf(dongName)>=0).map(d=>d.id));
+    // 동네 기관 리뷰 우선, 없으면 전체 최신
+    const dongReview=dongIds.size?REVIEWS.find(r=>dongIds.has(r.instId)):null;
+    if(dongReview)review=dongReview;
+  } else if(gpsAvailable()){
     const nearIds=new Set(
       DATA.filter(d=>d.lat&&d.lng&&haversine(curLat,curLng,d.lat,d.lng)<=1000).map(d=>d.id)
     );
@@ -7761,6 +7816,15 @@ function renderDongCTA(){
 function onDongSettingDone(){
   while(screenStack.length>0&&screenStack[screenStack.length-1]==='dong-setting')screenStack.pop();
   showScreen('home');
+  renderHomeDongHeader();
+  renderHomeContent();
+  // 미니맵 중심 갱신 (already inited → update center)
+  if(miniMapInited){
+    miniMapInited=false; // force re-center
+    setTimeout(function(){initMiniMap();},200);
+  } else {
+    setTimeout(function(){initMiniMap();},600);
+  }
   var cb=_locOnReady;_locOnReady=null;
   if(cb)setTimeout(cb,300);
 }
@@ -7797,6 +7861,10 @@ function renderHomeContent(){
   } else {
     if(mapArea)mapArea.style.display='block';
     if(emptyArea)emptyArea.style.display='none';
+    updateHomeMapTxt();
+    updateHomePopularTitle();
+    renderHomeRows();
+    renderHomeRecentReview();
   }
 }
 
