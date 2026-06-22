@@ -844,7 +844,7 @@ html,body{
     </div>
     <!-- 스크롤 영역 -->
     <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#fff;">
-      <div id="community-list" style="padding:0 16px calc(var(--nav-h)+80px);"></div>
+      <div id="community-list" style="padding-bottom:calc(var(--nav-h)+80px);"></div>
     </div>
     <button class="fab-write" onclick="goWrite(null)" aria-label="글쓰기">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>
@@ -6816,7 +6816,7 @@ function renderCommunity(){
   const catColor=c=>({'입소 Q&A':'#0066FF','생활 정보':'#00A36B','나눔·공지':'#FF9200'}[c]||'var(--text-alt)');
   let html='';
   if(regions.length===0){
-    html+=`<div style="margin:12px 0 4px;padding:14px 16px;background:var(--blue-weak);border-radius:12px;display:flex;align-items:center;gap:10px;">
+    html+=`<div style="margin:12px 16px 4px;padding:14px;background:var(--blue-weak);border-radius:12px;display:flex;align-items:center;gap:10px;">
       <div style="flex:1;">
         <div style="font-size:13.5px;font-weight:700;color:var(--blue);margin-bottom:2px;">우리 동네를 설정해보세요</div>
         <div style="font-size:12px;color:var(--text-alt);">내 동네 이야기만 모아볼 수 있어요</div>
@@ -6829,11 +6829,11 @@ function renderCommunity(){
     const hotList=[...POSTS].sort((a,b)=>(b.likes+b.comments.length)-(a.likes+a.comments.length)).slice(0,3);
     if(hotList.length){
       html+=`<div style="margin-top:14px;margin-bottom:6px;">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:10px;padding:0 16px;">
           <span style="color:#E5484D;font-size:15px;line-height:1;">✦</span>
           <span style="font-size:14px;font-weight:800;color:var(--text);">지금 뜨는 글</span>
         </div>
-        <div style="display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
+        <div style="display:flex;gap:10px;overflow-x:auto;padding:0 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;">
           ${hotList.map(p=>{
             const cc=catColor(p.cat);
             return `<button onclick="goPost('${p.id}')" style="flex:0 0 200px;text-align:left;background:var(--bg-alt);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;font-family:var(--font);">
@@ -6854,7 +6854,7 @@ function renderCommunity(){
   }
   // 정렬 + 카운트
   const listLabel=curCommCat==='all'?'전체 글':curCommCat;
-  html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 2px;">
+  html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 2px;">
     <span style="font-size:13px;font-weight:700;color:var(--text);">${listLabel} ${list.length}</span>
     <button onclick="toggleCommSort()" style="border:none;background:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:var(--text-alt);display:inline-flex;align-items:center;gap:3px;">
       ${curCommSort==='latest'?'최신순':'인기순'}
@@ -6877,7 +6877,7 @@ function renderCommunity(){
     const inst=p.instId?DATA.find(x=>x.id===p.instId):null;
     const cc=catColor(p.cat);
     const isHot=p.likes>=5||p.comments.length>=2;
-    return `<div onclick="goPost('${p.id}')" style="padding:15px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;">
+    return `<div onclick="goPost('${p.id}')" style="padding:15px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer;">
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap;">
         <span style="font-size:11px;font-weight:700;color:${cc};background:${cc}22;padding:2px 8px;border-radius:6px;">${p.cat}</span>
         ${isHot?`<span style="font-size:10.5px;font-weight:800;color:#E5484D;background:#FEECEC;padding:2px 7px;border-radius:1000px;">HOT</span>`:''}
