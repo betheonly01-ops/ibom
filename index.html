@@ -5069,8 +5069,6 @@ function updateHomePopularTitle(){
   if(!el)return;
   el.textContent=savedDongs.length?savedDongs[0].name+' 인기 기관':'내 주변 인기 기관';
 }
-updateHomeMapTxt();
-
 // ── 상태
 let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],savedList=new Set();
 let curScreen='home',prevScreen='home',segMode='map',curDetail=null;
