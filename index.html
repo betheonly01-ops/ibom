@@ -476,17 +476,6 @@ html,body{
 .rw-notice-txt{font-size:12px;color:var(--text-alt);line-height:1.55;}
 .rw-footer{padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));border-top:1px solid var(--line-soft);background:var(--bg);flex-shrink:0;}
 .rw-submit{width:100%;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;}
-/* ── 씨앗 질문 카드 */
-.seed-card{background:var(--bg);border:none;border-bottom:1px solid var(--line);border-radius:0;padding:14px 0;margin-bottom:0;cursor:pointer;transition:background .12s;}
-.seed-card:active{background:var(--bg-alt);}
-.seed-card-cat{font-size:11.5px;font-weight:700;padding:0;border-radius:0;display:inline-block;margin-bottom:7px;background:transparent !important;}
-.seed-card-cat.c-qa{color:#0066FF;}
-.seed-card-cat.c-life{color:var(--green-text);}
-.seed-card-cat.c-share{color:var(--orange-text);}
-.seed-card-cat.c-etc{color:#5856D6;}
-.seed-card-q{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.45;}
-.seed-card-ans{font-size:12px;color:var(--text-assist);}
-.seed-card-ans.has-ans{color:var(--text-alt);}
 /* ── 부모 등록 질문 카드 */
 .parent-q-card{padding:14px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;}
 .parent-q-card:active{background:var(--bg-alt);}
@@ -495,16 +484,6 @@ html,body{
 .parent-q-title{font-size:14px;font-weight:700;color:var(--text);line-height:1.4;margin-bottom:5px;}
 .parent-q-ans-cnt{font-size:12px;color:var(--text-assist);}
 .badge-new{font-size:10px;font-weight:800;color:var(--blue);letter-spacing:-0.2px;}
-/* ── 씨앗 질문 리스트 아이템 (답변 있음) */
-.seed-list-item{padding:13px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .12s;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
-.seed-list-item:active{background:var(--bg-alt);}
-/* ── 대기 토글 버튼 */
-.seed-toggle-btn{width:100%;padding:13px 16px;background:var(--bg-alt);border:none;border-top:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--text-alt);font-family:var(--font);cursor:pointer;transition:background .12s;}
-.seed-toggle-btn:active{background:#e9e9eb;}
-/* ── 대기 씨앗 행 */
-.seed-waiting-row{padding:12px 16px;border-bottom:1px solid var(--line-soft);background:var(--bg-alt);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s;}
-.seed-waiting-row:active{filter:brightness(.97);}
-.seed-waiting-q{flex:1;font-size:13px;color:var(--text-alt);line-height:1.4;}
 /* ── 리뷰 유도 배너 */
 .nudge-banner{border-radius:14px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;cursor:pointer;}
 .nudge-banner-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -518,7 +497,6 @@ html,body{
 .cs-drag{width:36px;height:4px;border-radius:2px;background:var(--line);margin:10px auto 16px;}
 .cs-inst-row{display:flex;align-items:center;gap:8px;padding:0 16px 14px;border-bottom:1px solid var(--line-soft);}
 .cs-inst-ico{width:32px;height:32px;border-radius:10px;background:var(--blue-weak);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.cs-seed-q{font-size:14px;font-weight:700;color:var(--text);padding:14px 16px 8px;line-height:1.45;}
 .cs-textarea{margin:0 16px;border:1.5px solid var(--line);border-radius:12px;padding:12px;font-size:14px;font-family:var(--font);resize:none;min-height:130px;color:var(--text);background:var(--bg-alt);outline:none;transition:border-color .15s;}
 .cs-textarea:focus{border-color:var(--blue);}
 .cs-footer{padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:space-between;gap:12px;}
@@ -912,20 +890,6 @@ html,body{
     <div id="dong-setting-cta" style="display:none;padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line);flex-shrink:0;"></div>
   </div>
 
-  <!-- ══ 씨앗질문 상세 화면 ══ -->
-  <div class="screen hidden" id="scr-seed-detail">
-    <div class="post-header">
-      <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
-      <span class="detail-htitle" style="font-size:16px">묻고 답하기</span>
-      <button onclick="openSeedActionSheet()" style="background:none;border:none;cursor:pointer;padding:4px 8px;font-size:20px;color:var(--text-alt);line-height:1;">···</button>
-    </div>
-    <div class="post-scroll" id="seed-detail-scroll"></div>
-    <div class="comment-bar" id="seed-answer-bar">
-      <input class="comment-input" id="seed-answer-input" placeholder="답변을 입력하세요" onkeydown="if(event.key==='Enter')submitSeedAnswer()">
-      <button class="comment-send comment-send-icon" onclick="submitSeedAnswer()" aria-label="등록"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="18" height="18" fill="currentColor"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill-rule="evenodd"/></svg></button>
-    </div>
-  </div>
-
   <!-- ══ 글 작성 화면 ══ -->
   <div class="screen hidden" id="scr-write">
     <div class="write-header">
@@ -1173,28 +1137,6 @@ html,body{
       <button class="nav-item" onclick="goCommunity()"><span class="nav-ico nav-ico-line"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 1.8C5.315 1.8 1.8 5.315 1.8 9.65C1.8 13.985 5.315 17.5 9.65 17.5C11.011 17.5 12.289 17.154 13.403 16.547C13.607 16.435 13.847 16.407 14.071 16.468L16.185 17.045C16.645 17.17 16.93 17.247 17.139 17.284C17.213 17.297 17.261 17.302 17.287 17.303C17.293 17.298 17.298 17.293 17.303 17.287C17.302 17.261 17.297 17.214 17.284 17.139C17.247 16.93 17.17 16.645 17.045 16.185L16.468 14.071C16.407 13.847 16.435 13.607 16.546 13.403C17.154 12.289 17.5 11.011 17.5 9.65C17.5 5.315 13.985 1.8 9.65 1.8ZM0 9.65C0 4.32 4.32 0 9.65 0C14.979 0 19.3 4.32 19.3 9.65C19.3 11.188 18.939 12.645 18.297 13.937L18.792 15.75C18.904 16.16 19.003 16.526 19.057 16.826C19.11 17.131 19.147 17.517 19 17.903C18.807 18.408 18.408 18.807 17.902 19C17.517 19.147 17.131 19.11 16.826 19.057C16.526 19.004 16.16 18.904 15.75 18.792L13.937 18.298C12.645 18.939 11.188 19.3 9.65 19.3C4.32 19.3 0 14.98 0 9.65Z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-ico nav-ico-fill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.3 19.3" width="24" height="24"><path d="M9.65 0C4.32 0 0 4.32 0 9.65C0 14.979 4.32 19.3 9.65 19.3C11.188 19.3 12.645 18.939 13.937 18.297L15.749 18.792C16.16 18.904 16.525 19.003 16.826 19.057C17.131 19.11 17.517 19.147 17.902 19C18.408 18.807 18.807 18.408 19 17.902C19.147 17.517 19.11 17.131 19.056 16.826C19.003 16.526 18.904 16.16 18.792 15.75L18.297 13.937C18.939 12.645 19.3 11.188 19.3 9.65C19.3 4.32 14.979 0 9.65 0Z" fill="currentColor" fill-rule="nonzero"/></svg></span><span class="nav-lbl">커뮤니티</span></button>
       <button class="nav-item on" onclick="goSaved()"><span class="nav-ico nav-ico-line"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0L11.735 0C12.265 0 12.716 0 13.087 0.03C13.476 0.062 13.855 0.132 14.217 0.316C14.762 0.594 15.206 1.038 15.484 1.583C15.668 1.945 15.738 2.324 15.77 2.713C15.8 3.084 15.8 3.535 15.8 4.065L15.8 18.9C15.8 19.225 15.625 19.525 15.341 19.684C15.058 19.844 14.711 19.838 14.433 19.669L7.9 15.703L1.367 19.669C1.089 19.838 0.742 19.844 0.459 19.684C0.175 19.525 0 19.225 0 18.9L0 4.065C0 3.535 0 3.084 0.03 2.713C0.062 2.324 0.132 1.945 0.316 1.583C0.594 1.038 1.038 0.594 1.583 0.316C1.945 0.132 2.324 0.062 2.713 0.03C3.084 0 3.535 0 4.065 0ZM3.7 1.8C2.885 1.8 2.692 1.811 2.56 1.854C2.225 1.963 1.963 2.225 1.854 2.56C1.811 2.692 1.8 2.886 1.8 3.7L1.8 17.301L7.433 13.881C7.72 13.707 8.08 13.707 8.367 13.881L14 17.301L14 3.7C14 2.886 13.989 2.692 13.946 2.56C13.837 2.225 13.575 1.963 13.24 1.854C13.108 1.811 12.915 1.8 12.1 1.8L3.7 1.8Z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-ico nav-ico-fill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="24" height="24"><path d="M4.065 0C3.535 0 3.084 0 2.713 0.03C2.324 0.062 1.945 0.132 1.583 0.316C1.038 0.594 0.594 1.038 0.316 1.583C0.132 1.945 0.062 2.324 0.03 2.713C0 3.084 0 3.535 0 4.065L0 18.9C0 19.225 0.175 19.525 0.459 19.684C0.742 19.844 1.089 19.838 1.367 19.669L7.9 15.703L14.433 19.669C14.711 19.838 15.058 19.844 15.341 19.684C15.625 19.525 15.8 19.225 15.8 18.9L15.8 4.065C15.8 3.535 15.8 3.084 15.77 2.713C15.738 2.324 15.668 1.945 15.484 1.583C15.206 1.038 14.762 0.594 14.217 0.316C13.855 0.132 13.476 0.062 13.087 0.03C12.716 0 12.265 0 11.735 0L4.065 0Z" fill="currentColor" fill-rule="nonzero"/></svg></span><span class="nav-lbl">관심</span></button>
       <button class="nav-item" onclick="goMy()"><span class="nav-ico nav-ico-line"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.799" width="24" height="24"><path d="M8.9 0C6.194 0 4 2.194 4 4.9C4 7.606 6.194 9.8 8.9 9.8C11.606 9.8 13.8 7.606 13.8 4.9C13.8 2.194 11.606 0 8.9 0ZM5.8 4.9C5.8 3.188 7.188 1.8 8.9 1.8C10.612 1.8 12 3.188 12 4.9C12 6.612 10.612 8 8.9 8C7.188 8 5.8 6.612 5.8 4.9Z" fill="currentColor" fill-rule="evenodd"/><path d="M8.9 10.998C6.588 10.998 4.431 11.451 2.816 12.321C1.203 13.189 0 14.565 0 16.398L0 16.726C0 16.913 0 17.103 0.013 17.265C0.028 17.446 0.064 17.67 0.18 17.898C0.338 18.209 0.59 18.461 0.901 18.62C1.129 18.736 1.353 18.771 1.534 18.786C1.697 18.799 1.887 18.799 2.073 18.799L15.727 18.799C15.913 18.799 16.104 18.799 16.266 18.785C16.447 18.771 16.671 18.735 16.899 18.619C17.21 18.46 17.462 18.208 17.62 17.898C17.736 17.669 17.772 17.445 17.787 17.264C17.8 17.102 17.8 16.912 17.8 16.725L17.8 16.398C17.8 14.565 16.597 13.189 14.984 12.321C13.369 11.451 11.212 10.998 8.9 10.998ZM1.8 16.398C1.8 15.471 2.388 14.596 3.67 13.905C4.951 13.215 6.794 12.798 8.9 12.798C11.006 12.798 12.849 13.215 14.13 13.905C15.412 14.596 16 15.471 16 16.398L15.998 16.997L1.802 16.998L1.8 16.398Z" fill="currentColor" fill-rule="evenodd"/></svg></span><span class="nav-ico nav-ico-fill"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.8 18.547" width="24" height="24"><path d="M4.5 4.4C4.5 1.97 6.47 0 8.9 0C11.33 0 13.3 1.97 13.3 4.4C13.3 6.83 11.33 8.8 8.9 8.8C6.47 8.8 4.5 6.83 4.5 4.4Z" fill="currentColor" fill-rule="nonzero"/><path d="M8.9 10.746C6.588 10.746 4.431 11.199 2.816 12.068C1.203 12.937 0 14.312 0 16.146L0 16.474C0 16.66 0 16.85 0.013 17.013C0.028 17.194 0.064 17.418 0.18 17.646C0.338 17.957 0.59 18.209 0.901 18.367C1.129 18.484 1.353 18.519 1.534 18.534C1.697 18.547 1.887 18.547 2.073 18.547L15.727 18.546C15.913 18.546 16.103 18.546 16.266 18.533C16.447 18.518 16.671 18.483 16.899 18.366C17.21 18.208 17.462 17.956 17.62 17.645C17.736 17.417 17.772 17.193 17.787 17.012C17.8 16.85 17.8 16.66 17.8 16.473L17.8 16.146C17.8 14.312 16.597 12.937 14.984 12.068C13.369 11.199 11.212 10.746 8.9 10.746Z" fill="currentColor" fill-rule="nonzero"/></svg></span><span class="nav-lbl">MY</span></button>
-    </div>
-  </div>
-
-  <!-- ══ ComposeSheet (씨앗 질문 답변 작성) ══ -->
-  <div id="compose-backdrop" onclick="closeCompose()"></div>
-  <div id="compose-sheet">
-    <div class="cs-drag"></div>
-    <div class="cs-inst-row" id="cs-inst-row">
-      <div class="cs-inst-ico">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" style="color:var(--blue)"><path d="M12 2 1 7v2h22V7L12 2zm-7 9v7H3v2h18v-2h-2v-7h-2v7h-3v-7h-2v7H8v-7H5z" fill="currentColor"/></svg>
-      </div>
-      <span id="cs-inst-name" style="font-size:13px;font-weight:600;color:var(--text-alt)"></span>
-    </div>
-    <div class="cs-seed-q" id="cs-seed-q"></div>
-    <textarea class="cs-textarea" id="cs-textarea" placeholder="재원 경험을 바탕으로 솔직하게 적어주세요" oninput="onCsInput()"></textarea>
-    <div class="cs-footer">
-      <span class="cs-user-note">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.8 19.8" width="12" height="12" style="color:var(--blue);vertical-align:middle;margin-right:3px"><path d="M0 9.9C0 4.432 4.432 0 9.9 0s9.9 4.432 9.9 9.9-4.432 9.9-9.9 9.9S0 15.368 0 9.9zm14.547-2.124a.9.9 0 0 0-1.294-.75L8.577 11.355l-2.03-2.103a.9.9 0 0 0-1.297 1.248l2.677 2.773a.9.9 0 0 0 1.295.001l5.325-5.498z" fill="currentColor" fill-rule="evenodd"/></svg>
-        김지수 · 재원인증 회원으로 등록돼요
-      </span>
-      <span class="cs-char-cnt" id="cs-char-cnt">0</span>
-      <button class="cs-submit" id="cs-submit" onclick="submitCompose()" disabled>답변 등록하기</button>
     </div>
   </div>
 
@@ -1537,21 +1479,6 @@ const RUBRIC=[
   {key:'소통·투명성',desc:'알림장·행사 안내 등 소통'},
   {key:'종합 만족도',desc:'전반적인 만족도'},
 ];
-
-const SEED_QUESTIONS=[
-  {id:'sq1',cat:'입소 Q&A',q:'입소 대기 기간이 얼마나 됐나요?',answers:2},
-  {id:'sq2',cat:'입소 Q&A',q:'적응 기간은 며칠 정도 걸렸나요? 어떻게 진행됐나요?',answers:0},
-  {id:'sq3',cat:'입소 Q&A',q:'등원 첫날, 어떻게 준비하면 좋을까요?',answers:3},
-  {id:'sq4',cat:'입소 Q&A',q:'원복이나 준비물은 어디서 구매하셨나요?',answers:0},
-  {id:'sq5',cat:'생활 정보',q:'급식 식단 어때요? 아이가 잘 먹나요?',answers:2},
-  {id:'sq6',cat:'생활 정보',q:'선생님과 소통은 주로 어떻게 하시나요? (알림장/앱/전화 등)',answers:0},
-  {id:'sq7',cat:'생활 정보',q:'어린이집 행사나 특별 수업이 자주 있나요?',answers:4},
-  {id:'sq8',cat:'생활 정보',q:'연장보육 이용하시는 분 계세요? 어떤지 궁금해요.',answers:0},
-  {id:'sq9',cat:'나눔·생활',q:'어린이집 주변에 추천하는 소아과나 약국 있으세요?',answers:0},
-  {id:'sq10',cat:'나눔·생활',q:'이 어린이집 다니면서 가장 좋았던 점 하나만 말해주세요.',answers:0},
-];
-
-const SEED_ANSWERS={}; // instId → sqId → answer text (in-memory)
 
 // ── 동네 데이터
 const DONGS=[
@@ -5014,17 +4941,6 @@ const DONGS=[
   {id:'d3457',name:'색달동',gu:'서귀포시',city:'제주',count:135},
 ];
 const GPS_GUESS=DONGS.find(function(d){return d.name==='연남동'&&d.gu==='마포구';})||DONGS[0]; // 드리프트 배너 기본 추정 위치
-const SEED_ANSWER_DATA={
-  sq1:[{author:'연남맘',lv:2,text:'저희는 6개월 대기했어요. 지역마다 다르고 연령별 차이도 있더라고요.',createdAt:Date.now()-86400e3*30},{author:'두아이아빠',lv:1,text:'첫째 때 3개월, 둘째 때 8개월 기다렸어요. 신청 시기가 정말 중요해요.',createdAt:Date.now()-86400e3*15}],
-  sq2:[{author:'라온맘',lv:2,text:'2주 적응 기간이었는데 처음엔 울다가 끝날 때쯤 씩씩하게 들어가더라고요.',createdAt:Date.now()-86400e3*20}],
-  sq3:[{author:'세아맘',lv:2,text:'원복은 원에서 지정한 곳에서 단체 구매했어요. 여벌 옷 3~4벌은 꼭 준비하세요.',createdAt:Date.now()-86400e3*10},{author:'햇살맘',lv:1,text:'가방은 아이가 혼자 열 수 있는 걸로, 신발도 벨크로 추천해요. 이름표 필수!',createdAt:Date.now()-86400e3*5},{author:'다은이아빠',lv:2,text:'첫날 일찍 데리러 갈 수 있도록 일정 조정했어요. 선생님이 적응 사진 보내줘서 안심됐어요.',createdAt:Date.now()-86400e3*3}],
-  sq5:[{author:'민준맘',lv:2,text:'급식이 정말 다양해요. 편식 있던 아이가 여기 다니면서 많이 나아졌어요.',createdAt:Date.now()-86400e3*25},{author:'서윤맘',lv:1,text:'식단표가 앱으로 매주 올라와요. 알레르기 대체도 잘 해줘요.',createdAt:Date.now()-86400e3*12}],
-  sq6:[{author:'라온맘',lv:2,text:'알림장 앱 쓰는데 하루 일과 사진이랑 메시지 매일 와서 정말 좋아요.',createdAt:Date.now()-86400e3*18}],
-  sq7:[{author:'햇살맘',lv:2,text:'월 1회 요리 수업, 분기별 생일 파티, 계절 행사 꽤 다양해요. 참관 수업도 있어요.',createdAt:Date.now()-86400e3*22},{author:'세아맘',lv:1,text:'체육 수업도 주 2회 있어요. 아이가 무척 즐거워해요.',createdAt:Date.now()-86400e3*8},{author:'두아이아빠',lv:2,text:'현장학습이 분기에 한 번씩 있는데 항상 안전하게 진행돼요.',createdAt:Date.now()-86400e3*4},{author:'다은이아빠',lv:1,text:'영어 특별 수업도 있어요. 원비에 포함이라 따로 비용 없이 이용해요.',createdAt:Date.now()-86400e3*2}],
-  sq8:[{author:'연남맘',lv:2,text:'연장보육 신청해서 6시까지 이용했어요. 담당 선생님이 별도로 계세요.',createdAt:Date.now()-86400e3*35}],
-  sq9:[{author:'민준맘',lv:2,text:'길 건너 소아과 강추해요. 원 소식지에 단골 병원 목록도 있어요.',createdAt:Date.now()-86400e3*40},{author:'서윤맘',lv:1,text:'근처 약국이 두 군데인데 원 옆 약국이 소아약 재고가 항상 있어서 편해요.',createdAt:Date.now()-86400e3*20},{author:'라온맘',lv:2,text:'파란하늘 소아과가 대기가 짧아서 자주 이용했어요.',createdAt:Date.now()-86400e3*10}],
-  sq10:[{author:'세아맘',lv:2,text:'선생님들의 세심한 케어요. 아이 하루하루 변화를 놓치지 않고 공유해줘요.',createdAt:Date.now()-86400e3*15},{author:'햇살맘',lv:1,text:'안전 관리가 철저한 거요. CCTV 확인도 항상 가능하고 외부인 출입도 꼼꼼해요.',createdAt:Date.now()-86400e3*7}],
-};
 let rwScores=[5,5,4,4,5,5],rwInstId=null;
 const POSTS=[
   {id:'p1', cat:'입소 Q&A', title:'0세반 지금 신청하면 대기 몇 번이에요?',
@@ -6169,7 +6085,7 @@ function renderDetail(d){
       <div class="detail-tabs">
         <button class="dtab on" id="dt-info" onclick="switchDTab('info')">정보</button>
         <button class="dtab" id="dt-review" onclick="switchDTab('review')">리뷰</button>
-        <button class="dtab" id="dt-comm" onclick="switchDTab('comm')">묻고 답하기 <span style="font-size:11px;font-weight:800;color:var(--blue);margin-left:1px;">${POSTS.filter(p=>p.instId===d.id).length+SEED_QUESTIONS.length}</span></button>
+        <button class="dtab" id="dt-comm" onclick="switchDTab('comm')">묻고 답하기 <span style="font-size:11px;font-weight:800;color:var(--blue);margin-left:1px;">${POSTS.filter(p=>p.instId===d.id).length}</span></button>
       </div>
       <div class="detail-scroll">
         <div class="detail-pad" id="dp-info">
@@ -6266,7 +6182,7 @@ function renderDetail(d){
         </div>
         <div id="dp-comm" style="display:none;position:relative;">
           <!-- 부모 등록 질문 섹션 -->
-          <div style="border-bottom:4px solid var(--bg-alt);">
+          <div>
             <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;">
               <div style="display:flex;align-items:center;gap:6px;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" style="color:var(--text-alt)"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v1h20v-1c0-3.343-6.686-5-10-5z" fill="currentColor"/></svg>
@@ -6274,18 +6190,8 @@ function renderDetail(d){
               </div>
               ${localStorage.getItem('aibom_user')?`<button onclick="goWrite('${d.id}')" style="background:var(--blue-weak);color:var(--blue);border:none;border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:700;font-family:var(--font);cursor:pointer;display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>질문하기</button>`:''}
             </div>
-            <div id="inst-posts-${d.id}">
+            <div id="inst-posts-${d.id}" style="padding-bottom:90px;">
               ${renderInstPostCards(d.id)}
-            </div>
-          </div>
-          <!-- 씨앗 질문 섹션 -->
-          <div>
-            <div style="display:flex;align-items:center;gap:5px;padding:14px 16px 4px;">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" fill="#6BBF59"><path d="M12 2l1.8 7.2L22 12l-8.2 2.8L12 22l-1.8-7.2L2 12l8.2-2.8z"/></svg>
-              <span style="font-size:13px;font-weight:800;color:var(--text);">아이봄 씨앗 질문</span>
-            </div>
-            <div id="seed-list-${d.id}" style="padding-bottom:90px;">
-              ${renderSeedCards(d.id,'전체')}
             </div>
           </div>
         </div>
@@ -6501,26 +6407,6 @@ function renderMyCommunity(){
   }).join('');
 }
 
-// ── 씨앗 질문 렌더링 헬퍼
-function getCatClass(cat){
-  if(cat==='입소 Q&A')return 'c-qa';
-  if(cat==='생활 정보')return 'c-life';
-  if(cat==='나눔·공지'||cat==='나눔·생활')return 'c-share';
-  if(cat==='기타')return 'c-etc';
-  return 'c-share';
-}
-function seedCardHTML(instId,s,instAnswers){
-  const myAns=instAnswers[s.id];
-  const totalAns=s.answers+(myAns?1:0);
-  return `<div class="seed-card" onclick="openSeedDetail('${instId}','${s.id}')">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
-      <span class="seed-card-cat ${getCatClass(s.cat)}">${s.cat}</span>
-      <span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:var(--text-alt);background:transparent;padding:3px 0;letter-spacing:-0.2px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="11" height="11" fill="#6BBF59"><path d="M12 2l1.8 7.2L22 12l-8.2 2.8L12 22l-1.8-7.2L2 12l8.2-2.8z"/></svg>씨앗질문</span>
-    </div>
-    <div class="seed-card-q">${s.q}</div>
-    <div class="seed-card-ans${myAns?' has-ans':''}">${myAns?'내 답변: '+myAns.substring(0,30)+'…':(totalAns>0?`답변 ${totalAns}개`:'아직 답변이 없어요. 첫 답변을 남겨보세요.')}</div>
-  </div>`;
-}
 function renderInstPostCards(instId){
   const posts=POSTS.filter(p=>p.instId===instId).sort((a,b)=>b.createdAt-a.createdAt);
   if(!posts.length)return `<div style="padding:16px 16px 4px;font-size:13px;color:var(--text-assist);text-align:center;">아직 등록된 질문이 없어요</div>`;
@@ -6545,75 +6431,6 @@ function renderInstPostCards(instId){
   }).join('');
 }
 
-function renderSeedCards(instId,cat){
-  const instAnswers=SEED_ANSWERS[instId]||{};
-  const isGuest=!localStorage.getItem('aibom_user');
-  const seeds=cat!=='전체'?SEED_QUESTIONS.filter(s=>s.cat===cat):SEED_QUESTIONS;
-  const answered=seeds.filter(s=>(s.answers+(instAnswers[s.id]?1:0))>0);
-  const unanswered=seeds.filter(s=>(s.answers+(instAnswers[s.id]?1:0))===0);
-
-  const seedListItemHTML=s=>{
-    const myAns=instAnswers[s.id];
-    const total=s.answers+(myAns?1:0);
-    return `<div class="seed-list-item" onclick="openSeedDetail('${instId}','${s.id}')">
-      <div style="flex:1;min-width:0;">
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px;">
-          <span style="display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;color:#6BBF59;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="9" height="9" fill="#6BBF59"><path d="M12 2l1.8 7.2L22 12l-8.2 2.8L12 22l-1.8-7.2L2 12l8.2-2.8z"/></svg>씨앗질문</span>
-          <span class="seed-card-cat ${getCatClass(s.cat)}">${s.cat}</span>
-        </div>
-        <div style="font-size:14px;font-weight:600;color:var(--text);line-height:1.4;">${s.q}</div>
-        ${myAns?`<div style="margin-top:5px;font-size:12px;color:var(--blue);font-weight:600;">내 답변 있음</div>`:''}
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
-        <span style="font-size:12px;color:var(--text-alt);font-weight:600;white-space:nowrap;">답변 ${total}개</span>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" style="color:var(--text-assist)"><path d="M8.464 5.536a.9.9 0 0 1 1.272 0l5.9 5.9a.9.9 0 0 1 0 1.272l-5.9 5.9a.9.9 0 0 1-1.272-1.272L13.728 12 8.464 6.808a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg>
-      </div>
-    </div>`;
-  };
-
-  const waitingRows=unanswered.map(s=>`
-    <div class="seed-waiting-row" onclick="openSeedDetail('${instId}','${s.id}')">
-      <div class="seed-waiting-q">${s.q}</div>
-      <span class="seed-card-cat ${getCatClass(s.cat)}" style="flex-shrink:0;">${s.cat}</span>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13" style="color:var(--text-assist);flex-shrink:0;"><path d="M8.464 5.536a.9.9 0 0 1 1.272 0l5.9 5.9a.9.9 0 0 1 0 1.272l-5.9 5.9a.9.9 0 0 1-1.272-1.272L13.728 12 8.464 6.808a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg>
-    </div>`).join('');
-
-  const unansweredBlock=unanswered.length?`
-    <button class="seed-toggle-btn" id="seed-toggle-${instId}" onclick="toggleSeedWaiting('${instId}')">
-      <span>답변을 기다리는 씨앗 질문 ${unanswered.length}개</span>
-      <svg id="seed-toggle-ico-${instId}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" style="transition:transform .2s;flex-shrink:0;"><path d="M5.536 8.464a.9.9 0 0 1 1.272 0L12 13.656l5.192-5.192a.9.9 0 0 1 1.272 1.272l-5.828 5.828a.9.9 0 0 1-1.272 0L5.536 9.736a.9.9 0 0 1 0-1.272z" fill="currentColor"/></svg>
-    </button>
-    <div id="seed-waiting-${instId}" style="display:none;">${waitingRows}</div>`:''
-
-  if(isGuest && seeds.length>1){
-    const firstHTML=answered.length?seedListItemHTML(answered[0]):(waitingRows?`<div class="seed-waiting-row">${unanswered[0]?.q||''}</div>`:'');
-    const restHTML=answered.slice(1).map(seedListItemHTML).join('')+unansweredBlock;
-    return firstHTML+`
-      <div style="position:relative;overflow:hidden;">
-        <div style="filter:blur(5px);pointer-events:none;user-select:none;max-height:140px;overflow:hidden;">${restHTML}</div>
-        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.85) 50%,#fff 75%);"></div>
-      </div>
-      ${guestLoginWallHTML('답변 전체를 보려면 로그인하세요','재원 인증 부모들의 실제 경험담을 모두 볼 수 있어요')}`;
-  }
-
-  return answered.map(seedListItemHTML).join('')+unansweredBlock;
-}
-function filterSeeds(instId,cat,el){
-  if(el){
-    document.querySelectorAll(`#seed-cats-${instId} .fchip`).forEach(c=>c.classList.remove('on'));
-    el.classList.add('on');
-  }
-  const list=document.getElementById(`seed-list-${instId}`);
-  if(list)list.innerHTML=renderSeedCards(instId,cat);
-}
-function toggleSeedWaiting(instId){
-  const el=document.getElementById('seed-waiting-'+instId);
-  const ico=document.getElementById('seed-toggle-ico-'+instId);
-  if(!el)return;
-  const open=el.style.display==='none';
-  el.style.display=open?'':'none';
-  if(ico)ico.style.transform=open?'rotate(180deg)':'rotate(0deg)';
-}
 function renderReviewReqBanner(d){
   // 리뷰 0개 기관에만 노출 (리뷰 탭에 배치), 클릭 시 리뷰 작성 페이지
   if(!localStorage.getItem('aibom_user'))return '';
@@ -6643,152 +6460,7 @@ function renderBadgeBanner(d){
   </div>`;
 }
 
-// ── ComposeSheet
-let _csInstId=null,_csSeedId=null;
-// ── 씨앗질문 상세
-let _sdInstId=null,_sdSeedId=null;
 
-function openSeedDetail(instId,seedId){
-  _sdInstId=instId;_sdSeedId=seedId;
-  renderSeedDetail();
-  showScreen('seed-detail');
-}
-
-function renderSeedDetail(){
-  const el=document.getElementById('seed-detail-scroll');
-  if(!el)return;
-  const seed=SEED_QUESTIONS.find(s=>s.id===_sdSeedId);
-  if(!seed)return;
-  const inst=_sdInstId?DATA.find(x=>x.id===_sdInstId):null;
-  const instAnswers=SEED_ANSWERS[_sdInstId]||{};
-  const myAns=instAnswers[_sdSeedId];
-  const sampleAnswers=SEED_ANSWER_DATA[_sdSeedId]||[];
-  const u=JSON.parse(localStorage.getItem('aibom_user')||'null');
-  const allAnswers=[...sampleAnswers,...(myAns?[{author:u?.nickname||'나',lv:1,text:myAns,createdAt:Date.now()-1000,isMe:true}]:[])];
-  let _seedHelpful=false;
-
-  const instInfoHTML=inst
-    ?'<div onclick="goDetail(\''+inst.id+'\')" class="post-inst-chip" style="margin-bottom:14px;display:inline-flex;">'
-      +'<svg viewBox="0 0 24 24" width="12" height="12" fill="none" style="margin-right:4px;flex-shrink:0;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z" fill="currentColor"/></svg>'
-      +inst.name+' · <span style="font-weight:400;opacity:.7;">'+inst.type+'</span>'
-      +'</div>'
-    :'';
-
-  el.innerHTML=
-    '<div style="padding:16px 16px 14px;">'
-    +instInfoHTML
-    +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">'
-    +'<span class="seed-card-cat '+getCatClass(seed.cat)+'">'+seed.cat+'</span>'
-    +'<span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;color:#6BBF59;letter-spacing:-0.1px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="10" height="10" fill="#6BBF59"><path d="M12 2l1.8 7.2L22 12l-8.2 2.8L12 22l-1.8-7.2L2 12l8.2-2.8z"/></svg>씨앗질문</span>'
-    +'</div>'
-    +'<div class="post-title" style="font-size:18px;">'+seed.q+'</div>'
-    +'<div style="font-size:12px;color:var(--text-assist);margin-bottom:14px;line-height:1.6;">아이봄이 미리 심은 질문이에요. 재원 인증 부모님들이 답변해요.</div>'
-    +'<div style="display:flex;align-items:center;gap:8px;">'
-    +'<button id="seed-helpful-btn" onclick="toggleSeedHelpful()" class="post-act-btn" style="flex:none;display:inline-flex;align-items:center;gap:5px;padding:10px 16px;font-size:13.5px;">'
-    +'<svg viewBox="0 0 24 24" width="15" height="15" fill="none"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    +'도움돼요'
-    +'</button>'
-    +'<span style="font-size:12px;color:var(--text-assist);">답변 '+allAnswers.length+'개</span>'
-    +'</div>'
-    +'</div>'
-    +'<div style="border-top:4px solid var(--bg-alt);">'
-    +'<div class="comment-head" style="padding:14px 16px 4px;border-top:none;">답변 '+allAnswers.length+'</div>'
-    +'<div class="comment-list" style="padding:0 16px 100px;">'
-    +(allAnswers.length
-      ? allAnswers.map(a=>
-          '<div class="comment-item">'
-          +'<div class="comment-top">'
-          +'<div class="avatar" style="width:24px;height:24px;font-size:11px;background:'+AV_COLORS[a.author.charCodeAt(0)%AV_COLORS.length]+'">'+a.author[0]+'</div>'
-          +'<span class="comment-name">'+a.author+'</span>'
-          +(a.lv?'<span class="vbadge '+(a.lv===2?'v2':'v1')+'">'+(a.lv===2?'카드인증':'재원확인')+'</span>':'')
-          +(a.isMe?'<span style="font-size:11px;color:var(--blue);margin-left:2px;font-weight:700;">내 답변</span>':'')
-          +'<span class="comment-time">'+relTime(a.createdAt)+'</span>'
-          +'</div>'
-          +'<div class="comment-text">'+a.text+'</div>'
-          +'</div>'
-        ).join('')
-      :'<div class="empty" style="padding:28px 20px"><div class="empty-txt">아직 답변이 없어요. 첫 답변을 남겨보세요!</div></div>')
-    +'</div></div>';
-
-  const bar=document.getElementById('seed-answer-bar');
-  const isGuest=!localStorage.getItem('aibom_user');
-  if(bar){
-    if(isGuest){
-      bar.innerHTML=
-        '<input class="comment-input" placeholder="로그인하고 답변을 남겨보세요" disabled style="cursor:pointer;" onclick="showLoginWallSheet(\'답변을 작성하려면 로그인이 필요해요\',\'로그인하면 씨앗질문에 답변할 수 있어요\')">'
-        +'<button onclick="showLoginWallSheet(\'답변을 작성하려면 로그인이 필요해요\',\'로그인하면 씨앗질문에 답변할 수 있어요\')" style="width:44px;height:44px;background:var(--blue);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
-        +'<svg viewBox="0 0 24 24" width="20" height="20" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#fff" stroke-width="1.7"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></button>';
-    } else if(myAns){
-      bar.innerHTML='<span style="flex:1;font-size:13px;color:var(--text-alt);padding:10px 14px;background:var(--bg-alt);border-radius:12px;text-align:center;">내 답변이 등록됐어요</span>';
-    } else {
-      bar.innerHTML=
-        '<input class="comment-input" id="seed-answer-input" placeholder="재원 경험을 바탕으로 답해주세요" onkeydown="if(event.key===\'Enter\')submitSeedAnswer()">'
-        +'<button class="comment-send comment-send-icon" onclick="submitSeedAnswer()" aria-label="등록"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.946 17.946" width="18" height="18" fill="currentColor"><path d="M12.889.868c1.157-1.157 3.032-1.157 4.189 0s1.157 3.032 0 4.189L4.453 17.682a.9.9 0 0 1-.636.264H.9a.9.9 0 0 1-.9-.9v-2.917a.9.9 0 0 1 .264-.636L12.889.868zM15.805 2.14c-.454-.453-1.19-.453-1.644 0L1.8 14.502v1.644h1.644L15.805 3.784c.454-.454.454-1.19 0-1.644z" fill-rule="evenodd"/></svg></button>';
-    }
-  }
-}
-function toggleSeedHelpful(){
-  if(!localStorage.getItem('aibom_user')){showLoginWallSheet('도움돼요는 로그인이 필요해요','로그인하면 유용한 질문에 공감을 남길 수 있어요');return;}
-  const btn=document.getElementById('seed-helpful-btn');
-  if(!btn)return;
-  const on=btn.dataset.on==='1';
-  btn.dataset.on=on?'0':'1';
-  btn.style.background=on?'var(--bg-alt)':'var(--blue-weak)';
-  btn.style.color=on?'var(--text-alt)':'var(--blue)';
-  btn.style.borderColor=on?'var(--line)':'var(--blue)';
-  showToast(on?'도움돼요를 취소했어요':'도움돼요를 눌렀어요');
-}
-function openSeedActionSheet(){
-  showToast('신고 기능은 준비 중이에요');
-}
-
-function submitSeedAnswer(){
-  const input=document.getElementById('seed-answer-input');
-  if(!input)return;
-  const text=input.value.trim();
-  if(text.length<5){showToast('5자 이상 입력해주세요');return;}
-  if(!SEED_ANSWERS[_sdInstId])SEED_ANSWERS[_sdInstId]={};
-  SEED_ANSWERS[_sdInstId][_sdSeedId]=text;
-  showToast('답변이 등록됐어요!');
-  renderSeedDetail();
-  filterSeeds(_sdInstId,'전체',null);
-}
-
-function openCompose(instId,seedId){
-  if(!localStorage.getItem('aibom_user')){
-    showLoginWallSheet('답변을 작성하려면 로그인이 필요해요','재원 인증 부모만 답변을 작성할 수 있어요');
-    return;
-  }
-  const seed=SEED_QUESTIONS.find(s=>s.id===seedId);
-  const inst=DATA.find(d=>d.id===instId)||filtered.find(d=>d.id===instId);
-  _csInstId=instId;_csSeedId=seedId;
-  document.getElementById('cs-inst-name').textContent=inst?inst.name:'기관';
-  document.getElementById('cs-seed-q').textContent=seed?seed.q:'';
-  document.getElementById('cs-textarea').value='';
-  document.getElementById('cs-char-cnt').textContent='0';
-  document.getElementById('cs-submit').disabled=true;
-  document.getElementById('compose-backdrop').style.display='block';
-  setTimeout(()=>document.getElementById('compose-sheet').classList.add('open'),10);
-}
-function closeCompose(){
-  document.getElementById('compose-sheet').classList.remove('open');
-  setTimeout(()=>{document.getElementById('compose-backdrop').style.display='none';},320);
-}
-function onCsInput(){
-  const v=document.getElementById('cs-textarea').value;
-  document.getElementById('cs-char-cnt').textContent=v.length;
-  document.getElementById('cs-submit').disabled=v.trim().length<5;
-}
-function submitCompose(){
-  const text=document.getElementById('cs-textarea').value.trim();
-  if(text.length<5)return;
-  if(!SEED_ANSWERS[_csInstId])SEED_ANSWERS[_csInstId]={};
-  SEED_ANSWERS[_csInstId][_csSeedId]=text;
-  closeCompose();
-  showToast('답변이 등록됐어요!');
-  // 씨앗 목록 새로고침
-  filterSeeds(_csInstId,'전체',null);
-}
 
 // ── NudgeSheet
 const _nudgedInsts=new Set();   // 세션 내 넛지 중복 방지
