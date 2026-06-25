@@ -884,7 +884,7 @@ html,body{
   <div class="screen hidden" id="scr-post">
     <div class="post-header">
       <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26"><path d="M15.536 4.464a.9.9 0 0 1 0 1.272L9.272 12l6.264 6.264a.9.9 0 1 1-1.272 1.272l-6.9-6.9a.9.9 0 0 1 0-1.272l6.9-6.9a.9.9 0 0 1 1.272 0z" fill="currentColor"/></svg></button>
-      <span class="detail-htitle" style="font-size:16px">커뮤니티</span>
+      <span class="detail-htitle" id="post-header-title" style="font-size:16px">커뮤니티</span>
     </div>
     <div class="post-scroll" id="post-scroll"></div>
     <div class="comment-bar" id="comment-bar">
@@ -5029,7 +5029,7 @@ let rwScores=[5,5,4,4,5,5],rwInstId=null;
 const POSTS=[
   {id:'p1', cat:'입소 Q&A', title:'0세반 지금 신청하면 대기 몇 번이에요?',
    body:'이번 달에 입소 신청했는데 0세반 대기 순번이 어느 정도일지 궁금해요. 비슷한 시기 신청하신 분 계실까요? 보통 몇 달 정도 기다리는지도 알려주시면 감사해요.',
-   author:'연남동 학부모', lv:1, instId:'a', createdAt:Date.now()-3600e3,
+   author:'연남동 학부모', lv:1, instId:'a', instName:'연남숲어린이집', instType:'국공립', createdAt:Date.now()-3600e3,
    views:42, likes:5, liked:false,
    comments:[
      {author:'둘째맘', lv:2, text:'저희는 3월 신청해서 4번이었어요! 9월쯤 연락 받았습니다.', createdAt:Date.now()-1800e3},
@@ -5048,7 +5048,7 @@ const POSTS=[
    views:31, likes:3, liked:false, comments:[]},
   {id:'p4', cat:'입소 Q&A', title:'1세반 적응기간 어떻게 하셨나요?',
    body:'이번 달에 1세반 입소 예정인데, 적응 기간 동안 아이가 많이 울면 어떻게 해야 할까요? 선생님께 연락은 얼마나 자주 해도 되는 건지도 궁금해요.',
-   author:'첫맘', lv:0, instId:'a', createdAt:Date.now()-10800e3,
+   author:'첫맘', lv:0, instId:'a', instName:'연남숲어린이집', instType:'국공립', createdAt:Date.now()-10800e3,
    views:56, likes:8, liked:false,
    comments:[{author:'세아맘', lv:2, text:'처음엔 다들 그래요. 1~2주 지나면 적응돼요!', createdAt:Date.now()-7200e3}]},
   {id:'p5', cat:'생활 정보', title:'특별활동 어떤 거 선택하셨어요?',
@@ -6169,7 +6169,7 @@ function renderDetail(d){
       <div class="detail-tabs">
         <button class="dtab on" id="dt-info" onclick="switchDTab('info')">정보</button>
         <button class="dtab" id="dt-review" onclick="switchDTab('review')">리뷰</button>
-        <button class="dtab" id="dt-comm" onclick="switchDTab('comm')">묻고 답하기 ${POSTS.filter(p=>p.instId===d.id).length+SEED_QUESTIONS.length}</button>
+        <button class="dtab" id="dt-comm" onclick="switchDTab('comm')">묻고 답하기 <span style="font-size:11px;font-weight:800;color:var(--blue);margin-left:1px;">${POSTS.filter(p=>p.instId===d.id).length+SEED_QUESTIONS.length}</span></button>
       </div>
       <div class="detail-scroll">
         <div class="detail-pad" id="dp-info">
@@ -7121,30 +7121,52 @@ function goPost(id){
 }
 
 function renderPost(p){
-  const inst=p.instId?DATA.find(x=>x.id===p.instId):null;
+  const instData=p.instId?DATA.find(x=>x.id===p.instId):null;
+  const inst=instData||( p.instName?{id:p.instId,name:p.instName,type:p.instType||''}:null );
   const el=document.getElementById('post-scroll');
+  const isNew=Date.now()-p.createdAt<86400000;
+  const hue=inst?(HUES[inst.type]||210):210;
+
+  // 헤더 타이틀을 카테고리명으로
+  const hdrTitle=document.getElementById('post-header-title');
+  if(hdrTitle) hdrTitle.textContent=p.cat;
+
   el.innerHTML=`
-    ${inst?`<div class="post-inst-chip" onclick="goDetail('${inst.id}')">${svgSpan('pin','var(--blue)',12)} ${inst.name}</div>`:''}
-    <div class="post-cat" style="margin-top:${inst?'12px':'0'}"><span class="cat-badge ${CAT_BADGE[p.cat]}">${p.cat}</span></div>
-    <div class="post-title">${p.title}</div>
-    <div class="post-author">
-      <div class="avatar" style="background:${AV_COLORS[p.author.charCodeAt(0)%AV_COLORS.length]}">${p.author[0]}</div>
-      <span class="post-author-name">${p.author}</span>
-      ${p.lv?`<span class="vbadge ${p.lv===2?'v2':'v1'}">${p.lv===2?'카드인증':'재원확인'}</span>`:''}
-      <span class="post-author-time">${relTime(p.createdAt)}</span>
+    ${inst?`
+    <div onclick="goDetail('${inst.id}')" style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line-soft);cursor:pointer;">
+      <div style="width:36px;height:36px;border-radius:10px;background:hsl(${hue} 52% 92%);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        ${SVG[HERO_ICONS[inst.type]||'heroGongl'](18)}
+      </div>
+      <div style="min-width:0;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${inst.name} <span style="font-weight:500;color:var(--text-alt);">· ${inst.type}</span></div>
+        <div style="font-size:11.5px;color:var(--text-assist);margin-top:1px;">이 기관 커뮤니티 · 부모 등록 질문</div>
+      </div>
+    </div>`:''}
+    <div style="padding:16px 16px 0;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+        <span class="cat-badge ${CAT_BADGE[p.cat]}">${p.cat}</span>
+        ${isNew?'<span class="badge-new">NEW</span>':''}
+      </div>
+      <div class="post-title">${p.title}</div>
+      <div class="post-author">
+        <span class="post-author-name">${p.author}</span>
+        ${p.lv?`<span class="vbadge ${p.lv===2?'v2':'v1'}">${p.lv===2?'카드인증':'재원확인'}</span>`:''}
+        <span class="post-author-time">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" style="margin-right:2px;vertical-align:middle;"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>${relTime(p.createdAt)}</span>
+      </div>
+      <div class="post-body">${p.body}</div>
+      <div class="post-stats">
+        <span class="ps-item">${svgSpan('eye','var(--text-alt)',15)} 조회 ${p.views}</span>
+        <span class="ps-item">${svgSpan('heart','var(--text-alt)',14)} ${p.likes}</span>
+        <span class="ps-item">${svgSpan('chat','var(--text-alt)',14)} ${p.comments.length}</span>
+      </div>
+      <div class="post-actions">
+        <button class="post-act-btn${p.liked?' liked':''}" onclick="toggleLike('${p.id}')">${p.liked?svgSpan('heart','var(--red)',16):svgSpan('heartOutline','var(--text-alt)',16)} 좋아요 ${p.likes}</button>
+        <button class="post-act-btn" onclick="showToast('링크가 복사되었어요')">${svgSpan('share','var(--text)',15)} 공유</button>
+      </div>
     </div>
-    <div class="post-body">${p.body}</div>
-    <div class="post-stats">
-      <span class="ps-item">${svgSpan('eye','var(--text-alt)',15)} 조회 ${p.views}</span>
-      <span class="ps-item">${svgSpan('heart','var(--text-alt)',14)} ${p.likes}</span>
-      <span class="ps-item">${svgSpan('chat','var(--text-alt)',14)} ${p.comments.length}</span>
-    </div>
-    <div class="post-actions">
-      <button class="post-act-btn${p.liked?' liked':''}" onclick="toggleLike('${p.id}')">${p.liked?svgSpan('heart','var(--red)',16):svgSpan('heartOutline','var(--text-alt)',16)} 좋아요 ${p.likes}</button>
-      <button class="post-act-btn" onclick="showToast('링크가 복사되었어요')">${svgSpan('share','var(--text)',15)} 공유</button>
-    </div>
-    <div class="comment-head">댓글 ${p.comments.length}</div>
-    <div class="comment-list" id="comment-list">
+    <div class="comment-head" style="margin:0 16px;">답변 ${p.comments.length}</div>
+    <div class="comment-list" id="comment-list" style="padding:0 16px 14px;">
       ${p.comments.length?p.comments.map(c=>`
         <div class="comment-item">
           <div class="comment-top">
@@ -7155,19 +7177,24 @@ function renderPost(p){
           </div>
           <div class="comment-text">${c.text}</div>
         </div>
-      `).join(''):`<div class="empty" style="padding:28px 20px"><div class="empty-txt">첫 댓글을 남겨보세요</div></div>`}
+      `).join(''):`
+        <div style="padding:36px 0;text-align:center;">
+          <svg viewBox="0 0 24 24" width="40" height="40" fill="none" style="color:var(--line);margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div style="font-size:14px;font-weight:700;color:var(--text-alt);margin-bottom:5px;">아직 답변이 없어요</div>
+          <div style="font-size:12.5px;color:var(--text-assist);line-height:1.6;">재원 부모님의 첫 답변이 다른<br>예비 부모에게 큰 도움이 돼요.</div>
+        </div>`}
     </div>
   `;
-  // 게스트: 댓글 입력창 비활성화
+  // 게스트: 답변 입력창 비활성화
   const isGuest=!localStorage.getItem('aibom_user');
   const bar=document.getElementById('comment-bar');
   if(bar){
     bar.innerHTML=isGuest
-      ?`<input class="comment-input" placeholder="로그인하고 댓글을 남겨보세요" disabled style="cursor:pointer;color:var(--text-assist);" onclick="showLoginWallSheet('댓글을 작성하려면 로그인이 필요해요','로그인하면 커뮤니티에 댓글을 남길 수 있어요')">
-         <button onclick="showLoginWallSheet('댓글을 작성하려면 로그인이 필요해요','로그인하면 커뮤니티에 댓글을 남길 수 있어요')" style="width:44px;height:44px;background:var(--blue);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+      ?`<input class="comment-input" placeholder="로그인하고 답변을 남겨보세요" disabled style="cursor:pointer;color:var(--text-assist);" onclick="showLoginWallSheet('답변을 작성하려면 로그인이 필요해요','로그인하면 커뮤니티에 답변을 남길 수 있어요')">
+         <button onclick="showLoginWallSheet('답변을 작성하려면 로그인이 필요해요','로그인하면 커뮤니티에 답변을 남길 수 있어요')" style="width:44px;height:44px;background:var(--blue);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
            <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#fff" stroke-width="1.7"/><path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg>
          </button>`
-      :`<input class="comment-input" id="comment-input" placeholder="댓글을 입력하세요" onkeydown="if(event.key==='Enter')addComment()">
+      :`<input class="comment-input" id="comment-input" placeholder="답변을 입력하세요" onkeydown="if(event.key==='Enter')addComment()">
          <button class="comment-send" onclick="addComment()">등록</button>`;
   }
 }
