@@ -6230,6 +6230,10 @@ function toggleFav(id){
     savedList.delete(id);
     showToast('관심 기관에서 제거했어요');
   } else {
+    if(savedList.size>=10){
+      showToast('관심 기관은 최대 10개까지 저장할 수 있어요');
+      return;
+    }
     savedList.add(id);
     showToast('관심 기관에 추가했어요');
   }
@@ -6276,35 +6280,30 @@ function renderSaved(){
     </div>`;
     return;
   }
+  const catColor=c=>({'입소 Q&A':'#0066FF','생활 정보':'#00A36B','나눔·공지':'#FF9200'}[c]||'#0066FF');
+  const savedPostItemHTML=(p,i,borderBottom)=>{
+    const inst=DATA.find(d=>d.id===p.instId);
+    if(!inst)return '';
+    const hue=HUES[inst.type]||210;
+    const cc=catColor(p.cat);
+    return `<button onclick="goPost('${p.id}')" style="width:100%;display:flex;align-items:center;gap:11px;padding:12px 14px;background:none;border:none;${borderBottom?'border-bottom:1px solid var(--line-soft);':''}cursor:pointer;font-family:var(--font);text-align:left;box-sizing:border-box;">
+      <div style="position:relative;flex-shrink:0;">
+        <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:flex;align-items:center;justify-content:center;color:#fff;">${SVG[HERO_ICONS[inst.type]||'heroGongl'](17)}</div>
+        <div style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.18);"><span style="color:${cc};display:inline-flex;">${SVG.chat(11)}</span></div>
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:12px;color:var(--text-alt);">${inst.name}</div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-top:2px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;">${p.title}</div>
+      </div>
+      <span style="font-size:11px;color:var(--text-assist);flex-shrink:0;white-space:nowrap;">${relTime(p.createdAt)}</span>
+    </button>`;
+  };
+
   let html='<div style="padding:12px 0 calc(var(--nav-h)+24px);">';
-  // 새 소식
-  const savedPosts=POSTS.filter(p=>p.instId&&savedList.has(p.instId)).sort((a,b)=>b.createdAt-a.createdAt);
-  if(savedPosts.length){
-    const catColor=c=>({'입소 Q&A':'#0066FF','생활 정보':'#00A36B','나눔·공지':'#FF9200'}[c]||'#0066FF');
-    html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin:2px 16px 10px;">새 소식</div>`;
-    html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px 0;margin:0 16px 18px;">`;
-    savedPosts.forEach((p,i)=>{
-      const inst=DATA.find(d=>d.id===p.instId);
-      if(!inst)return;
-      const hue=HUES[inst.type]||210;
-      const cc=catColor(p.cat);
-      html+=`<button onclick="goPost('${p.id}')" style="width:100%;display:flex;align-items:center;gap:11px;padding:12px 14px;background:none;border:none;${i<savedPosts.length-1?'border-bottom:1px solid var(--line-soft);':''}cursor:pointer;font-family:var(--font);text-align:left;box-sizing:border-box;">
-        <div style="position:relative;flex-shrink:0;">
-          <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:flex;align-items:center;justify-content:center;color:#fff;">${SVG[HERO_ICONS[inst.type]||'heroGongl'](17)}</div>
-          <div style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.18);"><span style="color:${cc};display:inline-flex;">${SVG.chat(11)}</span></div>
-        </div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:12px;color:var(--text-alt);">${inst.name}</div>
-          <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-top:2px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;">${p.title}</div>
-        </div>
-        <span style="font-size:11px;color:var(--text-assist);flex-shrink:0;white-space:nowrap;">${relTime(p.createdAt)}</span>
-      </button>`;
-    });
-    html+=`</div>`;
-  }
-  // 관심 기관 목록
+
+  // 관심 기관 목록 (최대 10개 — 제한은 toggleFav에서 처리)
   html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin:0 16px 10px;">관심 기관 <span style="color:var(--blue);">${items.length}</span></div>`;
-  html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);margin:0 16px;">`;
+  html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);margin:0 16px 20px;">`;
   items.forEach((d,i)=>{
     const hue=HUES[d.type]||210;
     const tc=TC[d.type]||'#999';
@@ -6326,7 +6325,31 @@ function renderSaved(){
       <button onclick="toggleFav('${d.id}')" style="width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--blue);flex-shrink:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="22" height="22"><path d="M4.065 0C3.535 0 3.084 0 2.713.03c-.39.032-.768.102-1.13.286C1.038.594.594 1.038.316 1.583.132 1.945.062 2.324.03 2.713 0 3.084 0 3.535 0 4.065L0 18.9c0 .325.175.625.459.784.283.16.63.154.908-.015L7.9 15.703l6.533 3.966c.278.169.625.175.908.015.284-.16.459-.46.459-.784L15.8 4.065c0-.53 0-.981-.03-1.352-.032-.39-.102-.768-.286-1.13C15.206 1.038 14.762.594 14.217.316 13.855.132 13.476.062 13.087.03 12.716 0 12.265 0 11.735 0H4.065z" fill="currentColor"/></svg></button>
     </div>`;
   });
-  html+=`</div></div>`;
+  html+=`</div>`;
+
+  // 새 소식 (5개 노출 + 더보기 인라인 펼치기)
+  const savedPosts=POSTS.filter(p=>p.instId&&savedList.has(p.instId)).sort((a,b)=>b.createdAt-a.createdAt);
+  if(savedPosts.length){
+    const LIMIT=5;
+    const visible=savedPosts.slice(0,LIMIT);
+    const hidden=savedPosts.slice(LIMIT);
+    html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin:0 16px 10px;">새 소식</div>`;
+    html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px 0;margin:0 16px;">`;
+    visible.forEach((p,i)=>{
+      html+=savedPostItemHTML(p,i,i<visible.length-1||hidden.length>0);
+    });
+    if(hidden.length>0){
+      html+=`<div id="saved-news-more" style="display:none;">`;
+      hidden.forEach((p,i)=>{
+        html+=savedPostItemHTML(p,i,i<hidden.length-1);
+      });
+      html+=`</div>`;
+      html+=`<button onclick="document.getElementById('saved-news-more').style.display='';this.style.display='none';" style="width:100%;padding:12px 14px;background:none;border:none;border-top:1px solid var(--line-soft);font-size:13px;font-weight:700;color:var(--blue);font-family:var(--font);cursor:pointer;text-align:center;">더보기 (${hidden.length}개 더)</button>`;
+    }
+    html+=`</div>`;
+  }
+
+  html+=`</div>`;
   el.innerHTML=html;
 }
 
