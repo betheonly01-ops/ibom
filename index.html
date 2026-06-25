@@ -6084,7 +6084,7 @@ function renderDetail(d){
       </div>
       <div class="detail-tabs">
         <button class="dtab on" id="dt-info" onclick="switchDTab('info')">정보</button>
-        <button class="dtab" id="dt-review" onclick="switchDTab('review')">리뷰</button>
+        <button class="dtab" id="dt-review" onclick="switchDTab('review')">리뷰 <span style="font-size:11px;font-weight:800;color:var(--blue);margin-left:1px;">${d.reviews}</span></button>
         <button class="dtab" id="dt-comm" onclick="switchDTab('comm')">묻고 답하기 <span style="font-size:11px;font-weight:800;color:var(--blue);margin-left:1px;">${POSTS.filter(p=>p.instId===d.id).length}</span></button>
       </div>
       <div class="detail-scroll">
