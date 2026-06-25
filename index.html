@@ -6276,19 +6276,19 @@ function renderSaved(){
     </div>`;
     return;
   }
-  let html='<div style="padding:12px 16px calc(var(--nav-h)+24px);">';
+  let html='<div style="padding:12px 0 calc(var(--nav-h)+24px);">';
   // 새 소식
   const savedPosts=POSTS.filter(p=>p.instId&&savedList.has(p.instId)).sort((a,b)=>b.createdAt-a.createdAt);
   if(savedPosts.length){
     const catColor=c=>({'입소 Q&A':'#0066FF','생활 정보':'#00A36B','나눔·공지':'#FF9200'}[c]||'#0066FF');
-    html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin:2px 0 10px;">새 소식</div>`;
-    html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px;margin-bottom:18px;">`;
+    html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin:2px 16px 10px;">새 소식</div>`;
+    html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px 0;margin:0 16px 18px;">`;
     savedPosts.forEach((p,i)=>{
       const inst=DATA.find(d=>d.id===p.instId);
       if(!inst)return;
       const hue=HUES[inst.type]||210;
       const cc=catColor(p.cat);
-      html+=`<button onclick="goPost('${p.id}')" style="width:100%;display:flex;align-items:center;gap:11px;padding:12px;background:none;border:none;${i<savedPosts.length-1?'border-bottom:1px solid var(--line-soft);':''}cursor:pointer;font-family:var(--font);text-align:left;">
+      html+=`<button onclick="goPost('${p.id}')" style="width:100%;display:flex;align-items:center;gap:11px;padding:12px 14px;background:none;border:none;${i<savedPosts.length-1?'border-bottom:1px solid var(--line-soft);':''}cursor:pointer;font-family:var(--font);text-align:left;box-sizing:border-box;">
         <div style="position:relative;flex-shrink:0;">
           <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:flex;align-items:center;justify-content:center;color:#fff;">${SVG[HERO_ICONS[inst.type]||'heroGongl'](17)}</div>
           <div style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,0.18);"><span style="color:${cc};display:inline-flex;">${SVG.chat(11)}</span></div>
@@ -6303,27 +6303,27 @@ function renderSaved(){
     html+=`</div>`;
   }
   // 관심 기관 목록
-  html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:10px;">관심 기관 <span style="color:var(--blue);">${items.length}</span></div>`;
-  html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);padding:4px 16px;">`;
+  html+=`<div style="font-size:14px;font-weight:800;color:var(--text);margin:0 16px 10px;">관심 기관 <span style="color:var(--blue);">${items.length}</span></div>`;
+  html+=`<div style="background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(23,23,23,0.04);margin:0 16px;">`;
   items.forEach((d,i)=>{
     const hue=HUES[d.type]||210;
     const tc=TC[d.type]||'#999';
-    html+=`<div style="display:flex;gap:12px;padding:14px 0;${i<items.length-1?'border-bottom:1px solid var(--line-soft);':''}">
+    html+=`<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;${i<items.length-1?'border-bottom:1px solid var(--line-soft);':''}">
       <div onclick="goDetail('${d.id}')" style="display:flex;gap:12px;flex:1;cursor:pointer;align-items:center;min-width:0;">
-        <div style="width:62px;height:62px;border-radius:12px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;">${SVG[HERO_ICONS[d.type]||'heroGongl'](26)}</div>
+        <div style="width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,hsl(${hue} 52% 72%),hsl(${hue+30} 48% 60%));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;">${SVG[HERO_ICONS[d.type]||'heroGongl'](22)}</div>
         <div style="flex:1;min-width:0;">
           <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;">
-            <span style="font-size:15.5px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.name}</span>
+            <span style="font-size:15px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.name}</span>
             <span class="grade g${d.grade}" style="flex-shrink:0;"><span class="grade-label">평가</span><span class="grade-badge">${d.grade}</span></span>
           </div>
-          <div style="display:flex;align-items:center;gap:5px;margin-top:5px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:5px;margin-top:4px;flex-wrap:wrap;">
             <span style="font-size:11px;font-weight:700;color:${tc};background:${tc}22;padding:2px 7px;border-radius:5px;">${d.type}</span>
-            <span style="font-size:13px;color:var(--star);font-weight:700;">★</span><span style="font-size:13px;font-weight:700;color:var(--text);">${d.rating}</span><span style="font-size:12px;color:var(--text-alt);">· 리뷰 ${d.reviews}개</span>
+            <span style="font-size:13px;color:var(--star);font-weight:700;">★</span><span style="font-size:13px;font-weight:700;color:var(--text);">${d.rating}</span><span style="font-size:12px;color:var(--text-alt);">리뷰 ${d.reviews}</span>
           </div>
-          <div style="display:flex;align-items:center;gap:4px;margin-top:6px;color:var(--text-alt);font-size:12.5px;">${svgSpan('pin','var(--text-assist)',13)} ${d.dist||'-'} · 정원 ${d.cap}/${d.now}명</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:5px;color:var(--text-alt);font-size:12px;">${svgSpan('pin','var(--text-assist)',12)} ${d.dist||'-'} · 정원 ${d.cap}/${d.now}명</div>
         </div>
       </div>
-      <button onclick="toggleFav('${d.id}')" style="width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--red);flex-shrink:0;align-self:center;">${SVG.heart(24)}</button>
+      <button onclick="toggleFav('${d.id}')" style="width:36px;height:36px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--blue);flex-shrink:0;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.8 19.8" width="22" height="22"><path d="M4.065 0C3.535 0 3.084 0 2.713.03c-.39.032-.768.102-1.13.286C1.038.594.594 1.038.316 1.583.132 1.945.062 2.324.03 2.713 0 3.084 0 3.535 0 4.065L0 18.9c0 .325.175.625.459.784.283.16.63.154.908-.015L7.9 15.703l6.533 3.966c.278.169.625.175.908.015.284-.16.459-.46.459-.784L15.8 4.065c0-.53 0-.981-.03-1.352-.032-.39-.102-.768-.286-1.13C15.206 1.038 14.762.594 14.217.316 13.855.132 13.476.062 13.087.03 12.716 0 12.265 0 11.735 0H4.065z" fill="currentColor"/></svg></button>
     </div>`;
   });
   html+=`</div></div>`;
