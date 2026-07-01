@@ -4940,7 +4940,7 @@ const DONGS=[
   {id:'d3456',name:'대정읍',gu:'서귀포시',city:'제주',count:136},
   {id:'d3457',name:'색달동',gu:'서귀포시',city:'제주',count:135},
 ];
-const GPS_GUESS=DONGS.find(function(d){return d.name==='연남동'&&d.gu==='마포구';})||DONGS[0]; // 드리프트 배너 기본 추정 위치
+const GPS_GUESS=DONGS.find(function(d){return d.name==='서초3동'&&d.gu==='서초구';})||DONGS[0];
 let rwScores=[5,5,4,4,5,5],rwInstId=null;
 const POSTS=[
   {id:'p1', cat:'입소 Q&A', title:'0세반 지금 신청하면 대기 몇 번이에요?',
@@ -5058,9 +5058,9 @@ let map,miniMap,markers={},curType='전체',curSel=null,filtered=[...DATA],saved
 let curScreen='home',prevScreen='home',segMode='map',curDetail=null;
 const screenStack=[];
 // ── 위치 상태
-let curLat=37.4979, curLng=127.0276;
-let curSidoCd='11', curSigunguCd='11680';
-let curDongName='역삼동';
+let curLat=37.4837, curLng=127.0325;
+let curSidoCd='11', curSigunguCd='11650';
+let curDongName='서초3동';
 let myLocMarker=null;
 let _pendingCenter=null; // 지도 초기화 전에 감지된 좌표를 임시 보관
 let _skipGPS=false; // 지역 선택 후 goExplore 시 GPS 덮어쓰기 방지
@@ -6188,7 +6188,7 @@ function renderDetail(d){
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15" style="color:var(--text-alt)"><path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.314 0-10 1.657-10 5v1h20v-1c0-3.343-6.686-5-10-5z" fill="currentColor"/></svg>
                 <span style="font-size:13px;font-weight:800;color:var(--text);">부모가 등록한 질문</span>
               </div>
-              ${localStorage.getItem('aibom_user')?`<button onclick="goWrite('${d.id}')" style="background:var(--blue-weak);color:var(--blue);border:none;border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:700;font-family:var(--font);cursor:pointer;display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>질문하기</button>`:''}
+              <button onclick="goWrite('${d.id}')" style="background:var(--blue-weak);color:var(--blue);border:none;border-radius:8px;padding:6px 12px;font-size:12.5px;font-weight:700;font-family:var(--font);cursor:pointer;display:inline-flex;align-items:center;gap:4px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="13" height="13"><path d="M12 4a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5a1 1 0 0 1 1-1z" fill="currentColor"/></svg>질문하기</button>
             </div>
             <div id="inst-posts-${d.id}" style="padding-bottom:90px;">
               ${renderInstPostCards(d.id)}
@@ -6576,6 +6576,12 @@ let writeCat=null;      // 작성 카테고리
 
 const CAT_BADGE={'입소 Q&A':'badge-qa','생활 정보':'badge-info','나눔·공지':'badge-share','기타':'badge-etc'};
 
+// 로그인 사용자 표시명 — 미로그인 시 게스트 기본값
+function getMyNick(){
+  const u=JSON.parse(localStorage.getItem('aibom_user')||'null');
+  return (u&&u.nickname)?u.nickname:'연남동 학부모';
+}
+
 function relTime(ts){
   const diff=Math.floor((Date.now()-ts)/1000);
   if(diff<60)return '방금 전';
@@ -6907,6 +6913,10 @@ function toggleLike(id){
 }
 
 function addComment(){
+  if(!localStorage.getItem('aibom_user')){
+    showLoginWallSheet('답변을 작성하려면 로그인이 필요해요','로그인하면 커뮤니티에 답변을 남길 수 있어요');
+    return;
+  }
   const input=document.getElementById('comment-input');
   const txt=input.value.trim();
   if(!txt){
@@ -6918,7 +6928,7 @@ function addComment(){
   }
   const p=POSTS.find(x=>x.id===curPostId);
   if(!p)return;
-  p.comments.push({author:'연남동 학부모',lv:0,text:txt,createdAt:Date.now()});
+  p.comments.push({author:getMyNick(),lv:p.instId?getMyVerifyLv(p.instId):0,text:txt,createdAt:Date.now()});
   input.value='';
   renderPost(p);
   const sc=document.getElementById('post-scroll');
@@ -6967,7 +6977,7 @@ function clearInstTag(){writePreset=null;renderInstTag();}
 function checkWriteValid(){
   const title=document.getElementById('title-input').value.trim();
   const body=document.getElementById('body-textarea').value.trim();
-  const ok=writeCat&&title&&body;
+  const ok=writeCat&&title.length>=2&&body.length>=5;
   document.getElementById('write-submit').classList.toggle('off',!ok);
   return ok;
 }
@@ -6979,16 +6989,20 @@ function submitPost(){
   }
   const title=document.getElementById('title-input').value.trim();
   const body=document.getElementById('body-textarea').value.trim();
+  if(title.length<2){showToast('제목을 2자 이상 입력해주세요');return;}
+  if(body.length<5){showToast('내용을 5자 이상 입력해주세요');return;}
   const instId=writePreset;
   POSTS.unshift({
     id:'p'+Date.now(), cat:writeCat, title, body,
-    author:'연남동 학부모', lv:0, instId,
+    author:getMyNick(), lv:instId?getMyVerifyLv(instId):0, instId,
     createdAt:Date.now(), views:0, likes:0, liked:false, comments:[]
   });
   goBack();
   if(instId){
     var el=document.getElementById('inst-posts-'+instId);
     if(el)el.innerHTML=renderInstPostCards(instId);
+    var countSpan=document.querySelector('#dt-comm span');
+    if(countSpan)countSpan.textContent=POSTS.filter(p=>p.instId===instId).length;
   } else {
     renderCommunity();
   }
@@ -7180,7 +7194,7 @@ function onLoginSuccess(user){
   if(curScreen==='saved') renderSaved();
   setTimeout(()=>{
     const kids=JSON.parse(localStorage.getItem('aibom_children')||'[]');
-    if(!kids.length) showOnboardSuggestion();
+    if(!kids.length && curScreen!=='write') showOnboardSuggestion();
   },600);
 }
 function updateHomeGuestBanner(){
@@ -7666,10 +7680,13 @@ function onNativeAllow(){
     function(pos){
       curLat=pos.coords.latitude;
       curLng=pos.coords.longitude;
+      var nearCode=_sggFromCoords(curLat,curLng);
+      if(nearCode)curSigunguCd=nearCode;
       _gpsGuessedDong=findNearestDongByCoords(curLat,curLng);
       openDongConfirm();
     },
     function(){
+      curLat=37.4837;curLng=127.0325;curSigunguCd='11650';
       _gpsGuessedDong=GPS_GUESS;
       openDongConfirm();
     },
