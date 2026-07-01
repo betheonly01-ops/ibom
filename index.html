@@ -7649,14 +7649,12 @@ function onLocAllow(){
   if(np){np.style.display='flex';np.classList.remove('cc-pop');void np.offsetWidth;np.classList.add('cc-pop');}
 }
 function findNearestDongByCoords(lat,lng){
-  // 1. SGG_COORDS에서 가장 가까운 시군구 코드 찾기
   var code=_sggFromCoords(lat,lng);
-  // 2. DONG_MAP에서 해당 코드의 구 이름 찾기
-  for(var sido in DONG_MAP){
-    var sgg=DONG_MAP[sido].sgg||{};
+  if(!code)return GPS_GUESS;
+  for(var sido in REGION_DATA){
+    var sgg=REGION_DATA[sido].sgg||{};
     for(var gu in sgg){
       if(sgg[gu].cd===code){
-        // 3. DONGS에서 해당 구의 첫 번째 동 반환
         var match=DONGS.find(function(d){return d.gu===gu;});
         if(match)return match;
       }
