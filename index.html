@@ -7676,20 +7676,25 @@ function onNativeAllow(){
     return;
   }
   showToast('위치 확인 중...');
-  navigator.geolocation.getCurrentPosition(
-    function(pos){
-      curLat=pos.coords.latitude;
-      curLng=pos.coords.longitude;
+  var _gpsDone=false;
+  function _gpsResolve(lat,lng){
+    if(_gpsDone)return; _gpsDone=true;
+    if(lat!==null){
+      curLat=lat;curLng=lng;
       var nearCode=_sggFromCoords(curLat,curLng);
       if(nearCode)curSigunguCd=nearCode;
       _gpsGuessedDong=findNearestDongByCoords(curLat,curLng);
-      openDongConfirm();
-    },
-    function(){
+    } else {
       curLat=37.4837;curLng=127.0325;curSigunguCd='11650';
       _gpsGuessedDong=GPS_GUESS;
-      openDongConfirm();
-    },
+    }
+    openDongConfirm();
+  }
+  // 브라우저가 권한 대기 중 timeout을 무시하는 경우를 대비한 강제 폴백
+  var _gpsTimer=setTimeout(function(){_gpsResolve(null,null);},10000);
+  navigator.geolocation.getCurrentPosition(
+    function(pos){clearTimeout(_gpsTimer);_gpsResolve(pos.coords.latitude,pos.coords.longitude);},
+    function(){clearTimeout(_gpsTimer);_gpsResolve(null,null);},
     {timeout:8000,maximumAge:60000}
   );
 }
