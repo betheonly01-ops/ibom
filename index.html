@@ -872,7 +872,7 @@ html,body{
   </div>
 
   <!-- ══ 동네 확인 화면 (GPS 추정) ══ -->
-  <div class="screen hidden" id="scr-dong-confirm" style="background:#fff;display:flex;flex-direction:column;">
+  <div class="screen hidden" id="scr-dong-confirm" style="background:#fff;display:flex;flex-direction:column;z-index:65;">
     <div class="post-header">
       <button class="back-btn" onclick="goBack()" style="color:var(--text)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <span class="detail-htitle" style="font-size:16px">내 동네 확인</span>
@@ -7670,6 +7670,9 @@ function onNativeAllow(){
   if(np)np.style.display='none';
   permState='granted';
   closeLocGate();
+  // loc-gate 배경막 즉시 제거 (320ms 딜레이 대기 없이) — 화면 전환 겹침 방지
+  var _bd=document.getElementById('loc-gate-backdrop');
+  if(_bd)_bd.style.display='none';
   if(!navigator.geolocation){
     _gpsGuessedDong=GPS_GUESS;
     setTimeout(openDongConfirm,350);
@@ -7688,14 +7691,15 @@ function onNativeAllow(){
       curLat=37.4837;curLng=127.0325;curSigunguCd='11650';
       _gpsGuessedDong=GPS_GUESS;
     }
-    openDongConfirm();
+    // loc-gate 애니메이션(320ms) 완료 후 화면 전환 (z-index 충돌 방지)
+    setTimeout(openDongConfirm, 400);
   }
-  // 브라우저가 권한 대기 중 timeout을 무시하는 경우를 대비한 강제 폴백
-  var _gpsTimer=setTimeout(function(){_gpsResolve(null,null);},10000);
+  // 브라우저가 권한 대기 중 timeout을 무시하는 경우를 대비한 강제 폴백 (5초)
+  var _gpsTimer=setTimeout(function(){_gpsResolve(null,null);},5000);
   navigator.geolocation.getCurrentPosition(
     function(pos){clearTimeout(_gpsTimer);_gpsResolve(pos.coords.latitude,pos.coords.longitude);},
     function(){clearTimeout(_gpsTimer);_gpsResolve(null,null);},
-    {timeout:8000,maximumAge:60000}
+    {timeout:4000,maximumAge:60000}
   );
 }
 function onNativeDeny(){
